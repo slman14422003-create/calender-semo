@@ -55,6 +55,8 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 ## Build fixes
 - Hijri.cal() uses Calendar.getInstance(new ULocale("en@calendar=islamic-umalqura")): IslamicCalendar.CalendarType is not in the SDK stubs (first CI build failed on it).
 
+- CI signing step: a KEYSTORE_BASE64 that is not valid base64 (or a wrong password / alias) no longer fails the build; the secret is cleaned (quotes, spaces, "KEYSTORE_BASE64=" prefix) and, if it still does not open, the build falls back to the debug key with a warning naming the problem.
+
 ## Not done yet / ideas
 - Not compiled in the authoring environment: build through the GitHub workflow and test on a device.
 - Not possible offline or without extra permissions: invitees, subscribed (URL) calendars, birthdays from contacts, home-screen widget (needs an exported receiver, the CI guard allows only MainActivity and ShareActivity), per-occurrence edits of a repeating event, drag to move events in Day / Week.

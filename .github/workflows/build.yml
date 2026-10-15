@@ -132,13 +132,24 @@ jobs:
             echo "missing=$MISSING" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          echo "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d > "$RUNNER_TEMP/release.jks"
+          # a bad key must not stop the whole build: fall back to the debug key and say loudly why
+          fallback() {
+            echo "::warning title=مفتاح التوقيع الدائم لم يُستخدم::$1 . بُني التطبيق بمفتاح تجريبي (debug). راجع SIGNING.md."
+            echo "SIGNING_MODE=مفتاح تجريبي (debug)" >> "$GITHUB_ENV"
+            echo "permanent=false" >> "$GITHUB_OUTPUT"
+            echo "missing=$2" >> "$GITHUB_OUTPUT"
+            exit 0
+          }
+          # tolerate quotes, spaces / line breaks and a leading "KEYSTORE_BASE64=" in the secret
+          CLEAN="$(printf '%s' "$KEYSTORE_BASE64" | tr -d '[:space:]' | sed -e 's/^KEYSTORE_BASE64=//' -e "s/[\"']//g")"
+          if ! printf '%s' "$CLEAN" | base64 -d > "$RUNNER_TEMP/release.jks" 2>/dev/null || [ ! -s "$RUNNER_TEMP/release.jks" ]; then
+            fallback "قيمة KEYSTORE_BASE64 ليست base64 صالحاً (انسخ كل محتوى KEYSTORE_BASE64.txt كما هو، سطراً واحداً بلا اقتباسات)" "KEYSTORE_BASE64(غير صالح)"
+          fi
           echo "::add-mask::$STORE_PASS"
           [ -n "$KEY_PASSWORD" ] && echo "::add-mask::$KEY_PASSWORD"
           # fail early with a clear message if the password / alias do not open the keystore
           if ! keytool -list -keystore "$RUNNER_TEMP/release.jks" -storepass "$STORE_PASS" -alias "$ALIAS" >/dev/null 2>&1; then
-            echo "::error title=مفتاح التوقيع غير صالح::تعذّر فتح المفتاح. تأكد أن KEYSTORE_BASE64 هو كل محتوى KEYSTORE_BASE64.txt بدون اقتباسات، وأن كلمة المرور والـ alias ($ALIAS) صحيحان."
-            exit 1
+            fallback "تعذّر فتح المفتاح: كلمة المرور أو الـ alias ($ALIAS) لا يطابقان الملف" "KEYSTORE_PASSWORD/KEY_ALIAS(غير مطابقين)"
           fi
           {
             echo "SIGNING_STORE_FILE=$RUNNER_TEMP/release.jks"
