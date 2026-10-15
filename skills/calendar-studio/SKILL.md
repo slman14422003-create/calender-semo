@@ -37,6 +37,11 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - Lists say Today / Tomorrow / Yesterday, today's header in the agenda is blue, past events are dimmed, a new event opens with the keyboard on the title.
 - Code files are pure ASCII (non-ASCII punctuation is written as unicode escapes).
 
+## Done (1.4, iOS feel)
+- Collapsing large titles (LargeNav + HeaderAdapter): Agenda, Search and Settings have a 44dp bar whose small centred title and hairline fade in when the 34sp title scrolls away.
+- Event lists are inset-grouped: consecutive events share one rounded card (corners decided per row in EventAdapter), hairline between rows, highlight while pressed. Swipe a row sideways for the red iOS "Delete" strip (SwipeDelete), release asks for confirmation.
+- Settings rows carry coloured icon tiles (language blue, first day red, alert orange, length green, appearance violet, export / import); Semo app rows show the real launcher icon of the sibling app.
+
 ## Not done yet / ideas
 - Not compiled in the authoring environment: build through the GitHub workflow and test on a device.
 - Per-occurrence edits of repeating events, multi-day all-day bars across the week grid, in-app updater (needs Net.java and the CI network guard changed on purpose).

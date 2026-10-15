@@ -1,20 +1,20 @@
 package com.semo.calendar;
 
 import android.graphics.Typeface;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.ConcatAdapter;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/** Agenda tab: the next 90 days as one scrolling list, grouped by day. */
+/** Agenda tab: collapsing large title, the next 90 days grouped by day in iOS inset-grouped cards. */
 final class AgendaScreen implements Screen {
     private final MainActivity a;
     private final LinearLayout root;
@@ -25,26 +25,30 @@ final class AgendaScreen implements Screen {
         root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
 
-        FrameLayout nav = new FrameLayout(a);
-        nav.setPadding(Ui.dp(a, 4), Ui.dp(a, 6), Ui.dp(a, 8), Ui.dp(a, 4));
         ImageButton plus = Ui.iconButton(a, R.drawable.ic_add, R.color.accent, 40);
         plus.setContentDescription(a.getString(R.string.new_event));
         plus.setOnClickListener(v -> a.openEditor(null, 0));
-        nav.addView(plus, new FrameLayout.LayoutParams(Ui.dp(a, 40), Ui.dp(a, 40), Gravity.END));
-        root.addView(nav, new LinearLayout.LayoutParams(-1, Ui.dp(a, 50)));
+        final LargeNav nav = new LargeNav(a, a.getString(R.string.tab_agenda), plus);
+        root.addView(nav.view(), new LinearLayout.LayoutParams(-1, nav.height()));
 
         TextView t = Ui.text(a, a.getString(R.string.tab_agenda), 34, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
         t.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
-        root.addView(t);
 
-        RecyclerView rv = new RecyclerView(a);
+        final RecyclerView rv = new RecyclerView(a);
         rv.setLayoutManager(new LinearLayoutManager(a));
         rv.setClipToPadding(false);
         rv.setPadding(0, 0, 0, Ui.dp(a, 160));
         rv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         adapter = new EventAdapter(a, false, R.string.no_events, o -> a.showDetail(o));
-        rv.setAdapter(adapter);
+        rv.setAdapter(new ConcatAdapter(new HeaderAdapter(t), adapter));
+        new ItemTouchHelper(new SwipeDelete(a)).attachToRecyclerView(rv);
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView r, int dx, int dy) {
+                nav.onScroll(r.computeVerticalScrollOffset());
+            }
+        });
         root.addView(rv, new LinearLayout.LayoutParams(-1, 0, 1f));
     }
 

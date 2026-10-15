@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.4
+- Collapsing iOS large titles, grouped event cards, swipe to delete, icon tiles in Settings, real app icons for Semo apps.
+
 ## 1.3
 - New launcher icon (bold calendar page).
 - Follows the device language: English, Arabic, French, Spanish, German, Turkish, with a language picker in Settings.

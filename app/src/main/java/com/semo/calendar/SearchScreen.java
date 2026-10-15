@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/** Search tab: iOS search field (rounded 10, magnifier) over the results, two years back and ahead. */
+/** Search tab: collapsing large title, iOS search field (rounded 10, magnifier), grouped results. */
 final class SearchScreen implements Screen {
     private final MainActivity a;
     private final LinearLayout root;
@@ -30,10 +31,14 @@ final class SearchScreen implements Screen {
         a = act;
         root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
+        final LargeNav nav = new LargeNav(a, a.getString(R.string.tab_search), null);
+        root.addView(nav.view(), new LinearLayout.LayoutParams(-1, nav.height()));
+
+        LinearLayout head = Ui.vertical(a);
         TextView t = Ui.text(a, a.getString(R.string.tab_search), 34, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
-        t.setPadding(Ui.dp(a, 20), Ui.dp(a, 56), Ui.dp(a, 20), Ui.dp(a, 8));
-        root.addView(t);
+        t.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 8));
+        head.addView(t);
 
         LinearLayout bar = new LinearLayout(a);
         bar.setGravity(Gravity.CENTER_VERTICAL);
@@ -55,8 +60,8 @@ final class SearchScreen implements Screen {
         field.setPadding(Ui.dp(a, 8), 0, 0, 0);
         bar.addView(field, new LinearLayout.LayoutParams(0, -1, 1f));
         LinearLayout.LayoutParams bp = new LinearLayout.LayoutParams(-1, Ui.dp(a, 36));
-        bp.setMargins(Ui.dp(a, 16), 0, Ui.dp(a, 16), Ui.dp(a, 8));
-        root.addView(bar, bp);
+        bp.setMargins(Ui.dp(a, 16), 0, Ui.dp(a, 16), Ui.dp(a, 6));
+        head.addView(bar, bp);
         field.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int st, int c, int af) {
@@ -71,13 +76,20 @@ final class SearchScreen implements Screen {
                 refresh();
             }
         });
+
         RecyclerView rv = new RecyclerView(a);
         rv.setLayoutManager(new LinearLayoutManager(a));
         rv.setClipToPadding(false);
         rv.setPadding(0, 0, 0, Ui.dp(a, 160));
         rv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         adapter = new EventAdapter(a, true, R.string.search_empty, o -> a.showDetail(o));
-        rv.setAdapter(adapter);
+        rv.setAdapter(new ConcatAdapter(new HeaderAdapter(head), adapter));
+        rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView r, int dx, int dy) {
+                nav.onScroll(r.computeVerticalScrollOffset());
+            }
+        });
         root.addView(rv, new LinearLayout.LayoutParams(-1, 0, 1f));
     }
 

@@ -69,6 +69,7 @@ final class MonthScreen implements DayAware {
         rv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         adapter = new EventAdapter(a, false, R.string.no_events, o -> a.showDetail(o));
         rv.setAdapter(adapter);
+        new androidx.recyclerview.widget.ItemTouchHelper(new SwipeDelete(a)).attachToRecyclerView(rv);
         sheet.addView(rv, new LinearLayout.LayoutParams(-1, 0, 1f));
         root.addView(sheet, sp);
     }

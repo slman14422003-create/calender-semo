@@ -101,10 +101,46 @@ final class Ui {
 
     /** One 44dp cell: label on the leading side; the caller adds value / control views at the end. */
     static LinearLayout cell(Context c, CharSequence label) {
+        return cell(c, label, null);
+    }
+
+    /** Coloured rounded-square icon tile (30dp) like the ones in iOS Settings. */
+    static View tile(Context c, int iconRes, int colorInt) {
+        android.widget.FrameLayout f = new android.widget.FrameLayout(c);
+        f.setBackground(shape(colorInt, dp(c, 7)));
+        android.widget.ImageView i = new android.widget.ImageView(c);
+        i.setImageResource(iconRes);
+        i.setImageTintList(android.content.res.ColorStateList.valueOf(0xFFFFFFFF));
+        f.addView(i, new android.widget.FrameLayout.LayoutParams(dp(c, 18), dp(c, 18), android.view.Gravity.CENTER));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(c, 30), dp(c, 30));
+        lp.setMarginEnd(dp(c, 12));
+        f.setLayoutParams(lp);
+        return f;
+    }
+
+    /** An app launcher icon clipped to a 30dp rounded square. */
+    static View appIcon(final Context c, android.graphics.drawable.Drawable d) {
+        android.widget.ImageView i = new android.widget.ImageView(c);
+        i.setImageDrawable(d);
+        i.setClipToOutline(true);
+        i.setOutlineProvider(new android.view.ViewOutlineProvider() {
+            @Override
+            public void getOutline(View v, android.graphics.Outline o) {
+                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), dp(c, 7));
+            }
+        });
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(c, 30), dp(c, 30));
+        lp.setMarginEnd(dp(c, 12));
+        i.setLayoutParams(lp);
+        return i;
+    }
+
+    static LinearLayout cell(Context c, CharSequence label, View leading) {
         LinearLayout r = new LinearLayout(c);
         r.setGravity(android.view.Gravity.CENTER_VERTICAL);
         r.setMinimumHeight(dp(c, 44));
         r.setPadding(dp(c, 16), dp(c, 4), dp(c, 16), dp(c, 4));
+        if (leading != null) r.addView(leading);
         r.addView(text(c, label, 17, R.color.text_primary, false), new LinearLayout.LayoutParams(0, -2, 1f));
         return r;
     }

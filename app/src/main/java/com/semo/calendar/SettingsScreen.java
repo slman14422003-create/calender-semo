@@ -18,17 +18,23 @@ final class SettingsScreen implements Screen {
     private static final int[] FIRST = {java.util.Calendar.SATURDAY, java.util.Calendar.SUNDAY, java.util.Calendar.MONDAY};
 
     private final MainActivity a;
-    private final ScrollView root;
+    private final LinearLayout root;
     private final LinearLayout body;
 
     SettingsScreen(MainActivity act) {
         a = act;
-        root = new ScrollView(a);
+        root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
-        root.setClipToPadding(false);
-        root.setPadding(0, 0, 0, Ui.dp(a, 120));
+        final LargeNav nav = new LargeNav(a, a.getString(R.string.tab_settings), null);
+        root.addView(nav.view(), new LinearLayout.LayoutParams(-1, nav.height()));
+        ScrollView sv = new ScrollView(a);
+        sv.setClipToPadding(false);
+        sv.setPadding(0, 0, 0, Ui.dp(a, 120));
+        sv.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        sv.setOnScrollChangeListener((v, x, y, ox, oy) -> nav.onScroll(y));
         body = Ui.vertical(a);
-        root.addView(body, new ScrollView.LayoutParams(-1, -2));
+        sv.addView(body, new ScrollView.LayoutParams(-1, -2));
+        root.addView(sv, new LinearLayout.LayoutParams(-1, 0, 1f));
     }
 
     @Override
@@ -41,7 +47,12 @@ final class SettingsScreen implements Screen {
     }
 
     private View row(CharSequence title, CharSequence value, boolean chevron, View.OnClickListener click) {
-        LinearLayout r = Ui.cell(a, title);
+        return row(title, value, chevron, click, null);
+    }
+
+    private View row(CharSequence title, CharSequence value, boolean chevron, View.OnClickListener click,
+                     View leading) {
+        LinearLayout r = Ui.cell(a, title, leading);
         if (value.length() > 0) r.addView(Ui.text(a, value, 17, R.color.text_secondary, false));
         if (chevron) r.addView(Ui.chevron(a));
         if (click != null) {
@@ -63,7 +74,7 @@ final class SettingsScreen implements Screen {
         body.removeAllViews();
         TextView title = Ui.text(a, a.getString(R.string.tab_settings), 34, R.color.text_primary, false);
         title.setTypeface(Typeface.DEFAULT_BOLD);
-        title.setPadding(Ui.dp(a, 20), Ui.dp(a, 56), Ui.dp(a, 20), Ui.dp(a, 6));
+        title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
         body.addView(title);
 
         LinearLayout g = Ui.group(a, 8);
@@ -79,23 +90,24 @@ final class SettingsScreen implements Screen {
         final int langChecked = langNow;
         g.addView(row(a.getString(R.string.language), langNames[langNow], true,
                 v -> choose(R.string.language, langNames, langChecked, w -> AppCompatDelegate.setApplicationLocales(
-                        w == 0 ? LocaleListCompat.getEmptyLocaleList() : LocaleListCompat.forLanguageTags(tags[w])))));
-        g.addView(Ui.hairline(a, 16));
+                        w == 0 ? LocaleListCompat.getEmptyLocaleList() : LocaleListCompat.forLanguageTags(tags[w]))),
+                Ui.tile(a, R.drawable.ic_globe, Ui.color(a, R.color.accent))));
+        g.addView(Ui.hairline(a, 58));
         g.addView(row(a.getString(R.string.first_day), dayName(Prefs.firstDay(a)), true, v -> {
             CharSequence[] names = {dayName(FIRST[0]), dayName(FIRST[1]), dayName(FIRST[2])};
             int cur = 1;
             for (int i = 0; i < FIRST.length; i++) if (FIRST[i] == Prefs.firstDay(a)) cur = i;
             choose(R.string.first_day, names, cur, w -> Prefs.setFirstDay(a, FIRST[w]));
-        }));
-        g.addView(Ui.hairline(a, 16));
+        }, Ui.tile(a, R.drawable.ic_month, Ui.color(a, R.color.bad))));
+        g.addView(Ui.hairline(a, 58));
         g.addView(row(a.getString(R.string.default_reminder),
                 a.getString(Prefs.REMIND_LABEL[Prefs.remindIndex(Prefs.defaultRemind(a))]), true, v -> {
                     CharSequence[] names = new CharSequence[Prefs.REMIND.length];
                     for (int i = 0; i < names.length; i++) names[i] = a.getString(Prefs.REMIND_LABEL[i]);
                     choose(R.string.default_reminder, names, Prefs.remindIndex(Prefs.defaultRemind(a)),
                             w -> Prefs.setDefaultRemind(a, Prefs.REMIND[w]));
-                }));
-        g.addView(Ui.hairline(a, 16));
+                }, Ui.tile(a, R.drawable.ic_bell, Ui.color(a, R.color.warn))));
+        g.addView(Ui.hairline(a, 58));
         g.addView(row(a.getString(R.string.default_duration),
                 a.getString(R.string.minutes_fmt, Prefs.duration(a)), true, v -> {
                     CharSequence[] names = new CharSequence[Prefs.DURATION.length];
@@ -105,8 +117,8 @@ final class SettingsScreen implements Screen {
                         if (Prefs.DURATION[i] == Prefs.duration(a)) cur = i;
                     }
                     choose(R.string.default_duration, names, cur, w -> Prefs.setDuration(a, Prefs.DURATION[w]));
-                }));
-        g.addView(Ui.hairline(a, 16));
+                }, Ui.tile(a, R.drawable.ic_clock, Ui.color(a, R.color.ok))));
+        g.addView(Ui.hairline(a, 58));
         int[] themeRes = {R.string.theme_system, R.string.theme_light, R.string.theme_dark};
         g.addView(row(a.getString(R.string.theme), a.getString(themeRes[Prefs.theme(a)]), true, v -> {
             CharSequence[] names = {a.getString(themeRes[0]), a.getString(themeRes[1]), a.getString(themeRes[2])};
@@ -115,14 +127,16 @@ final class SettingsScreen implements Screen {
                 AppCompatDelegate.setDefaultNightMode(w == 1 ? AppCompatDelegate.MODE_NIGHT_NO
                         : w == 2 ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             });
-        }));
+        }, Ui.tile(a, R.drawable.ic_moon, Ui.color(a, R.color.violet))));
         body.addView(g);
 
         body.addView(Ui.sectionHeader(a, a.getString(R.string.data)));
         LinearLayout dg = Ui.group(a, 0);
-        dg.addView(row(a.getString(R.string.export_ics), "", false, v -> a.exportIcs()));
-        dg.addView(Ui.hairline(a, 16));
-        dg.addView(row(a.getString(R.string.import_ics), "", false, v -> a.importIcs()));
+        dg.addView(row(a.getString(R.string.export_ics), "", false, v -> a.exportIcs(),
+                Ui.tile(a, R.drawable.ic_upload, Ui.color(a, R.color.accent))));
+        dg.addView(Ui.hairline(a, 58));
+        dg.addView(row(a.getString(R.string.import_ics), "", false, v -> a.importIcs(),
+                Ui.tile(a, R.drawable.ic_download, Ui.color(a, R.color.ok))));
         body.addView(dg);
 
         body.addView(Ui.sectionHeader(a, a.getString(R.string.semo_apps)));
@@ -133,8 +147,9 @@ final class SettingsScreen implements Screen {
         } else {
             for (int i = 0; i < sib.size(); i++) {
                 final Semo.Sibling x = sib.get(i);
-                if (i > 0) s.addView(Ui.hairline(a, 16));
-                s.addView(row(x.label, x.version, true, v -> Semo.open(a, x.pkg)));
+                if (i > 0) s.addView(Ui.hairline(a, 58));
+                s.addView(row(x.label, x.version, true, v -> Semo.open(a, x.pkg),
+                        x.icon == null ? null : Ui.appIcon(a, x.icon)));
             }
         }
         body.addView(s);

@@ -30,6 +30,7 @@ final class Semo {
         String role = "";
         CharSequence label = "";
         String version = "";
+        android.graphics.drawable.Drawable icon;
     }
 
     @SuppressWarnings("deprecation")
@@ -48,6 +49,7 @@ final class Semo {
                 try {
                     ApplicationInfo ai = pm.getApplicationInfo(p, PackageManager.GET_META_DATA);
                     s.label = pm.getApplicationLabel(ai);
+                    s.icon = pm.getApplicationIcon(p);
                     Bundle md = ai.metaData;
                     if (md != null && md.getString(META_ROLE) != null) s.role = md.getString(META_ROLE);
                     PackageInfo pi = pm.getPackageInfo(p, 0);
