@@ -147,7 +147,7 @@ final class TimeScreen implements DayAware {
         long to = c.getTimeInMillis();
 
         title.setText(days == 1 ? Fmt.date("EEEEdMMMM", first)
-                : Fmt.date("dMMM", first) + " – " + Fmt.date("dMMM", last));
+                : Fmt.date("dMMM", first) + " \u2013 " + Fmt.date("dMMM", last));
 
         List<Recur.Occ> timed = new ArrayList<>();
         allDayRow.removeAllViews();

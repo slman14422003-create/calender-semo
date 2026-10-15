@@ -239,7 +239,7 @@ final class TimeGridView extends View {
                 tp.setTypeface(Typeface.DEFAULT);
                 tp.setTextSize(Ui.sp(c, 11));
                 tp.setColor(Ui.color(c, R.color.text_secondary));
-                String sub = Fmt.time(c, it.o.start) + " – " + Fmt.time(c, it.o.end);
+                String sub = Fmt.time(c, it.o.start) + " \u2013 " + Fmt.time(c, it.o.end);
                 cv.drawText(TextUtils.ellipsize(sub, tp, Math.max(1, avail), TextUtils.TruncateAt.END).toString(),
                         tx, ty + Ui.dp(c, 15), tp);
             }

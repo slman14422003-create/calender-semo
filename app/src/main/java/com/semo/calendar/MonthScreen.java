@@ -171,7 +171,8 @@ final class MonthScreen implements DayAware {
         List<Object> list = new ArrayList<>(Recur.between(Store.all(a), ds, Recur.nextDay(ds)));
         adapter.set(list);
         String label = Fmt.date("EEEEdMMMM", ds);
-        if (ds == Recur.dayStart(System.currentTimeMillis())) label += " · " + a.getString(R.string.today);
+        String rel = Fmt.dayLabel(a, ds);
+        if (rel != null) label = rel + " \u00b7 " + label;
         dayLabel.setText(label);
     }
 }

@@ -34,7 +34,7 @@ android {
     }
 
     androidResources {
-        localeFilters.addAll(['ar', 'en'])
+        localeFilters.addAll(['en', 'ar', 'fr', 'es', 'de', 'tr'])
     }
 
     dependenciesInfo {

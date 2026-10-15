@@ -7,6 +7,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 
 import java.text.DateFormatSymbols;
 import java.util.List;
@@ -66,6 +67,20 @@ final class SettingsScreen implements Screen {
         body.addView(title);
 
         LinearLayout g = Ui.group(a, 8);
+        final String[] tags = {"", "en", "ar", "fr", "es", "de", "tr"};
+        final String[] langNames = a.getResources().getStringArray(R.array.lang_names);
+        langNames[0] = a.getString(R.string.lang_system);
+        int langNow = 0;
+        LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
+        if (!appLocales.isEmpty() && appLocales.get(0) != null) {
+            String lang = appLocales.get(0).getLanguage();
+            for (int i = 1; i < tags.length; i++) if (tags[i].equals(lang)) langNow = i;
+        }
+        final int langChecked = langNow;
+        g.addView(row(a.getString(R.string.language), langNames[langNow], true,
+                v -> choose(R.string.language, langNames, langChecked, w -> AppCompatDelegate.setApplicationLocales(
+                        w == 0 ? LocaleListCompat.getEmptyLocaleList() : LocaleListCompat.forLanguageTags(tags[w])))));
+        g.addView(Ui.hairline(a, 16));
         g.addView(row(a.getString(R.string.first_day), dayName(Prefs.firstDay(a)), true, v -> {
             CharSequence[] names = {dayName(FIRST[0]), dayName(FIRST[1]), dayName(FIRST[2])};
             int cur = 1;

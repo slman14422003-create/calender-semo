@@ -23,6 +23,9 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
         void on(Recur.Occ o);
     }
 
+    /** Prefix that marks the header of today in the list (drawn in the accent colour). */
+    static final String TODAY = "\u0001";
+
     private static final int HEADER = 0, EVENT = 1, EMPTY = 2;
 
     private final Context c;
@@ -127,7 +130,10 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
         if (type == EMPTY) {
             h.title.setText(emptyText);
         } else if (type == HEADER) {
-            h.title.setText((String) items.get(pos));
+            String hs = (String) items.get(pos);
+            boolean isToday = hs.startsWith(TODAY);
+            h.title.setText(isToday ? hs.substring(TODAY.length()) : hs);
+            h.title.setTextColor(Ui.color(c, isToday ? R.color.accent : R.color.text_secondary));
         } else {
             final Recur.Occ o = (Recur.Occ) items.get(pos);
             h.title.setText(o.e.title.isEmpty() ? c.getString(R.string.untitled) : o.e.title);
@@ -143,6 +149,7 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
                 h.t2.setVisibility(View.VISIBLE);
             }
             h.bar.setBackground(Ui.shape(Ui.color(c, Event.COLORS[o.e.color]), Ui.dp(c, 2)));
+            h.itemView.setAlpha(o.end < System.currentTimeMillis() ? 0.5f : 1f);
             h.itemView.setOnClickListener(v -> click.on(o));
         }
     }

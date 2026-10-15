@@ -8,6 +8,7 @@ import android.text.format.DateFormat;
 import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -82,6 +83,13 @@ public final class EditorActivity extends BaseActivity {
         build();
         syncPickers();
         refreshChips();
+        if (!editing && ev.title.isEmpty()) {
+            title.postDelayed(() -> {
+                title.requestFocus();
+                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                if (imm != null) imm.showSoftInput(title, InputMethodManager.SHOW_IMPLICIT);
+            }, 250);
+        }
     }
 
     private TextView chip(View.OnClickListener l) {

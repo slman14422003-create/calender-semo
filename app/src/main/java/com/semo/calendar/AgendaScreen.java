@@ -65,8 +65,9 @@ final class AgendaScreen implements Screen {
             if (key != lastKey) {
                 lastKey = key;
                 String h = Fmt.date("EEEEdMMMM", key);
-                if (key == from) h += " · " + a.getString(R.string.today);
-                list.add(h);
+                String rel = Fmt.dayLabel(a, key);
+                if (rel != null) h = rel + " \u00b7 " + h;
+                list.add(key == from ? EventAdapter.TODAY + h : h);
             }
             list.add(o);
         }

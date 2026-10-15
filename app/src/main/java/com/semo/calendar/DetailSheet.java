@@ -55,7 +55,10 @@ final class DetailSheet {
         head.addView(t, new LinearLayout.LayoutParams(0, -2, 1f));
         box.addView(head);
 
-        TextView when = Ui.text(a, Fmt.date("EEEEdMMMM", o.start), 16, R.color.text_primary, false);
+        String whenText = Fmt.date("EEEEdMMMM", o.start);
+        String rel = Fmt.dayLabel(a, Recur.dayStart(o.start));
+        if (rel != null) whenText = rel + " \u00b7 " + whenText;
+        TextView when = Ui.text(a, whenText, 16, R.color.text_primary, false);
         when.setPadding(0, Ui.dp(a, 12), 0, 0);
         box.addView(when);
         TextView time = Ui.text(a, Fmt.line(a, o, false), 15, R.color.text_secondary, false);
@@ -65,7 +68,7 @@ final class DetailSheet {
             StringBuilder sb = new StringBuilder();
             if (e.repeat > 0) sb.append(a.getString(EditorActivity.REPEAT_LABEL[e.repeat]));
             if (e.remind >= 0) {
-                if (sb.length() > 0) sb.append(" · ");
+                if (sb.length() > 0) sb.append(" \u00b7 ");
                 sb.append(a.getString(Prefs.REMIND_LABEL[Prefs.remindIndex(e.remind)]));
             }
             TextView extra = Ui.text(a, sb.toString(), 14, R.color.text_secondary, false);

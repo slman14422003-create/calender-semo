@@ -31,6 +31,12 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - Search field = iOS search bar (36dp, radius 10, magnifier).
 - Colours added: seg_track, seg_thumb, alert_bg (day and night).
 
+## Done (1.3)
+- Launcher icon redesigned: big calendar page (white to pale-blue page, glossy blue header band, two binder rings, 3x4 day cells with today as a blue gradient tile), scaled to 65% (92% and 80% looked too big on the home screen). Same palette as the other Semo icons, no petals. Monochrome version for themed icons.
+- Languages follow the device: English is the default (res/values), plus ar, fr, es, de, tr (values-ar ...). Settings > Language picks System or one language (AppCompatDelegate.setApplicationLocales, locales_config.xml for Android 13+, AppLocalesMetadataHolderService for older). Language names live in res/values/arrays.xml (lang_names) so code stays ASCII. To add a language: new values-xx/strings.xml with the same keys, add it to locales_config.xml, build.gradle localeFilters, the tags array in SettingsScreen and lang_names.
+- Lists say Today / Tomorrow / Yesterday, today's header in the agenda is blue, past events are dimmed, a new event opens with the keyboard on the title.
+- Code files are pure ASCII (non-ASCII punctuation is written as unicode escapes).
+
 ## Not done yet / ideas
 - Not compiled in the authoring environment: build through the GitHub workflow and test on a device.
 - Per-occurrence edits of repeating events, multi-day all-day bars across the week grid, in-app updater (needs Net.java and the CI network guard changed on purpose).

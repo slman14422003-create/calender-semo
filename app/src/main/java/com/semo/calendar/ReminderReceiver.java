@@ -21,7 +21,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         if (e == null) return;
         String when = e.allDay ? c.getString(R.string.all_day)
                 : DateFormat.getTimeFormat(c).format(new Date(at));
-        if (!e.location.isEmpty()) when = when + " · " + e.location;
+        if (!e.location.isEmpty()) when = when + " \u00b7 " + e.location;
         PendingIntent open = PendingIntent.getActivity(c, 0, new Intent(c, MainActivity.class),
                 PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder b = new NotificationCompat.Builder(c, App.CHANNEL)

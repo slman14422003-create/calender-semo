@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.3
+- New launcher icon (bold calendar page).
+- Follows the device language: English, Arabic, French, Spanish, German, Turkish, with a language picker in Settings.
+- Today / Tomorrow / Yesterday labels, dimmed past events, keyboard opens on new events.
+
 ## 1.2
 - iOS precision pass: navigation bar with Today / segmented control / "+", iOS alerts and action sheets, iOS switch, inline wheel date and time pickers, iOS search bar, grouped cell metrics, new month-grid selection style.
 
