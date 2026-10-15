@@ -1,7 +1,5 @@
 package com.semo.calendar;
 
-import android.icu.util.IslamicCalendar;
-
 import java.util.Date;
 import java.util.Locale;
 
@@ -10,14 +8,13 @@ final class Hijri {
     private Hijri() {
     }
 
-    static IslamicCalendar cal() {
-        IslamicCalendar c = new IslamicCalendar();
-        c.setCalendarType(IslamicCalendar.CalendarType.UMALQURA);
-        return c;
+    /** An ICU calendar that counts in Hijri (Umm al-Qura); chosen through the locale so no hidden enum is needed. */
+    static android.icu.util.Calendar cal() {
+        return android.icu.util.Calendar.getInstance(new android.icu.util.ULocale("en@calendar=islamic-umalqura"));
     }
 
     static int day(long ms) {
-        IslamicCalendar c = cal();
+        android.icu.util.Calendar c = cal();
         c.setTimeInMillis(ms);
         return c.get(android.icu.util.Calendar.DAY_OF_MONTH);
     }

@@ -52,6 +52,9 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - ICS import / export carries repeat interval, weekdays, until, count, URL, free / busy and two alerts.
 - Strings: 6 languages, all keys present everywhere (checked by script). Emoji list lives in res/values/arrays.xml.
 
+## Build fixes
+- Hijri.cal() uses Calendar.getInstance(new ULocale("en@calendar=islamic-umalqura")): IslamicCalendar.CalendarType is not in the SDK stubs (first CI build failed on it).
+
 ## Not done yet / ideas
 - Not compiled in the authoring environment: build through the GitHub workflow and test on a device.
 - Not possible offline or without extra permissions: invitees, subscribed (URL) calendars, birthdays from contacts, home-screen widget (needs an exported receiver, the CI guard allows only MainActivity and ShareActivity), per-occurrence edits of a repeating event, drag to move events in Day / Week.

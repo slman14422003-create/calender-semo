@@ -1,7 +1,6 @@
 package com.semo.calendar;
 
 import android.content.Context;
-import android.icu.util.IslamicCalendar;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,7 +52,7 @@ final class Holidays {
             fixed(out, c, y, Calendar.MAY, 1, R.string.h_labour, from, to);
             fixed(out, c, y, Calendar.DECEMBER, 25, R.string.h_christmas, from, to);
         }
-        IslamicCalendar ic = Hijri.cal();
+        android.icu.util.Calendar ic = Hijri.cal();
         ic.setTimeInMillis(from);
         int h1 = ic.get(android.icu.util.Calendar.YEAR) - 1;
         ic.setTimeInMillis(to);
