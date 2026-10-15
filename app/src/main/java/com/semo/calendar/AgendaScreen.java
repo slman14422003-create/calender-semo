@@ -1,7 +1,10 @@
 package com.semo.calendar;
 
 import android.graphics.Typeface;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -11,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Agenda tab: the next 90 days as one scrolling list, grouped by day (Android-style agenda, iOS-style look). */
+/** Agenda tab: the next 90 days as one scrolling list, grouped by day. */
 final class AgendaScreen implements Screen {
     private final MainActivity a;
     private final LinearLayout root;
@@ -21,10 +24,20 @@ final class AgendaScreen implements Screen {
         a = act;
         root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
-        TextView t = Ui.text(a, a.getString(R.string.tab_agenda), 26, R.color.text_primary, false);
+
+        FrameLayout nav = new FrameLayout(a);
+        nav.setPadding(Ui.dp(a, 4), Ui.dp(a, 6), Ui.dp(a, 8), Ui.dp(a, 4));
+        ImageButton plus = Ui.iconButton(a, R.drawable.ic_add, R.color.accent, 40);
+        plus.setContentDescription(a.getString(R.string.new_event));
+        plus.setOnClickListener(v -> a.openEditor(null, 0));
+        nav.addView(plus, new FrameLayout.LayoutParams(Ui.dp(a, 40), Ui.dp(a, 40), Gravity.END));
+        root.addView(nav, new LinearLayout.LayoutParams(-1, Ui.dp(a, 50)));
+
+        TextView t = Ui.text(a, a.getString(R.string.tab_agenda), 34, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
-        t.setPadding(Ui.dp(a, 20), Ui.dp(a, 10), Ui.dp(a, 20), Ui.dp(a, 6));
+        t.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
         root.addView(t);
+
         RecyclerView rv = new RecyclerView(a);
         rv.setLayoutManager(new LinearLayoutManager(a));
         rv.setClipToPadding(false);

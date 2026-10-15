@@ -22,6 +22,15 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - Settings: first weekday, default alert, default event length, appearance, ICS export / import (Storage Access Framework, no storage permission, no FileProvider), Semo apps list.
 - Ics.java: VEVENT title, place, notes, start, end, all-day, FREQ repeat and one VALARM; UID is kept as the event id so re-importing a file updates instead of duplicating.
 
+## Done (1.2, iOS precision pass)
+- Metrics follow iOS: large title 34sp bold (auto-shrinks), cells min 44dp, inset-grouped corner 10dp, section headers 13sp upper case, hairline separators 0.5dp inset 16dp, disclosure chevrons.
+- Calendar tab top bar is an iOS navigation bar: Today | segmented control (32dp track, 9dp radius, thumb white / #636366) | "+". The round Android add button was removed on purpose (iOS keeps "+" in the bar).
+- Month grid: single-letter weekdays, hairline under them, 20sp numbers; today = blue circle, any other selected day = black / white circle, today without selection = blue text.
+- Dialogs are iOS: Sheets.alert (270dp, hairline buttons, red destructive) and Sheets.actionSheet (check on the current choice, separate Cancel card). No Material AlertDialog is left.
+- Editor = iOS New Event: Cancel | title | Save, iOS green switch, date / time chips (blue when active) opening inline wheel pickers (DatePicker / TimePicker in spinner mode, style Wheel), action sheets for Repeat and Alert.
+- Search field = iOS search bar (36dp, radius 10, magnifier).
+- Colours added: seg_track, seg_thumb, alert_bg (day and night).
+
 ## Not done yet / ideas
 - Not compiled in the authoring environment: build through the GitHub workflow and test on a device.
-- Per-occurrence edits of repeating events, multi-day all-day bars across the week grid, in-app updater like the other Semo apps (would need Net.java and the CI network guard changed on purpose).
+- Per-occurrence edits of repeating events, multi-day all-day bars across the week grid, in-app updater (needs Net.java and the CI network guard changed on purpose).

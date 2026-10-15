@@ -33,29 +33,13 @@ final class TimeScreen implements DayAware {
         dayTap = onDayTap;
         root = Ui.vertical(a);
 
-        LinearLayout head = new LinearLayout(a);
-        head.setGravity(Gravity.CENTER_VERTICAL);
-        head.setPadding(Ui.dp(a, 20), Ui.dp(a, 10), Ui.dp(a, 8), Ui.dp(a, 4));
-        title = Ui.text(a, "", 26, R.color.text_primary, false);
+        title = Ui.text(a, "", 34, R.color.text_primary, false);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setSingleLine(true);
-        head.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
-        TextView today = Ui.text(a, a.getString(R.string.today), 17, R.color.accent, false);
-        today.setPadding(Ui.dp(a, 10), Ui.dp(a, 8), Ui.dp(a, 10), Ui.dp(a, 8));
-        today.setOnClickListener(v -> {
-            anchor = System.currentTimeMillis();
-            scrollPending = true;
-            refresh();
-        });
-        Ui.press(today);
-        head.addView(today);
-        ImageButton prev = Ui.iconButton(a, R.drawable.ic_chev, R.color.accent, 40);
-        ImageButton next = Ui.iconButton(a, R.drawable.ic_chev_next, R.color.accent, 40);
-        prev.setOnClickListener(v -> move(-1));
-        next.setOnClickListener(v -> move(1));
-        head.addView(prev);
-        head.addView(next);
-        root.addView(head);
+        androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                title, 20, 34, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
+        title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
+        root.addView(title, new LinearLayout.LayoutParams(-1, -2));
 
         strip = new LinearLayout(a);
         strip.setPadding(0, 0, 0, Ui.dp(a, 4));
@@ -108,6 +92,13 @@ final class TimeScreen implements DayAware {
     public void setAnchor(long millis) {
         anchor = millis;
         scrollPending = true;
+    }
+
+    @Override
+    public void goToday() {
+        anchor = System.currentTimeMillis();
+        scrollPending = true;
+        refresh();
     }
 
     private void move(int dir) {

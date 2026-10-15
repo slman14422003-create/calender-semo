@@ -1,38 +1,45 @@
 package com.semo.calendar;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.format.DateFormat;
+import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.SwitchCompat;
 
 import java.util.Calendar;
 
-/** New / edit event: iOS grouped form (title, dates, repeat, alert, colour, notes). */
+/**
+ * New / edit event, laid out like the iOS "New Event" sheet: Cancel | title | Add, grouped cells, an iOS switch,
+ * date and time chips that open inline wheel pickers, action sheets for Repeat and Alert.
+ */
 public final class EditorActivity extends BaseActivity {
     static final int[] REPEAT_LABEL = {R.string.rep_none, R.string.rep_daily, R.string.rep_weekly,
             R.string.rep_monthly, R.string.rep_yearly};
+    private static final int NONE = 0, S_DATE = 1, S_TIME = 2, E_DATE = 3, E_TIME = 4;
 
     private Event ev;
     private boolean editing;
     private final Calendar start = Calendar.getInstance();
     private final Calendar end = Calendar.getInstance();
-    private boolean allDay;
-    private int repeat, remind, color;
+    private boolean allDay, syncing;
+    private int repeat, remind, color, open = NONE;
     private EditText title, place, notes;
     private TextView sDate, sTime, eDate, eTime, repVal, remVal;
+    private LinearLayout startPanel, endPanel;
+    private DatePicker startDatePicker, endDatePicker;
+    private TimePicker startTimePicker, endTimePicker;
     private final View[] rings = new View[Event.COLORS.length];
 
     @Override
@@ -73,28 +80,19 @@ public final class EditorActivity extends BaseActivity {
         remind = ev.remind;
         color = ev.color;
         build();
+        syncPickers();
         refreshChips();
     }
 
     private TextView chip(View.OnClickListener l) {
-        TextView t = Ui.text(this, "", 16, R.color.text_primary, false);
-        t.setBackground(Ui.shape(Ui.color(this, R.color.neutral_soft), Ui.dp(this, 8)));
-        t.setPadding(Ui.dp(this, 10), Ui.dp(this, 6), Ui.dp(this, 10), Ui.dp(this, 6));
+        TextView t = Ui.text(this, "", 17, R.color.text_primary, false);
+        t.setBackground(Ui.shape(Ui.color(this, R.color.seg_track), Ui.dp(this, 8)));
+        t.setPadding(Ui.dp(this, 11), Ui.dp(this, 6), Ui.dp(this, 11), Ui.dp(this, 6));
         t.setOnClickListener(l);
-        Ui.press(t);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-2, -2);
         lp.setMarginStart(Ui.dp(this, 8));
         t.setLayoutParams(lp);
         return t;
-    }
-
-    private LinearLayout row(CharSequence label) {
-        LinearLayout r = new LinearLayout(this);
-        r.setGravity(Gravity.CENTER_VERTICAL);
-        r.setMinimumHeight(Ui.dp(this, 48));
-        r.setPadding(Ui.dp(this, 16), Ui.dp(this, 6), Ui.dp(this, 16), Ui.dp(this, 6));
-        r.addView(Ui.text(this, label, 17, R.color.text_primary, false), new LinearLayout.LayoutParams(0, -2, 1f));
-        return r;
     }
 
     private EditText field(int hint, CharSequence text, boolean multi) {
@@ -105,11 +103,11 @@ public final class EditorActivity extends BaseActivity {
         e.setHintTextColor(Ui.color(this, R.color.text_hint));
         e.setTextColor(Ui.color(this, R.color.text_primary));
         e.setTextSize(17);
-        e.setPadding(Ui.dp(this, 16), Ui.dp(this, 13), Ui.dp(this, 16), Ui.dp(this, 13));
+        e.setPadding(Ui.dp(this, 16), Ui.dp(this, 12), Ui.dp(this, 16), Ui.dp(this, 12));
         if (multi) {
             e.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE
                     | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-            e.setMinLines(4);
+            e.setMinLines(5);
             e.setGravity(Gravity.TOP | Gravity.START);
         } else {
             e.setSingleLine(true);
@@ -118,40 +116,77 @@ public final class EditorActivity extends BaseActivity {
         return e;
     }
 
+    /** Inline wheel pickers (date and time) for one of the two date rows. */
+    private LinearLayout panel(final Calendar cal, final boolean isStart) {
+        LinearLayout p = Ui.vertical(this);
+        p.setGravity(Gravity.CENTER_HORIZONTAL);
+        p.setVisibility(View.GONE);
+        ContextThemeWrapper w = new ContextThemeWrapper(this, R.style.Wheel);
+        final DatePicker datePicker = new DatePicker(w);
+        final TimePicker timePicker = new TimePicker(w);
+        timePicker.setIs24HourView(DateFormat.is24HourFormat(this));
+        datePicker.init(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH),
+                (v, y, m, d) -> {
+                    if (syncing) return;
+                    long old = cal.getTimeInMillis();
+                    cal.set(y, m, d);
+                    afterChange(isStart, old);
+                });
+        timePicker.setOnTimeChangedListener((v, h, mi) -> {
+            if (syncing) return;
+            long old = cal.getTimeInMillis();
+            cal.set(Calendar.HOUR_OF_DAY, h);
+            cal.set(Calendar.MINUTE, mi);
+            afterChange(isStart, old);
+        });
+        p.addView(datePicker, new LinearLayout.LayoutParams(-2, -2));
+        p.addView(timePicker, new LinearLayout.LayoutParams(-2, -2));
+        if (isStart) {
+            startDatePicker = datePicker;
+            startTimePicker = timePicker;
+        } else {
+            endDatePicker = datePicker;
+            endTimePicker = timePicker;
+        }
+        return p;
+    }
+
     private void build() {
         LinearLayout root = Ui.vertical(this);
         root.setBackgroundColor(Ui.color(this, R.color.bg_group));
         applyInsets(root);
         setContentView(root);
 
-        // navigation bar: Cancel | title | Save
+        // navigation bar: Cancel | title | Add
         LinearLayout nav = new LinearLayout(this);
         nav.setGravity(Gravity.CENTER_VERTICAL);
-        nav.setPadding(Ui.dp(this, 8), Ui.dp(this, 6), Ui.dp(this, 8), Ui.dp(this, 6));
+        nav.setPadding(Ui.dp(this, 4), Ui.dp(this, 4), Ui.dp(this, 4), Ui.dp(this, 4));
         TextView cancel = Ui.text(this, getString(R.string.cancel), 17, R.color.accent, false);
-        cancel.setPadding(Ui.dp(this, 12), Ui.dp(this, 10), Ui.dp(this, 12), Ui.dp(this, 10));
+        cancel.setGravity(Gravity.CENTER_VERTICAL);
+        cancel.setPadding(Ui.dp(this, 12), 0, Ui.dp(this, 12), 0);
         cancel.setOnClickListener(v -> finish());
         TextView head = Ui.text(this, getString(editing ? R.string.edit_event : R.string.new_event), 17,
                 R.color.text_primary, false);
-        head.setTypeface(Typeface.DEFAULT_BOLD);
+        head.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
         head.setGravity(Gravity.CENTER);
-        TextView save = Ui.text(this, getString(R.string.save), 17, R.color.accent, true);
-        save.setTypeface(Typeface.DEFAULT_BOLD);
-        save.setPadding(Ui.dp(this, 12), Ui.dp(this, 10), Ui.dp(this, 12), Ui.dp(this, 10));
+        TextView save = Ui.text(this, getString(editing ? R.string.save : R.string.save), 17, R.color.accent, false);
+        save.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
+        save.setGravity(Gravity.CENTER_VERTICAL);
+        save.setPadding(Ui.dp(this, 12), 0, Ui.dp(this, 12), 0);
         save.setOnClickListener(v -> save());
-        nav.addView(cancel);
-        nav.addView(head, new LinearLayout.LayoutParams(0, -2, 1f));
-        nav.addView(save);
+        nav.addView(cancel, new LinearLayout.LayoutParams(-2, Ui.dp(this, 40)));
+        nav.addView(head, new LinearLayout.LayoutParams(0, Ui.dp(this, 40), 1f));
+        nav.addView(save, new LinearLayout.LayoutParams(-2, Ui.dp(this, 40)));
         root.addView(nav);
 
         ScrollView sv = new ScrollView(this);
         sv.setClipToPadding(false);
-        sv.setPadding(0, 0, 0, Ui.dp(this, 24));
+        sv.setPadding(0, 0, 0, Ui.dp(this, 32));
         LinearLayout body = Ui.vertical(this);
         sv.addView(body, new ScrollView.LayoutParams(-1, -2));
         root.addView(sv, new LinearLayout.LayoutParams(-1, 0, 1f));
 
-        LinearLayout g1 = Ui.group(this);
+        LinearLayout g1 = Ui.group(this, 12);
         title = field(R.string.title_hint, ev.title, false);
         place = field(R.string.location, ev.location, false);
         g1.addView(title);
@@ -159,54 +194,74 @@ public final class EditorActivity extends BaseActivity {
         g1.addView(place);
         body.addView(g1);
 
-        LinearLayout g2 = Ui.group(this);
-        LinearLayout allRow = row(getString(R.string.all_day));
+        LinearLayout g2 = Ui.group(this, 24);
+        LinearLayout allRow = Ui.cell(this, getString(R.string.all_day));
         SwitchCompat sw = new SwitchCompat(this);
+        sw.setThumbDrawable(getDrawable(R.drawable.switch_thumb));
+        sw.setTrackDrawable(getDrawable(R.drawable.switch_track));
+        sw.setSplitTrack(false);
         sw.setChecked(allDay);
         sw.setOnCheckedChangeListener((v, on) -> {
             allDay = on;
+            if (on && (open == S_TIME || open == E_TIME)) open = NONE;
             refreshChips();
         });
         allRow.addView(sw);
         g2.addView(allRow);
         g2.addView(Ui.hairline(this, 16));
-        LinearLayout sRow = row(getString(R.string.starts));
-        sDate = chip(v -> pickDate(start, true));
-        sTime = chip(v -> pickTime(start, true));
+        LinearLayout sRow = Ui.cell(this, getString(R.string.starts));
+        sDate = chip(v -> toggle(S_DATE));
+        sTime = chip(v -> toggle(S_TIME));
         sRow.addView(sDate);
         sRow.addView(sTime);
         g2.addView(sRow);
+        startPanel = panel(start, true);
+        g2.addView(startPanel);
         g2.addView(Ui.hairline(this, 16));
-        LinearLayout eRow = row(getString(R.string.ends));
-        eDate = chip(v -> pickDate(end, false));
-        eTime = chip(v -> pickTime(end, false));
+        LinearLayout eRow = Ui.cell(this, getString(R.string.ends));
+        eDate = chip(v -> toggle(E_DATE));
+        eTime = chip(v -> toggle(E_TIME));
         eRow.addView(eDate);
         eRow.addView(eTime);
         g2.addView(eRow);
+        endPanel = panel(end, false);
+        g2.addView(endPanel);
         body.addView(g2);
 
-        LinearLayout g3 = Ui.group(this);
-        LinearLayout repRow = row(getString(R.string.repeat));
+        LinearLayout g3 = Ui.group(this, 24);
+        LinearLayout repRow = Ui.cell(this, getString(R.string.repeat));
         repVal = Ui.text(this, "", 17, R.color.text_secondary, false);
         repRow.addView(repVal);
+        repRow.addView(Ui.chevron(this));
         repRow.setOnClickListener(v -> {
             CharSequence[] n = new CharSequence[REPEAT_LABEL.length];
             for (int i = 0; i < n.length; i++) n[i] = getString(REPEAT_LABEL[i]);
-            choose(R.string.repeat, n, repeat, w -> repeat = w);
+            Sheets.actionSheet(this, getString(R.string.repeat), n, repeat, w -> {
+                repeat = w;
+                refreshChips();
+            });
         });
+        Ui.press(repRow);
         g3.addView(repRow);
         g3.addView(Ui.hairline(this, 16));
-        LinearLayout remRow = row(getString(R.string.reminder));
+        LinearLayout remRow = Ui.cell(this, getString(R.string.reminder));
         remVal = Ui.text(this, "", 17, R.color.text_secondary, false);
         remRow.addView(remVal);
+        remRow.addView(Ui.chevron(this));
         remRow.setOnClickListener(v -> {
             CharSequence[] n = new CharSequence[Prefs.REMIND.length];
             for (int i = 0; i < n.length; i++) n[i] = getString(Prefs.REMIND_LABEL[i]);
-            choose(R.string.reminder, n, Prefs.remindIndex(remind), w -> remind = Prefs.REMIND[w]);
+            Sheets.actionSheet(this, getString(R.string.reminder), n, Prefs.remindIndex(remind), w -> {
+                remind = Prefs.REMIND[w];
+                refreshChips();
+            });
         });
+        Ui.press(remRow);
         g3.addView(remRow);
-        g3.addView(Ui.hairline(this, 16));
-        LinearLayout colRow = row(getString(R.string.color));
+        body.addView(g3);
+
+        LinearLayout g4 = Ui.group(this, 24);
+        LinearLayout colRow = Ui.cell(this, getString(R.string.color));
         for (int i = 0; i < Event.COLORS.length; i++) {
             final int idx = i;
             FrameLayout ring = new FrameLayout(this);
@@ -225,30 +280,28 @@ public final class EditorActivity extends BaseActivity {
             colRow.addView(ring, rp);
             rings[i] = ring;
         }
-        g3.addView(colRow);
-        body.addView(g3);
+        g4.addView(colRow);
+        body.addView(g4);
         paintRings();
 
-        LinearLayout g4 = Ui.group(this);
+        LinearLayout g5 = Ui.group(this, 24);
         notes = field(R.string.notes, ev.notes, true);
-        g4.addView(notes);
-        body.addView(g4);
+        g5.addView(notes);
+        body.addView(g5);
 
         if (editing) {
-            LinearLayout g5 = Ui.group(this);
+            LinearLayout g6 = Ui.group(this, 24);
             TextView del = Ui.text(this, getString(R.string.delete), 17, R.color.bad, false);
             del.setGravity(Gravity.CENTER);
-            del.setPadding(0, Ui.dp(this, 14), 0, Ui.dp(this, 14));
-            del.setOnClickListener(v -> new AlertDialog.Builder(this).setTitle(R.string.delete_q)
-                    .setMessage(repeat > 0 ? getString(R.string.delete_series) : null)
-                    .setPositiveButton(R.string.delete, (d, w) -> {
+            del.setPadding(0, Ui.dp(this, 13), 0, Ui.dp(this, 13));
+            del.setOnClickListener(v -> Sheets.alert(this, getString(R.string.delete_q),
+                    repeat > 0 ? getString(R.string.delete_series) : null, getString(R.string.delete), true, () -> {
                         Store.delete(this, ev.id);
                         Alarms.cancel(this, ev.id);
                         finish();
-                    })
-                    .setNegativeButton(R.string.cancel, null).show());
-            g5.addView(del);
-            body.addView(g5);
+                    }));
+            g6.addView(del);
+            body.addView(g6);
             if (repeat > 0) {
                 TextView n = Ui.text(this, getString(R.string.repeats_note), 13, R.color.text_secondary, false);
                 n.setPadding(Ui.dp(this, 32), Ui.dp(this, 8), Ui.dp(this, 32), 0);
@@ -267,18 +320,21 @@ public final class EditorActivity extends BaseActivity {
         }
     }
 
-    private interface Pick {
-        void on(int index);
+    private void toggle(int which) {
+        open = open == which ? NONE : which;
+        syncPickers();
+        refreshChips();
     }
 
-    private void choose(int titleRes, CharSequence[] items, int checked, Pick pick) {
-        new AlertDialog.Builder(this).setTitle(titleRes)
-                .setSingleChoiceItems(items, checked, (d, w) -> {
-                    pick.on(w);
-                    d.dismiss();
-                    refreshChips();
-                })
-                .setNegativeButton(R.string.cancel, null).show();
+    private void syncPickers() {
+        syncing = true;
+        startDatePicker.updateDate(start.get(Calendar.YEAR), start.get(Calendar.MONTH), start.get(Calendar.DAY_OF_MONTH));
+        endDatePicker.updateDate(end.get(Calendar.YEAR), end.get(Calendar.MONTH), end.get(Calendar.DAY_OF_MONTH));
+        startTimePicker.setHour(start.get(Calendar.HOUR_OF_DAY));
+        startTimePicker.setMinute(start.get(Calendar.MINUTE));
+        endTimePicker.setHour(end.get(Calendar.HOUR_OF_DAY));
+        endTimePicker.setMinute(end.get(Calendar.MINUTE));
+        syncing = false;
     }
 
     private void refreshChips() {
@@ -288,32 +344,26 @@ public final class EditorActivity extends BaseActivity {
         eTime.setText(Fmt.time(this, end.getTimeInMillis()));
         sTime.setVisibility(allDay ? View.GONE : View.VISIBLE);
         eTime.setVisibility(allDay ? View.GONE : View.VISIBLE);
+        sDate.setTextColor(Ui.color(this, open == S_DATE ? R.color.accent : R.color.text_primary));
+        sTime.setTextColor(Ui.color(this, open == S_TIME ? R.color.accent : R.color.text_primary));
+        eDate.setTextColor(Ui.color(this, open == E_DATE ? R.color.accent : R.color.text_primary));
+        eTime.setTextColor(Ui.color(this, open == E_TIME ? R.color.accent : R.color.text_primary));
+        startPanel.setVisibility(open == S_DATE || open == S_TIME ? View.VISIBLE : View.GONE);
+        endPanel.setVisibility(open == E_DATE || open == E_TIME ? View.VISIBLE : View.GONE);
+        startDatePicker.setVisibility(open == S_DATE ? View.VISIBLE : View.GONE);
+        startTimePicker.setVisibility(open == S_TIME ? View.VISIBLE : View.GONE);
+        endDatePicker.setVisibility(open == E_DATE ? View.VISIBLE : View.GONE);
+        endTimePicker.setVisibility(open == E_TIME ? View.VISIBLE : View.GONE);
         repVal.setText(REPEAT_LABEL[repeat]);
         remVal.setText(Prefs.REMIND_LABEL[Prefs.remindIndex(remind)]);
     }
 
-    /** Moving the start moves the end with it, so the duration stays the same. */
-    private void afterChange(Calendar cal, boolean isStart, long old) {
+    /** Moving the start moves the end with it (same length); an end before the start is pulled up to it. */
+    private void afterChange(boolean isStart, long old) {
         if (isStart) end.setTimeInMillis(end.getTimeInMillis() + (start.getTimeInMillis() - old));
         else if (end.getTimeInMillis() < start.getTimeInMillis()) end.setTimeInMillis(start.getTimeInMillis());
+        syncPickers();
         refreshChips();
-    }
-
-    private void pickDate(final Calendar cal, final boolean isStart) {
-        new DatePickerDialog(this, (v, y, m, d) -> {
-            long old = cal.getTimeInMillis();
-            cal.set(y, m, d);
-            afterChange(cal, isStart, old);
-        }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
-    }
-
-    private void pickTime(final Calendar cal, final boolean isStart) {
-        new TimePickerDialog(this, (v, h, mi) -> {
-            long old = cal.getTimeInMillis();
-            cal.set(Calendar.HOUR_OF_DAY, h);
-            cal.set(Calendar.MINUTE, mi);
-            afterChange(cal, isStart, old);
-        }, cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), DateFormat.is24HourFormat(this)).show();
     }
 
     private void save() {

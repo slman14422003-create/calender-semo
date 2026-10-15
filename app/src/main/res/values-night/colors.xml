@@ -28,4 +28,7 @@
     <color name="violet">#BF5AF2</color>
     <color name="lime">#A2E36B</color>
     <color name="ic_launcher_bg">#000000</color>
+    <color name="seg_track">#3D767680</color>
+    <color name="seg_thumb">#636366</color>
+    <color name="alert_bg">#2C2C2E</color>
 </resources>

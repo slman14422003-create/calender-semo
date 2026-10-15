@@ -31,12 +31,13 @@ final class MonthView extends View {
     private int year, month, first = Calendar.SUNDAY, offset, days = 30, rows = 5, selected = 1, today = -1;
     private int[][] dots = new int[32][];
     private Listener listener;
+    private String[] narrow;
 
     MonthView(Context c) {
         super(c);
-        rowH = Ui.dp(c, 50);
+        rowH = Ui.dp(c, 52);
         headH = Ui.dp(c, 26);
-        textPx = Ui.sp(c, 18);
+        textPx = Ui.sp(c, 20);
         headPx = Ui.sp(c, 12);
         p.setTextAlign(Paint.Align.CENTER);
         gd = new GestureDetector(c, new GestureDetector.SimpleOnGestureListener() {
@@ -84,6 +85,7 @@ final class MonthView extends View {
         rows = (offset + days + 6) / 7;
         Calendar t = Calendar.getInstance();
         today = (t.get(Calendar.YEAR) == y && t.get(Calendar.MONTH) == m) ? t.get(Calendar.DAY_OF_MONTH) : -1;
+        narrow = null;
         requestLayout();
         invalidate();
     }
@@ -109,19 +111,30 @@ final class MonthView extends View {
         boolean rtl = rtl();
         p.setStyle(Paint.Style.FILL);
         // weekday header
-        String[] names = DateFormatSymbols.getInstance(Locale.getDefault()).getShortWeekdays();
+        if (narrow == null) {
+            narrow = new String[8];
+            java.text.SimpleDateFormat nf = new java.text.SimpleDateFormat("EEEEE", Locale.getDefault());
+            Calendar nc = Calendar.getInstance();
+            for (int k = 1; k <= 7; k++) {
+                nc.set(Calendar.DAY_OF_WEEK, k);
+                narrow[k] = nf.format(nc.getTime());
+            }
+        }
         p.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
         p.setTextSize(headPx);
         p.setColor(Ui.color(c, R.color.text_secondary));
         for (int i = 0; i < 7; i++) {
             int wd = ((first - 1 + i) % 7) + 1;
             int col = rtl ? 6 - i : i;
-            cv.drawText(names[wd], (col + 0.5f) * cw, headH * 0.72f, p);
+            cv.drawText(narrow[wd], (col + 0.5f) * cw, headH * 0.72f, p);
         }
+        p.setColor(Ui.color(c, R.color.stroke));
+        p.setStrokeWidth(Math.max(1, Ui.dp(c, 0.5f)));
+        cv.drawLine(0, headH, getWidth(), headH, p);
         p.setTypeface(Typeface.DEFAULT);
         p.setTextSize(textPx);
         Paint.FontMetrics fm = p.getFontMetrics();
-        float r = Ui.dp(c, 17);
+        float r = Ui.dp(c, 18);
         float dotR = Ui.dp(c, 2.5f);
         for (int d = 1; d <= days; d++) {
             int idx = offset + d - 1;
@@ -130,12 +143,14 @@ final class MonthView extends View {
             float cx = (col + 0.5f) * cw;
             float cy = headH + (idx / 7) * rowH + rowH * 0.40f;
             boolean sel = d == selected;
+            boolean isToday = d == today;
             if (sel) {
-                p.setColor(Ui.color(c, R.color.accent));
+                // like iOS: today is the blue circle, any other selected day a black / white circle
+                p.setColor(Ui.color(c, isToday ? R.color.accent : R.color.text_primary));
                 cv.drawCircle(cx, cy, r, p);
             }
-            p.setColor(sel ? Ui.color(c, R.color.on_accent)
-                    : d == today ? Ui.color(c, R.color.accent) : Ui.color(c, R.color.text_primary));
+            p.setColor(sel ? Ui.color(c, isToday ? R.color.on_accent : R.color.bg)
+                    : isToday ? Ui.color(c, R.color.accent) : Ui.color(c, R.color.text_primary));
             p.setFakeBoldText(d == today);
             cv.drawText(String.format(Locale.getDefault(), "%d", d), cx, cy - (fm.ascent + fm.descent) / 2f, p);
             p.setFakeBoldText(false);

@@ -4,9 +4,11 @@ import android.graphics.Typeface;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-/** Search tab: finds events by title, place or notes, two years back and two years ahead. */
+/** Search tab: iOS search field (rounded 10, magnifier) over the results, two years back and ahead. */
 final class SearchScreen implements Screen {
     private final MainActivity a;
     private final LinearLayout root;
@@ -28,23 +30,33 @@ final class SearchScreen implements Screen {
         a = act;
         root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
-        TextView t = Ui.text(a, a.getString(R.string.tab_search), 26, R.color.text_primary, false);
+        TextView t = Ui.text(a, a.getString(R.string.tab_search), 34, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
-        t.setPadding(Ui.dp(a, 20), Ui.dp(a, 10), Ui.dp(a, 20), Ui.dp(a, 8));
+        t.setPadding(Ui.dp(a, 20), Ui.dp(a, 56), Ui.dp(a, 20), Ui.dp(a, 8));
         root.addView(t);
+
+        LinearLayout bar = new LinearLayout(a);
+        bar.setGravity(Gravity.CENTER_VERTICAL);
+        bar.setBackground(Ui.shape(Ui.color(a, R.color.seg_track), Ui.dp(a, 10)));
+        bar.setPadding(Ui.dp(a, 8), 0, Ui.dp(a, 8), 0);
+        ImageView icon = new ImageView(a);
+        icon.setImageResource(R.drawable.ic_search);
+        icon.setImageTintList(android.content.res.ColorStateList.valueOf(Ui.color(a, R.color.text_secondary)));
+        bar.addView(icon, new LinearLayout.LayoutParams(Ui.dp(a, 18), Ui.dp(a, 18)));
         field = new EditText(a);
         field.setHint(R.string.search_hint);
-        field.setHintTextColor(Ui.color(a, R.color.text_hint));
+        field.setHintTextColor(Ui.color(a, R.color.text_secondary));
         field.setTextColor(Ui.color(a, R.color.text_primary));
         field.setTextSize(17);
         field.setSingleLine(true);
         field.setInputType(InputType.TYPE_CLASS_TEXT);
         field.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
-        field.setBackground(Ui.shape(Ui.color(a, R.color.neutral_soft), Ui.dp(a, 12)));
-        field.setPadding(Ui.dp(a, 14), Ui.dp(a, 10), Ui.dp(a, 14), Ui.dp(a, 10));
-        LinearLayout.LayoutParams fp = new LinearLayout.LayoutParams(-1, -2);
-        fp.setMargins(Ui.dp(a, 16), 0, Ui.dp(a, 16), Ui.dp(a, 6));
-        root.addView(field, fp);
+        field.setBackground(null);
+        field.setPadding(Ui.dp(a, 8), 0, 0, 0);
+        bar.addView(field, new LinearLayout.LayoutParams(0, -1, 1f));
+        LinearLayout.LayoutParams bp = new LinearLayout.LayoutParams(-1, Ui.dp(a, 36));
+        bp.setMargins(Ui.dp(a, 16), 0, Ui.dp(a, 16), Ui.dp(a, 8));
+        root.addView(bar, bp);
         field.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int st, int c, int af) {

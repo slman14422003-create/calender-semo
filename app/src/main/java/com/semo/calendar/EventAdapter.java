@@ -82,7 +82,7 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
         if (type == EVENT) {
             LinearLayout row = new LinearLayout(c);
             row.setGravity(Gravity.CENTER_VERTICAL);
-            row.setBackground(Ui.shape(Ui.color(c, R.color.surface), Ui.dp(c, 12)));
+            row.setBackground(Ui.shape(Ui.color(c, R.color.surface), Ui.dp(c, 10)));
             row.setPadding(Ui.dp(c, 14), Ui.dp(c, 11), Ui.dp(c, 14), Ui.dp(c, 11));
             lp.setMargins(Ui.dp(c, 16), Ui.dp(c, 4), Ui.dp(c, 16), Ui.dp(c, 4));
             row.setLayoutParams(lp);

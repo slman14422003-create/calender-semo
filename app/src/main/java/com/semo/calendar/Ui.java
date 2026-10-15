@@ -67,14 +67,46 @@ final class Ui {
         return l;
     }
 
-    /** iOS inset-grouped card: white (night: dark grey) rounded block that holds rows separated by hairlines. */
+    /** iOS inset-grouped card: rounded 10, rows separated by hairlines. */
     static LinearLayout group(Context c) {
+        return group(c, 16);
+    }
+
+    static LinearLayout group(Context c, int topDp) {
         LinearLayout l = vertical(c);
-        l.setBackground(shape(color(c, R.color.surface), dp(c, 14)));
+        l.setBackground(shape(color(c, R.color.surface), dp(c, 10)));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
-        lp.setMargins(dp(c, 16), dp(c, 16), dp(c, 16), 0);
+        lp.setMargins(dp(c, 16), dp(c, topDp), dp(c, 16), 0);
         l.setLayoutParams(lp);
         return l;
+    }
+
+    /** Footnote-size section title above a group (upper case like iOS). */
+    static TextView sectionHeader(Context c, CharSequence t) {
+        TextView v = text(c, t.toString().toUpperCase(java.util.Locale.getDefault()), 13, R.color.text_secondary, false);
+        v.setPadding(dp(c, 32), dp(c, 24), dp(c, 32), dp(c, 6));
+        return v;
+    }
+
+    /** Disclosure chevron shown at the end of rows that open a choice. */
+    static android.widget.ImageView chevron(Context c) {
+        android.widget.ImageView i = new android.widget.ImageView(c);
+        i.setImageResource(R.drawable.ic_chev_next);
+        i.setImageTintList(android.content.res.ColorStateList.valueOf(color(c, R.color.text_hint)));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(c, 16), dp(c, 16));
+        lp.setMarginStart(dp(c, 6));
+        i.setLayoutParams(lp);
+        return i;
+    }
+
+    /** One 44dp cell: label on the leading side; the caller adds value / control views at the end. */
+    static LinearLayout cell(Context c, CharSequence label) {
+        LinearLayout r = new LinearLayout(c);
+        r.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        r.setMinimumHeight(dp(c, 44));
+        r.setPadding(dp(c, 16), dp(c, 4), dp(c, 16), dp(c, 4));
+        r.addView(text(c, label, 17, R.color.text_primary, false), new LinearLayout.LayoutParams(0, -2, 1f));
+        return r;
     }
 
     static View hairline(Context c, int startDp) {

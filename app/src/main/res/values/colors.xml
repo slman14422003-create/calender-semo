@@ -28,4 +28,8 @@
     <color name="violet">#AF52DE</color>
     <color name="lime">#65C466</color>
     <color name="ic_launcher_bg">#F7FAFF</color>
+    <!-- iOS segmented control and alert / action sheet fills -->
+    <color name="seg_track">#1F767680</color>
+    <color name="seg_thumb">#FFFFFF</color>
+    <color name="alert_bg">#F2F2F7</color>
 </resources>

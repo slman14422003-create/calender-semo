@@ -5,4 +5,6 @@ interface DayAware extends Screen {
     long anchor();
 
     void setAnchor(long millis);
+
+    void goToday();
 }

@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.2
+- iOS precision pass: navigation bar with Today / segmented control / "+", iOS alerts and action sheets, iOS switch, inline wheel date and time pickers, iOS search bar, grouped cell metrics, new month-grid selection style.
+
 ## 1.1
 - New calendar-page launcher icon.
 - Day and Week views with an hour grid, segmented Day | Week | Month switch.

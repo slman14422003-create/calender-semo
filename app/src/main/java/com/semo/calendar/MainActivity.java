@@ -19,7 +19,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.splashscreen.SplashScreen;
 
 import java.io.ByteArrayOutputStream;
@@ -37,7 +36,6 @@ public final class MainActivity extends BaseActivity {
     private final TextView[] names = new TextView[COUNT];
     private final GradientDrawable[] pills = new GradientDrawable[COUNT];
     private FrameLayout content;
-    private ImageButton fab;
     private int cur = -1;
 
     private final ActivityResultLauncher<String> exportLauncher = registerForActivityResult(
@@ -62,27 +60,6 @@ public final class MainActivity extends BaseActivity {
         root.addView(content, new FrameLayout.LayoutParams(-1, -1));
         root.addView(buildNav());
 
-        fab = new ImageButton(this);
-        fab.setImageResource(R.drawable.ic_add);
-        fab.setImageTintList(android.content.res.ColorStateList.valueOf(Ui.color(this, R.color.on_accent)));
-        GradientDrawable oval = new GradientDrawable();
-        oval.setShape(GradientDrawable.OVAL);
-        oval.setColor(Ui.color(this, R.color.accent));
-        fab.setBackground(oval);
-        fab.setScaleType(ImageView.ScaleType.CENTER);
-        fab.setElevation(Ui.dp(this, 6));
-        fab.setContentDescription(getString(R.string.new_event));
-        FrameLayout.LayoutParams fp = new FrameLayout.LayoutParams(Ui.dp(this, 56), Ui.dp(this, 56),
-                Gravity.BOTTOM | Gravity.END);
-        fp.setMargins(Ui.dp(this, 20), 0, Ui.dp(this, 20), Ui.dp(this, 92));
-        fab.setOnClickListener(v -> {
-            v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-            long day = (screens[0] instanceof CalendarTab && cur == 0)
-                    ? ((CalendarTab) screens[0]).selectedMillis() : 0;
-            openEditor(null, day);
-        });
-        Ui.press(fab);
-        root.addView(fab, fp);
 
         select(0);
         if (Build.VERSION.SDK_INT >= 33
@@ -174,7 +151,6 @@ public final class MainActivity extends BaseActivity {
             icons[k].setImageTintList(android.content.res.ColorStateList.valueOf(col));
             names[k].setTextColor(col);
         }
-        fab.setVisibility(i == 3 ? View.GONE : View.VISIBLE);
         screens[i].refresh();
         screens[i].view().setAlpha(0f);
         screens[i].view().animate().alpha(1f).setDuration(150).start();
@@ -196,14 +172,12 @@ public final class MainActivity extends BaseActivity {
     }
 
     void confirmDelete(final Event e) {
-        String msg = e.repeat > 0 ? getString(R.string.delete_series) : null;
-        new AlertDialog.Builder(this).setTitle(R.string.delete_q).setMessage(msg)
-                .setPositiveButton(R.string.delete, (d, w) -> {
+        Sheets.alert(this, getString(R.string.delete_q), e.repeat > 0 ? getString(R.string.delete_series) : null,
+                getString(R.string.delete), true, () -> {
                     Store.delete(this, e.id);
                     Alarms.cancel(this, e.id);
                     if (cur >= 0 && screens[cur] != null) screens[cur].refresh();
-                })
-                .setNegativeButton(R.string.cancel, null).show();
+                });
     }
 
     void exportIcs() {
