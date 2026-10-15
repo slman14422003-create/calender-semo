@@ -53,17 +53,30 @@ final class Recur {
                 if (touches(e.start, dur, from, to)) out.add(new Occ(e, e.start, e.start + dur));
                 continue;
             }
-            int field = e.repeat == 1 ? Calendar.DAY_OF_YEAR : e.repeat == 2 ? Calendar.WEEK_OF_YEAR
+            boolean weekdays = e.repeat == 6;
+            boolean daily = e.repeat == 1 || weekdays;
+            int field = daily ? Calendar.DAY_OF_YEAR : (e.repeat == 2 || e.repeat == 5) ? Calendar.WEEK_OF_YEAR
                     : e.repeat == 3 ? Calendar.MONTH : Calendar.YEAR;
-            long unit = e.repeat == 1 ? DAY : e.repeat == 2 ? 7 * DAY : 0;
+            int step = e.repeat == 5 ? 2 : 1;
+            long unit = daily ? DAY : e.repeat == 2 ? 7 * DAY : e.repeat == 5 ? 14 * DAY : 0;
+            long cap = e.until > 0 ? Math.min(to, e.until + 1) : to;
             int i = 0;
-            if (unit > 0 && from - dur > e.start) i = (int) Math.max(0, (from - dur - e.start) / unit - 2);
+            if (unit > 0 && e.count == 0 && from - dur > e.start) {
+                i = (int) Math.max(0, (from - dur - e.start) / (unit * step) * step - 2 * step);
+            }
+            int made = 0;
             Calendar t = Calendar.getInstance();
-            for (int n = 0; n < 6000; n++, i++) {
+            for (int n = 0; n < 6000; n++, i += step) {
                 t.setTimeInMillis(e.start);
                 t.add(field, i);
                 long s = t.getTimeInMillis();
-                if (s >= to) break;
+                if (weekdays) {
+                    int dow = t.get(Calendar.DAY_OF_WEEK);
+                    if (dow == Calendar.SATURDAY || dow == Calendar.SUNDAY) continue;
+                }
+                if (s >= cap) break;
+                if (e.count > 0 && made >= e.count) break;
+                made++;
                 if (touches(s, dur, from, to)) out.add(new Occ(e, s, s + dur));
             }
         }

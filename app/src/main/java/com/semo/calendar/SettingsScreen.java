@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.os.LocaleListCompat;
 
 import java.text.DateFormatSymbols;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -93,6 +94,23 @@ final class SettingsScreen implements Screen {
                         w == 0 ? LocaleListCompat.getEmptyLocaleList() : LocaleListCompat.forLanguageTags(tags[w]))),
                 Ui.tile(a, R.drawable.ic_globe, Ui.color(a, R.color.accent))));
         g.addView(Ui.hairline(a, 58));
+        g.addView(row(a.getString(R.string.calendars), "", true,
+                v -> a.startActivity(new android.content.Intent(a, CalendarsActivity.class)),
+                Ui.tile(a, R.drawable.ic_layers, Ui.color(a, R.color.cal_indigo))));
+        g.addView(Ui.hairline(a, 58));
+        g.addView(row(a.getString(R.string.default_calendar),
+                Cals.name(a, Cals.get(a, Prefs.defaultCal(a))), true, v -> {
+                    final List<Cals.Cal> own = new ArrayList<>();
+                    for (Cals.Cal x : Cals.all(a)) if (!x.builtin) own.add(x);
+                    CharSequence[] names = new CharSequence[own.size()];
+                    int cur = 0;
+                    for (int i = 0; i < names.length; i++) {
+                        names[i] = Cals.name(a, own.get(i));
+                        if (own.get(i).id.equals(Prefs.defaultCal(a))) cur = i;
+                    }
+                    choose(R.string.default_calendar, names, cur, w -> Prefs.setDefaultCal(a, own.get(w).id));
+                }, Ui.tile(a, R.drawable.ic_month, Ui.color(a, R.color.cal_teal))));
+        g.addView(Ui.hairline(a, 58));
         g.addView(row(a.getString(R.string.first_day), dayName(Prefs.firstDay(a)), true, v -> {
             CharSequence[] names = {dayName(FIRST[0]), dayName(FIRST[1]), dayName(FIRST[2])};
             int cur = 1;
@@ -129,6 +147,18 @@ final class SettingsScreen implements Screen {
             });
         }, Ui.tile(a, R.drawable.ic_moon, Ui.color(a, R.color.violet))));
         body.addView(g);
+
+        LinearLayout dsp = Ui.group(a, 20);
+        LinearLayout wk = Ui.cell(a, a.getString(R.string.week_numbers));
+        wk.addView(Ui.iosSwitch(a, Prefs.weekNumbers(a), (v, on) -> Prefs.setWeekNumbers(a, on)));
+        dsp.addView(wk);
+        dsp.addView(Ui.hairline(a, 16));
+        dsp.addView(row(a.getString(R.string.alt_calendar),
+                a.getString(Prefs.alt(a) == 1 ? R.string.alt_hijri : R.string.alt_off), true, v -> {
+                    CharSequence[] names = {a.getString(R.string.alt_off), a.getString(R.string.alt_hijri)};
+                    choose(R.string.alt_calendar, names, Prefs.alt(a), w -> Prefs.setAlt(a, w));
+                }));
+        body.addView(dsp);
 
         body.addView(Ui.sectionHeader(a, a.getString(R.string.data)));
         LinearLayout dg = Ui.group(a, 0);

@@ -214,7 +214,7 @@ final class TimeGridView extends View {
         // events
         for (Item it : items) {
             rectOf(it, cw, rf);
-            int col = Ui.color(c, Event.COLORS[it.o.e.color]);
+            int col = Cals.color(c, it.o.e);
             float r = Ui.dp(c, 5);
             p.setColor(col);
             p.setAlpha(48);
@@ -231,7 +231,7 @@ final class TimeGridView extends View {
             tp.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
             tp.setTextSize(Ui.sp(c, 12));
             tp.setColor(Ui.color(c, R.color.text_primary));
-            String title = it.o.e.title.isEmpty() ? c.getString(R.string.untitled) : it.o.e.title;
+            String title = it.o.e.label(c.getString(R.string.untitled));
             Paint.FontMetrics f2 = tp.getFontMetrics();
             float ty = rf.top + Ui.dp(c, 5) - f2.ascent;
             cv.drawText(TextUtils.ellipsize(title, tp, Math.max(1, avail), TextUtils.TruncateAt.END).toString(), tx, ty, tp);

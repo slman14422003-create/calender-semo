@@ -51,6 +51,10 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
 
+        <activity
+            android:name=".CalendarsActivity"
+            android:exported="false" />
+
         <!-- "Share to Calendar": reads only the shared text and opens a prefilled new event -->
         <activity
             android:name=".ShareActivity"

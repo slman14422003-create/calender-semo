@@ -12,6 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.List;
 
 /** Agenda tab: collapsing large title, the next 90 days grouped by day in iOS inset-grouped cards. */
@@ -41,6 +43,7 @@ final class AgendaScreen implements Screen {
         rv.setPadding(0, 0, 0, Ui.dp(a, 160));
         rv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         adapter = new EventAdapter(a, false, R.string.no_events, o -> a.showDetail(o));
+        adapter.setTaskHandler(a.taskHandler());
         rv.setAdapter(new ConcatAdapter(new HeaderAdapter(t), adapter));
         new ItemTouchHelper(new SwipeDelete(a)).attachToRecyclerView(rv);
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -62,18 +65,33 @@ final class AgendaScreen implements Screen {
         long now = System.currentTimeMillis();
         long from = Recur.dayStart(now);
         long to = from + 90 * Recur.DAY;
-        List<Object> list = new ArrayList<>();
-        long lastKey = -1;
-        for (Recur.Occ o : Recur.between(Store.all(a), from, to)) {
+        TreeMap<Long, List<Object>> byDay = new TreeMap<>();
+        for (Recur.Occ o : Store.between(a, from, to)) {
             long key = Recur.dayStart(Math.max(o.start, from));
-            if (key != lastKey) {
-                lastKey = key;
-                String h = Fmt.date("EEEEdMMMM", key);
-                String rel = Fmt.dayLabel(a, key);
-                if (rel != null) h = rel + " \u00b7 " + h;
-                list.add(key == from ? EventAdapter.TODAY + h : h);
+            List<Object> l = byDay.get(key);
+            if (l == null) {
+                l = new ArrayList<>();
+                byDay.put(key, l);
             }
-            list.add(o);
+            l.add(o);
+        }
+        for (Task t : Tasks.between(a, from, to)) {
+            long key = Recur.dayStart(t.due);
+            List<Object> l = byDay.get(key);
+            if (l == null) {
+                l = new ArrayList<>();
+                byDay.put(key, l);
+            }
+            l.add(t);
+        }
+        List<Object> list = new ArrayList<>();
+        for (Map.Entry<Long, List<Object>> en : byDay.entrySet()) {
+            long key = en.getKey();
+            String h = Fmt.date("EEEEdMMMM", key);
+            String rel = Fmt.dayLabel(a, key);
+            if (rel != null) h = rel + " \u00b7 " + h;
+            list.add(key == from ? EventAdapter.TODAY + h : h);
+            list.addAll(en.getValue());
         }
         adapter.set(list);
     }

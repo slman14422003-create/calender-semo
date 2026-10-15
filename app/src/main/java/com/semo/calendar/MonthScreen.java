@@ -1,12 +1,11 @@
 package com.semo.calendar;
 
 import android.graphics.Typeface;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -14,11 +13,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-/** Month tab: large month title, the grid, and the selected day's events in a rounded grey sheet below. */
+/** Month view: large title, the grid, and the selected day's events and tasks in a grey sheet below. */
 final class MonthScreen implements DayAware {
     private final MainActivity a;
     private final LinearLayout root;
-    private final TextView title, dayLabel;
+    private final TextView title, sub, dayLabel;
     private final MonthView grid;
     private final EventAdapter adapter;
     private int y, m, sel;
@@ -36,8 +35,15 @@ final class MonthScreen implements DayAware {
         title.setSingleLine(true);
         androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 title, 20, 34, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
-        title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
-        root.addView(title, new LinearLayout.LayoutParams(-1, -2));
+        title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 12), Ui.dp(a, 2));
+        root.addView(Ui.titleRow(a, title, v -> Sheets.pickDate(a, anchor(), ms -> {
+            setAnchor(ms);
+            refresh();
+        })), new LinearLayout.LayoutParams(-1, -2));
+        sub = Ui.text(a, "", 13, R.color.text_secondary, false);
+        sub.setPadding(Ui.dp(a, 20), 0, Ui.dp(a, 20), Ui.dp(a, 6));
+        sub.setVisibility(View.GONE);
+        root.addView(sub);
 
         grid = new MonthView(a);
         grid.setPadding(Ui.dp(a, 8), 0, Ui.dp(a, 8), 0);
@@ -68,8 +74,9 @@ final class MonthScreen implements DayAware {
         rv.setPadding(0, 0, 0, Ui.dp(a, 160));
         rv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         adapter = new EventAdapter(a, false, R.string.no_events, o -> a.showDetail(o));
+        adapter.setTaskHandler(a.taskHandler());
         rv.setAdapter(adapter);
-        new androidx.recyclerview.widget.ItemTouchHelper(new SwipeDelete(a)).attachToRecyclerView(rv);
+        new ItemTouchHelper(new SwipeDelete(a)).attachToRecyclerView(rv);
         sheet.addView(rv, new LinearLayout.LayoutParams(-1, 0, 1f));
         root.addView(sheet, sp);
     }
@@ -77,10 +84,6 @@ final class MonthScreen implements DayAware {
     @Override
     public View view() {
         return root;
-    }
-
-    long selectedMillis() {
-        return dayMillis(sel);
     }
 
     @Override
@@ -151,25 +154,38 @@ final class MonthScreen implements DayAware {
         if (sel > dim) sel = dim;
         c.add(Calendar.MONTH, 1);
         long to = c.getTimeInMillis();
+        boolean hijri = Prefs.alt(a) == 1;
+        if (hijri) {
+            sub.setText(Hijri.range(from, dayMillis(dim)));
+            sub.setVisibility(View.VISIBLE);
+        } else {
+            sub.setVisibility(View.GONE);
+        }
         int[][] dots = new int[32][];
         Calendar t = Calendar.getInstance();
-        for (Recur.Occ o : Recur.between(Store.all(a), from, to)) {
+        for (Recur.Occ o : Store.between(a, from, to)) {
             long s = Math.max(o.start, from);
             long e = Math.min(Math.max(o.end - 1, o.start), to - 1);
             t.setTimeInMillis(s);
             int d1 = t.get(Calendar.DAY_OF_MONTH);
             t.setTimeInMillis(e);
             int d2 = t.get(Calendar.DAY_OF_MONTH);
-            int col = a.getColor(Event.COLORS[o.e.color]);
+            int col = Cals.color(a, o.e);
             for (int d = d1; d <= d2; d++) addDot(dots, d, col);
         }
-        grid.set(y, m, Prefs.firstDay(a), sel, dots);
+        grid.set(y, m, Prefs.firstDay(a), sel, dots, Prefs.weekNumbers(a), hijri);
         showDay();
     }
 
     private void showDay() {
         long ds = dayMillis(sel);
-        List<Object> list = new ArrayList<>(Recur.between(Store.all(a), ds, Recur.nextDay(ds)));
+        long de = Recur.nextDay(ds);
+        List<Object> list = new ArrayList<>(Store.between(a, ds, de));
+        List<Task> tasks = Tasks.between(a, ds, de);
+        if (!tasks.isEmpty()) {
+            list.add(a.getString(R.string.tab_tasks));
+            list.addAll(tasks);
+        }
         adapter.set(list);
         String label = Fmt.date("EEEEdMMMM", ds);
         String rel = Fmt.dayLabel(a, ds);

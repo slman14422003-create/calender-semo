@@ -107,7 +107,7 @@ final class SearchScreen implements Screen {
         } else {
             adapter.setEmpty(R.string.no_events);
             long now = System.currentTimeMillis();
-            for (Recur.Occ o : Recur.between(Store.all(a), now - 730 * Recur.DAY, now + 730 * Recur.DAY)) {
+            for (Recur.Occ o : Store.between(a, now - 730 * Recur.DAY, now + 730 * Recur.DAY)) {
                 String hay = (o.e.title + "\n" + o.e.location + "\n" + o.e.notes).toLowerCase(Locale.getDefault());
                 if (hay.contains(q)) list.add(o);
                 if (list.size() >= 150) break;

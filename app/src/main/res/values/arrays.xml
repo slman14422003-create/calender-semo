@@ -10,4 +10,10 @@
         <item>Deutsch</item>
         <item>Türkçe</item>
     </string-array>
+    <string-array name="emoji_list" translatable="false">
+        <item>🎂</item><item>🎉</item><item>🎁</item><item>❤️</item><item>⭐</item><item>🔥</item>
+        <item>✈️</item><item>🚗</item><item>🏠</item><item>💼</item><item>📞</item><item>💻</item>
+        <item>🍽️</item><item>☕</item><item>🛒</item><item>🏋️</item><item>⚽</item><item>🎬</item>
+        <item>📚</item><item>🎓</item><item>🏥</item><item>💊</item><item>🕌</item><item>🌙</item>
+    </string-array>
 </resources>

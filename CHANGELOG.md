@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.0
+- Year view, jump to date, Calendars (visibility, colours, Holidays), Tasks tab, richer event editor (repeat end, two alerts, travel time, availability, URL, emoji), event details sheet with Duplicate / Share / Maps, snooze, week numbers, Hijri calendar, ICS carries the new fields.
+
 ## 1.4
 - Collapsing iOS large titles, grouped event cards, swipe to delete, icon tiles in Settings, real app icons for Semo apps.
 

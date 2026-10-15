@@ -42,6 +42,16 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - Event lists are inset-grouped: consecutive events share one rounded card (corners decided per row in EventAdapter), hairline between rows, highlight while pressed. Swipe a row sideways for the red iOS "Delete" strip (SwipeDelete), release asks for confirmation.
 - Settings rows carry coloured icon tiles (language blue, first day red, alert orange, length green, appearance violet, export / import); Semo app rows show the real launcher icon of the sibling app.
 
+## Done (2.0, iPhone + Samsung features)
+- Views: Day, Week, Month, Year (CalendarTab, 4 segments). Tap the title to jump to a date. Tab icon shows today's date (DateIconDrawable).
+- Calendars (iOS): Personal, Work, own calendars, built-in Holidays (off by default; fixed days + Islamic days from Umm al-Qura dates). CalendarsActivity toggles visibility, CalendarSheet edits name / colour. Event colour is its own or its calendar's (color -1). Store.between() applies visibility everywhere.
+- Event editor: calendar, repeat (daily, weekly, every 2 weeks, weekdays, monthly, yearly) with end (never / date / count), two alerts, travel time (alert moves earlier), availability, URL, emoji (Samsung stickers), colour, notes. All-day alerts fire at 9:00.
+- Detail sheet: info card + actions (Edit, Duplicate, Share, Open in Maps, Open link, Send to Notes, Delete). Holidays are read-only.
+- Tasks tab (Samsung tasks / iOS Reminders): Overdue, Today, Upcoming, No date, Completed; due date and time, alert with "Mark as done" button; tasks also appear in the month day list and the agenda.
+- Notifications have Snooze (10 min). Week numbers and Hijri day numbers (alternate calendar) in the month grid; Hijri month in the subtitle.
+- ICS import / export carries repeat interval, weekdays, until, count, URL, free / busy and two alerts.
+- Strings: 6 languages, all keys present everywhere (checked by script). Emoji list lives in res/values/arrays.xml.
+
 ## Not done yet / ideas
 - Not compiled in the authoring environment: build through the GitHub workflow and test on a device.
-- Per-occurrence edits of repeating events, multi-day all-day bars across the week grid, in-app updater (needs Net.java and the CI network guard changed on purpose).
+- Not possible offline or without extra permissions: invitees, subscribed (URL) calendars, birthdays from contacts, home-screen widget (needs an exported receiver, the CI guard allows only MainActivity and ShareActivity), per-occurrence edits of a repeating event, drag to move events in Day / Week.

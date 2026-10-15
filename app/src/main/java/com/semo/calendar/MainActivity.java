@@ -3,15 +3,14 @@ package com.semo.calendar;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,14 +26,18 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-/** Four tabs (Month, Agenda, Search, Settings) in an iPhone-style floating capsule bar, plus an Android-style round add button. */
+/**
+ * Five tabs (Calendar, Agenda, Tasks, Search, Settings) in an iPhone-style floating capsule bar. The Calendar tab
+ * icon shows today's date.
+ */
 public final class MainActivity extends BaseActivity {
-    private static final int COUNT = 4;
+    private static final int COUNT = 5;
     private final Screen[] screens = new Screen[COUNT];
     private final View[] items = new View[COUNT];
     private final ImageView[] icons = new ImageView[COUNT];
     private final TextView[] names = new TextView[COUNT];
     private final GradientDrawable[] pills = new GradientDrawable[COUNT];
+    private DateIconDrawable dateIcon;
     private FrameLayout content;
     private int cur = -1;
 
@@ -60,7 +63,6 @@ public final class MainActivity extends BaseActivity {
         root.addView(content, new FrameLayout.LayoutParams(-1, -1));
         root.addView(buildNav());
 
-
         select(0);
         if (Build.VERSION.SDK_INT >= 33
                 && checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
@@ -73,6 +75,11 @@ public final class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        if (dateIcon != null) dateIcon.invalidateSelf();
+        refreshCurrent();
+    }
+
+    void refreshCurrent() {
         if (cur >= 0 && screens[cur] != null) screens[cur].refresh();
     }
 
@@ -84,8 +91,9 @@ public final class MainActivity extends BaseActivity {
         bar.setBackground(bg);
         bar.setPadding(Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5));
         bar.setElevation(Ui.dp(this, 8));
-        int[] ic = {R.drawable.ic_month, R.drawable.ic_agenda, R.drawable.ic_search, R.drawable.ic_settings};
-        int[] lb = {R.string.tab_month, R.string.tab_agenda, R.string.tab_search, R.string.tab_settings};
+        int[] ic = {0, R.drawable.ic_agenda, R.drawable.ic_tasks, R.drawable.ic_search, R.drawable.ic_settings};
+        int[] lb = {R.string.tab_month, R.string.tab_agenda, R.string.tab_tasks, R.string.tab_search,
+                R.string.tab_settings};
         for (int i = 0; i < COUNT; i++) {
             final int idx = i;
             LinearLayout it = new LinearLayout(this);
@@ -97,13 +105,21 @@ public final class MainActivity extends BaseActivity {
             pills[i] = pill;
             it.setContentDescription(getString(lb[i]));
             ImageView icon = new ImageView(this);
-            icon.setImageResource(ic[i]);
+            if (i == 0) {
+                dateIcon = new DateIconDrawable(this);
+                icon.setImageDrawable(dateIcon);
+            } else {
+                icon.setImageResource(ic[i]);
+            }
             it.addView(icon, new LinearLayout.LayoutParams(Ui.dp(this, 24), Ui.dp(this, 24)));
-            TextView t = Ui.text(this, getString(lb[i]), 10.5f, R.color.text_secondary, true);
+            TextView t = Ui.text(this, getString(lb[i]), 10, R.color.text_secondary, true);
             t.setSingleLine(true);
             t.setGravity(Gravity.CENTER);
-            LinearLayout.LayoutParams tp = new LinearLayout.LayoutParams(-2, -2);
+            androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                    t, 7, 10, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
+            LinearLayout.LayoutParams tp = new LinearLayout.LayoutParams(-1, -2);
             tp.topMargin = Ui.dp(this, 2);
+            tp.setMargins(Ui.dp(this, 2), Ui.dp(this, 2), Ui.dp(this, 2), 0);
             it.addView(t, tp);
             Ui.press(it);
             it.setOnClickListener(v -> {
@@ -112,14 +128,14 @@ public final class MainActivity extends BaseActivity {
                 else if (screens[idx] != null) screens[idx].refresh();
             });
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, Ui.dp(this, 54), 1f);
-            lp.setMargins(Ui.dp(this, 2), 0, Ui.dp(this, 2), 0);
+            lp.setMargins(Ui.dp(this, 1), 0, Ui.dp(this, 1), 0);
             bar.addView(it, lp);
             items[i] = it;
             icons[i] = icon;
             names[i] = t;
         }
         FrameLayout.LayoutParams blp = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
-        blp.setMargins(Ui.dp(this, 20), Ui.dp(this, 6), Ui.dp(this, 20), Ui.dp(this, 10));
+        blp.setMargins(Ui.dp(this, 14), Ui.dp(this, 6), Ui.dp(this, 14), Ui.dp(this, 10));
         bar.setLayoutParams(blp);
         return bar;
     }
@@ -131,6 +147,8 @@ public final class MainActivity extends BaseActivity {
             case 1:
                 return new AgendaScreen(this);
             case 2:
+                return new TasksScreen(this);
+            case 3:
                 return new SearchScreen(this);
             default:
                 return new SettingsScreen(this);
@@ -148,7 +166,8 @@ public final class MainActivity extends BaseActivity {
             boolean on = k == i;
             int col = Ui.color(this, on ? R.color.accent : R.color.text_secondary);
             pills[k].setAlpha(on ? 255 : 0);
-            icons[k].setImageTintList(android.content.res.ColorStateList.valueOf(col));
+            if (k == 0) dateIcon.setColor(col);
+            else icons[k].setImageTintList(android.content.res.ColorStateList.valueOf(col));
             names[k].setTextColor(col);
         }
         screens[i].refresh();
@@ -171,12 +190,37 @@ public final class MainActivity extends BaseActivity {
         DetailSheet.show(this, o);
     }
 
+    void duplicate(Event e) {
+        Event n = e.copy();
+        Store.save(this, n);
+        Alarms.schedule(getApplicationContext(), n);
+        refreshCurrent();
+    }
+
+    /** Open / toggle behaviour of task rows shown inside the Month and Agenda lists. */
+    EventAdapter.TaskHandler taskHandler() {
+        return new EventAdapter.TaskHandler() {
+            @Override
+            public void open(Task t) {
+                TaskSheet.show(MainActivity.this, t, 0);
+            }
+
+            @Override
+            public void toggle(Task t) {
+                t.done = !t.done;
+                Tasks.save(MainActivity.this, t);
+                Alarms.scheduleTask(getApplicationContext(), t);
+                refreshCurrent();
+            }
+        };
+    }
+
     void confirmDelete(final Event e) {
         Sheets.alert(this, getString(R.string.delete_q), e.repeat > 0 ? getString(R.string.delete_series) : null,
                 getString(R.string.delete), true, () -> {
                     Store.delete(this, e.id);
                     Alarms.cancel(this, e.id);
-                    if (cur >= 0 && screens[cur] != null) screens[cur].refresh();
+                    refreshCurrent();
                 });
     }
 
@@ -211,6 +255,13 @@ public final class MainActivity extends BaseActivity {
             }
             List<Event> list = Ics.parse(new String(bo.toByteArray(), StandardCharsets.UTF_8));
             for (Event e : list) {
+                Event old = Store.get(this, e.id);
+                e.cal = old != null ? old.cal : Prefs.defaultCal(this);
+                if (old != null) {
+                    e.color = old.color;
+                    e.emoji = old.emoji;
+                    e.travel = old.travel;
+                }
                 Store.save(this, e);
                 Alarms.schedule(getApplicationContext(), e);
                 n++;
@@ -220,6 +271,6 @@ public final class MainActivity extends BaseActivity {
         }
         Toast.makeText(this, n > 0 ? getString(R.string.imported, n) : getString(R.string.import_failed),
                 Toast.LENGTH_SHORT).show();
-        if (cur >= 0 && screens[cur] != null) screens[cur].refresh();
+        refreshCurrent();
     }
 }

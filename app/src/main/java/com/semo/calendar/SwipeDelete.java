@@ -32,7 +32,8 @@ final class SwipeDelete extends ItemTouchHelper.SimpleCallback {
 
     @Override
     public int getSwipeDirs(@NonNull RecyclerView rv, @NonNull RecyclerView.ViewHolder vh) {
-        if (vh instanceof EventAdapter.VH && ((EventAdapter.VH) vh).occ != null) return super.getSwipeDirs(rv, vh);
+        if (vh instanceof EventAdapter.VH && ((EventAdapter.VH) vh).occ != null
+                && !((EventAdapter.VH) vh).occ.e.readOnly) return super.getSwipeDirs(rv, vh);
         return 0;
     }
 

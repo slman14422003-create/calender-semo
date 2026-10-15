@@ -95,4 +95,23 @@ final class Store {
         }
         persist(c);
     }
+
+    /** Occurrences in [from, to) of the events of visible calendars (and the holidays when they are on). */
+    static List<Recur.Occ> between(Context c, long from, long to) {
+        List<Event> evs = new ArrayList<>();
+        for (Event e : all(c)) if (Cals.visible(c, e.cal)) evs.add(e);
+        if (Cals.visible(c, Cals.HOLIDAYS)) evs.addAll(Holidays.events(c, from, to));
+        return Recur.between(evs, from, to);
+    }
+
+    static synchronized void deleteByCal(Context c, String calId) {
+        if (cache == null) load(c);
+        for (int i = cache.size() - 1; i >= 0; i--) {
+            if (cache.get(i).cal.equals(calId)) {
+                Alarms.cancel(c, cache.get(i).id);
+                cache.remove(i);
+            }
+        }
+        persist(c);
+    }
 }

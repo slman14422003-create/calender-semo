@@ -49,4 +49,20 @@ final class Fmt {
         if (dayStart == y.getTimeInMillis()) return c.getString(R.string.yesterday);
         return null;
     }
+
+    /** "Today, 14:30" / "Tue 20 Oct" for a task, or an empty string without a due date. */
+    static String taskDue(Context c, Task t) {
+        if (t.due <= 0) return "";
+        String d = dayLabel(c, Recur.dayStart(t.due));
+        if (d == null) d = date("EEEdMMM", t.due);
+        return t.hasTime ? d + ", " + time(c, t.due) : d;
+    }
+
+    static String shareText(Context c, Recur.Occ o) {
+        StringBuilder sb = new StringBuilder(o.e.label(c.getString(R.string.untitled)));
+        sb.append('\n').append(date("EEEEdMMMM", o.start)).append('\n').append(line(c, o, false));
+        if (!o.e.url.isEmpty()) sb.append('\n').append(o.e.url);
+        if (!o.e.notes.isEmpty()) sb.append("\n\n").append(o.e.notes);
+        return sb.toString();
+    }
 }

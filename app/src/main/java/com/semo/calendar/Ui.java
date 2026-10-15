@@ -73,8 +73,12 @@ final class Ui {
     }
 
     static LinearLayout group(Context c, int topDp) {
+        return group(c, topDp, R.color.surface);
+    }
+
+    static LinearLayout group(Context c, int topDp, int fillRes) {
         LinearLayout l = vertical(c);
-        l.setBackground(shape(color(c, R.color.surface), dp(c, 10)));
+        l.setBackground(shape(color(c, fillRes), dp(c, 10)));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         lp.setMargins(dp(c, 16), dp(c, topDp), dp(c, 16), 0);
         l.setLayoutParams(lp);
@@ -163,5 +167,32 @@ final class Ui {
         b.setLayoutParams(new LinearLayout.LayoutParams(dp(c, sizeDp), dp(c, sizeDp)));
         press(b);
         return b;
+    }
+
+    /** The green iOS switch. */
+    static androidx.appcompat.widget.SwitchCompat iosSwitch(Context c, boolean on,
+                                                            android.widget.CompoundButton.OnCheckedChangeListener l) {
+        androidx.appcompat.widget.SwitchCompat sw = new androidx.appcompat.widget.SwitchCompat(c);
+        sw.setThumbDrawable(c.getDrawable(R.drawable.switch_thumb));
+        sw.setTrackDrawable(c.getDrawable(R.drawable.switch_track));
+        sw.setSplitTrack(false);
+        sw.setChecked(on);
+        sw.setOnCheckedChangeListener(l);
+        return sw;
+    }
+
+    /** Large title plus the "Calendars" button on the trailing side; tapping the title can jump to a date. */
+    static LinearLayout titleRow(MainActivity a, TextView title, View.OnClickListener onTitle) {
+        LinearLayout row = new LinearLayout(a);
+        row.setGravity(android.view.Gravity.CENTER_VERTICAL);
+        title.setOnClickListener(onTitle);
+        row.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
+        android.widget.ImageButton b = iconButton(a, R.drawable.ic_layers, R.color.accent, 44);
+        b.setContentDescription(a.getString(R.string.calendars));
+        b.setOnClickListener(v -> a.startActivity(new android.content.Intent(a, CalendarsActivity.class)));
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(a, 44), dp(a, 44));
+        lp.setMarginEnd(dp(a, 8));
+        row.addView(b, lp);
+        return row;
     }
 }

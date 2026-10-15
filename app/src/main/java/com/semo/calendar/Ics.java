@@ -8,7 +8,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-/** Minimal iCalendar (.ics) writer and reader: title, place, notes, start, end, all-day, simple repeat, one alert. */
+/**
+ * Minimal iCalendar (.ics) writer and reader: title, place, notes, link, start, end, all-day, repeat (with
+ * interval, weekdays, until and count), free / busy and up to two alerts.
+ */
 final class Ics {
     private Ics() {
     }
@@ -33,6 +36,12 @@ final class Ics {
     }
 
     private static final String[] FREQ = {"", "DAILY", "WEEKLY", "MONTHLY", "YEARLY"};
+    private static final String WORK_DAYS = "MO,TU,WE,TH,FR";
+
+    private static void alarm(StringBuilder sb, int minutes) {
+        sb.append("BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Reminder\r\nTRIGGER:-PT").append(minutes)
+                .append("M\r\nEND:VALARM\r\n");
+    }
 
     static String export(List<Event> events) {
         SimpleDateFormat utc = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'", Locale.US);
@@ -54,11 +63,17 @@ final class Ics {
             sb.append("SUMMARY:").append(esc(e.title)).append("\r\n");
             if (!e.location.isEmpty()) sb.append("LOCATION:").append(esc(e.location)).append("\r\n");
             if (!e.notes.isEmpty()) sb.append("DESCRIPTION:").append(esc(e.notes)).append("\r\n");
-            if (e.repeat > 0) sb.append("RRULE:FREQ=").append(FREQ[e.repeat]).append("\r\n");
-            if (e.remind >= 0) {
-                sb.append("BEGIN:VALARM\r\nACTION:DISPLAY\r\nDESCRIPTION:Reminder\r\nTRIGGER:-PT")
-                        .append(e.remind).append("M\r\nEND:VALARM\r\n");
+            if (!e.url.isEmpty()) sb.append("URL:").append(e.url).append("\r\n");
+            if (e.free) sb.append("TRANSP:TRANSPARENT\r\n");
+            if (e.repeat > 0) {
+                String rule = e.repeat == 5 ? "FREQ=WEEKLY;INTERVAL=2"
+                        : e.repeat == 6 ? "FREQ=WEEKLY;BYDAY=" + WORK_DAYS : "FREQ=" + FREQ[e.repeat];
+                if (e.until > 0) rule += ";UNTIL=" + utc.format(new Date(e.until));
+                else if (e.count > 0) rule += ";COUNT=" + e.count;
+                sb.append("RRULE:").append(rule).append("\r\n");
             }
+            if (e.remind >= 0) alarm(sb, e.remind);
+            if (e.remind2 >= 0) alarm(sb, e.remind2);
             sb.append("END:VEVENT\r\n");
         }
         sb.append("END:VCALENDAR\r\n");
@@ -116,6 +131,52 @@ final class Ics {
         }
     }
 
+    private static void rule(Event e, String val) {
+        String freq = "", byday = "";
+        int interval = 1, count = 0;
+        long until = 0;
+        for (String part : val.split(";")) {
+            String[] kv = part.split("=", 2);
+            if (kv.length < 2) continue;
+            switch (kv[0]) {
+                case "FREQ":
+                    freq = kv[1];
+                    break;
+                case "INTERVAL":
+                    try {
+                        interval = Integer.parseInt(kv[1]);
+                    } catch (Exception ignored) {
+                    }
+                    break;
+                case "BYDAY":
+                    byday = kv[1];
+                    break;
+                case "UNTIL":
+                    until = parseDate(kv[1]);
+                    break;
+                case "COUNT":
+                    try {
+                        count = Integer.parseInt(kv[1]);
+                    } catch (Exception ignored) {
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        boolean work = byday.equals(WORK_DAYS);
+        int rep = 0;
+        if (freq.equals("DAILY")) rep = work ? 6 : 1;
+        else if (freq.equals("WEEKLY")) rep = work ? 6 : interval == 2 ? 5 : 2;
+        else if (freq.equals("MONTHLY")) rep = 3;
+        else if (freq.equals("YEARLY")) rep = 4;
+        e.repeat = rep;
+        if (rep > 0) {
+            e.until = Math.max(0, until);
+            e.count = count;
+        }
+    }
+
     static List<Event> parse(String text) {
         List<Event> out = new ArrayList<>();
         // unfold continuation lines
@@ -169,7 +230,11 @@ final class Ics {
             String val = l.substring(colon + 1);
             String name = head.contains(";") ? head.substring(0, head.indexOf(';')) : head;
             if (inAlarm) {
-                if (name.equals("TRIGGER") && e.remind < 0) e.remind = parseTrigger(val);
+                if (name.equals("TRIGGER")) {
+                    int m = parseTrigger(val);
+                    if (e.remind < 0) e.remind = m;
+                    else if (e.remind2 < 0) e.remind2 = m;
+                }
                 continue;
             }
             switch (name) {
@@ -185,6 +250,12 @@ final class Ics {
                 case "DESCRIPTION":
                     e.notes = unesc(val);
                     break;
+                case "URL":
+                    e.url = val;
+                    break;
+                case "TRANSP":
+                    e.free = val.equalsIgnoreCase("TRANSPARENT");
+                    break;
                 case "DTSTART":
                     allDay = head.contains("VALUE=DATE") && !head.contains("DATE-TIME") || val.length() == 8;
                     e.start = parseDate(val);
@@ -194,12 +265,7 @@ final class Ics {
                     hasEnd = end >= 0;
                     break;
                 case "RRULE":
-                    for (String part : val.split(";")) {
-                        if (part.startsWith("FREQ=")) {
-                            String f = part.substring(5);
-                            for (int i = 1; i < FREQ.length; i++) if (FREQ[i].equals(f)) e.repeat = i;
-                        }
-                    }
+                    rule(e, val);
                     break;
                 default:
                     break;

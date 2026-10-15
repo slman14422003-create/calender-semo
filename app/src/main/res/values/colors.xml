@@ -32,4 +32,11 @@
     <color name="seg_track">#1F767680</color>
     <color name="seg_thumb">#FFFFFF</color>
     <color name="alert_bg">#F2F2F7</color>
+    <!-- calendar palette (extra colours), sheet surfaces -->
+    <color name="cal_teal">#5AC8FA</color>
+    <color name="cal_pink">#FF2D55</color>
+    <color name="cal_indigo">#5856D6</color>
+    <color name="cal_yellow">#FFCC00</color>
+    <color name="sheet_bg">#F2F2F7</color>
+    <color name="sheet_cell">#FFFFFF</color>
 </resources>

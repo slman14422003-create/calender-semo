@@ -66,4 +66,29 @@ final class Prefs {
     static void setDuration(Context c, int v) {
         sp(c).edit().putInt("duration", v).apply();
     }
+
+    static boolean weekNumbers(Context c) {
+        return sp(c).getBoolean("weeks", false);
+    }
+
+    static void setWeekNumbers(Context c, boolean v) {
+        sp(c).edit().putBoolean("weeks", v).apply();
+    }
+
+    /** 0 = no alternate calendar, 1 = Hijri (Umm al-Qura). */
+    static int alt(Context c) {
+        return sp(c).getInt("alt", 0);
+    }
+
+    static void setAlt(Context c, int v) {
+        sp(c).edit().putInt("alt", v).apply();
+    }
+
+    static String defaultCal(Context c) {
+        return sp(c).getString("defcal", Cals.PERSONAL);
+    }
+
+    static void setDefaultCal(Context c, String id) {
+        sp(c).edit().putString("defcal", id).apply();
+    }
 }

@@ -39,7 +39,11 @@ final class TimeScreen implements DayAware {
         androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 title, 20, 34, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
         title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
-        root.addView(title, new LinearLayout.LayoutParams(-1, -2));
+        root.addView(Ui.titleRow(a, title, v -> Sheets.pickDate(a, anchor, ms -> {
+            anchor = ms;
+            scrollPending = true;
+            refresh();
+        })), new LinearLayout.LayoutParams(-1, -2));
 
         strip = new LinearLayout(a);
         strip.setPadding(0, 0, 0, Ui.dp(a, 4));
@@ -120,8 +124,8 @@ final class TimeScreen implements DayAware {
     }
 
     private TextView pill(final Recur.Occ o) {
-        int col = Ui.color(a, Event.COLORS[o.e.color]);
-        TextView t = Ui.text(a, o.e.title.isEmpty() ? a.getString(R.string.untitled) : o.e.title, 13,
+        int col = Cals.color(a, o.e);
+        TextView t = Ui.text(a, o.e.label(a.getString(R.string.untitled)), 13,
                 R.color.text_primary, true);
         t.setSingleLine(true);
         android.graphics.drawable.GradientDrawable g = Ui.shape(col, Ui.dp(a, 7));
@@ -151,7 +155,7 @@ final class TimeScreen implements DayAware {
 
         List<Recur.Occ> timed = new ArrayList<>();
         allDayRow.removeAllViews();
-        for (Recur.Occ o : Recur.between(Store.all(a), first, to)) {
+        for (Recur.Occ o : Store.between(a, first, to)) {
             if (o.e.allDay) allDayRow.addView(pill(o));
             else timed.add(o);
         }
