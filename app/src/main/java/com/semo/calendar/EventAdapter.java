@@ -1,6 +1,7 @@
 package com.semo.calendar;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Rows of events (cards with a colour bar) and day headers; shows a friendly empty line when there is nothing. */
+/**
+ * Rows of events like the iOS agenda: start / end time on the side, a coloured bar, title and place.
+ * Day headers sit between rows; a friendly line shows when there is nothing.
+ */
 final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
     interface Click {
         void on(Recur.Occ o);
@@ -56,12 +60,19 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
     }
 
     static final class VH extends RecyclerView.ViewHolder {
-        TextView a, b;
+        TextView title, sub, t1, t2;
         View bar;
 
         VH(View v) {
             super(v);
         }
+    }
+
+    private TextView line(float sp, int colorRes, boolean medium) {
+        TextView t = Ui.text(c, "", sp, colorRes, medium);
+        t.setSingleLine(true);
+        t.setEllipsize(TextUtils.TruncateAt.END);
+        return t;
     }
 
     @NonNull
@@ -72,27 +83,31 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
             LinearLayout row = new LinearLayout(c);
             row.setGravity(Gravity.CENTER_VERTICAL);
             row.setBackground(Ui.shape(Ui.color(c, R.color.surface), Ui.dp(c, 12)));
-            row.setPadding(Ui.dp(c, 14), Ui.dp(c, 12), Ui.dp(c, 14), Ui.dp(c, 12));
-            lp.setMargins(Ui.dp(c, 16), Ui.dp(c, 5), Ui.dp(c, 16), Ui.dp(c, 5));
+            row.setPadding(Ui.dp(c, 14), Ui.dp(c, 11), Ui.dp(c, 14), Ui.dp(c, 11));
+            lp.setMargins(Ui.dp(c, 16), Ui.dp(c, 4), Ui.dp(c, 16), Ui.dp(c, 4));
             row.setLayoutParams(lp);
+            LinearLayout times = Ui.vertical(c);
+            TextView t1 = line(14, R.color.text_primary, true);
+            TextView t2 = line(12, R.color.text_secondary, false);
+            times.addView(t1);
+            times.addView(t2);
+            row.addView(times, new LinearLayout.LayoutParams(Ui.dp(c, 62), -2));
             View bar = new View(c);
-            row.addView(bar, new LinearLayout.LayoutParams(Ui.dp(c, 4), Ui.dp(c, 38)));
+            LinearLayout.LayoutParams bp = new LinearLayout.LayoutParams(Ui.dp(c, 4), Ui.dp(c, 36));
+            bp.setMarginEnd(Ui.dp(c, 12));
+            row.addView(bar, bp);
             LinearLayout col = Ui.vertical(c);
-            LinearLayout.LayoutParams cp = new LinearLayout.LayoutParams(0, -2, 1f);
-            cp.setMarginStart(Ui.dp(c, 12));
-            TextView t = Ui.text(c, "", 16, R.color.text_primary, false);
-            t.setSingleLine(true);
-            t.setEllipsize(android.text.TextUtils.TruncateAt.END);
-            TextView s = Ui.text(c, "", 13, R.color.text_secondary, false);
-            s.setSingleLine(true);
-            s.setEllipsize(android.text.TextUtils.TruncateAt.END);
-            col.addView(t);
-            col.addView(s);
-            row.addView(col, cp);
+            TextView title = line(16, R.color.text_primary, false);
+            TextView sub = line(13, R.color.text_secondary, false);
+            col.addView(title);
+            col.addView(sub);
+            row.addView(col, new LinearLayout.LayoutParams(0, -2, 1f));
             Ui.press(row);
             VH h = new VH(row);
-            h.a = t;
-            h.b = s;
+            h.title = title;
+            h.sub = sub;
+            h.t1 = t1;
+            h.t2 = t2;
             h.bar = bar;
             return h;
         }
@@ -102,7 +117,7 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
         t.setPadding(Ui.dp(c, 20), Ui.dp(c, type == HEADER ? 14 : 28), Ui.dp(c, 20), Ui.dp(c, 4));
         t.setLayoutParams(lp);
         VH h = new VH(t);
-        h.a = t;
+        h.title = t;
         return h;
     }
 
@@ -110,13 +125,23 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
     public void onBindViewHolder(@NonNull VH h, int pos) {
         int type = getItemViewType(pos);
         if (type == EMPTY) {
-            h.a.setText(emptyText);
+            h.title.setText(emptyText);
         } else if (type == HEADER) {
-            h.a.setText((String) items.get(pos));
+            h.title.setText((String) items.get(pos));
         } else {
             final Recur.Occ o = (Recur.Occ) items.get(pos);
-            h.a.setText(o.e.title.isEmpty() ? c.getString(R.string.untitled) : o.e.title);
-            h.b.setText(Fmt.line(c, o, withDate));
+            h.title.setText(o.e.title.isEmpty() ? c.getString(R.string.untitled) : o.e.title);
+            String sub = Fmt.sub(o, withDate);
+            h.sub.setText(sub);
+            h.sub.setVisibility(sub.isEmpty() ? View.GONE : View.VISIBLE);
+            if (o.e.allDay) {
+                h.t1.setText(R.string.all_day);
+                h.t2.setVisibility(View.GONE);
+            } else {
+                h.t1.setText(Fmt.time(c, o.start));
+                h.t2.setText(Fmt.time(c, o.end));
+                h.t2.setVisibility(View.VISIBLE);
+            }
             h.bar.setBackground(Ui.shape(Ui.color(c, Event.COLORS[o.e.color]), Ui.dp(c, 2)));
             h.itemView.setOnClickListener(v -> click.on(o));
         }

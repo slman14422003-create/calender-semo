@@ -28,7 +28,7 @@ final class SearchScreen implements Screen {
         a = act;
         root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
-        TextView t = Ui.text(a, a.getString(R.string.tab_search), 30, R.color.text_primary, false);
+        TextView t = Ui.text(a, a.getString(R.string.tab_search), 26, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
         t.setPadding(Ui.dp(a, 20), Ui.dp(a, 10), Ui.dp(a, 20), Ui.dp(a, 8));
         root.addView(t);

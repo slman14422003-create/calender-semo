@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Semo Calendar</string>
-    <string name="tab_month">Month</string>
+    <string name="tab_month">Calendar</string>
     <string name="tab_agenda">Agenda</string>
     <string name="tab_search">Search</string>
     <string name="tab_settings">Settings</string>
@@ -55,4 +55,18 @@
     <string name="channel_name">Event reminders</string>
     <string name="general">General</string>
     <string name="repeats_note">Editing and deleting affect the whole series</string>
+    <string name="seg_day">Day</string>
+    <string name="seg_week">Week</string>
+    <string name="seg_month">Month</string>
+    <string name="data">Data</string>
+    <string name="export_ics">Export events (ICS)</string>
+    <string name="import_ics">Import events (ICS)</string>
+    <string name="imported">Imported %1$d events</string>
+    <string name="exported">Events exported</string>
+    <string name="import_failed">Could not read the file</string>
+    <string name="default_duration">Default event length</string>
+    <string name="minutes_fmt">%1$d min</string>
+    <string name="more_all_day">All-day</string>
+    <string name="details">Details</string>
+    <string name="export_failed">Could not save the file</string>
 </resources>

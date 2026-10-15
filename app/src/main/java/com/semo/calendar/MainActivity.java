@@ -3,6 +3,7 @@ package com.semo.calendar;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,9 +15,18 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.splashscreen.SplashScreen;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /** Four tabs (Month, Agenda, Search, Settings) in an iPhone-style floating capsule bar, plus an Android-style round add button. */
 public final class MainActivity extends BaseActivity {
@@ -29,6 +39,15 @@ public final class MainActivity extends BaseActivity {
     private FrameLayout content;
     private ImageButton fab;
     private int cur = -1;
+
+    private final ActivityResultLauncher<String> exportLauncher = registerForActivityResult(
+            new ActivityResultContracts.CreateDocument("text/calendar"), uri -> {
+                if (uri != null) writeIcs(uri);
+            });
+    private final ActivityResultLauncher<String[]> importLauncher = registerForActivityResult(
+            new ActivityResultContracts.OpenDocument(), uri -> {
+                if (uri != null) readIcs(uri);
+            });
 
     @Override
     protected void onCreate(Bundle b) {
@@ -58,8 +77,8 @@ public final class MainActivity extends BaseActivity {
         fp.setMargins(Ui.dp(this, 20), 0, Ui.dp(this, 20), Ui.dp(this, 92));
         fab.setOnClickListener(v -> {
             v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-            long day = (screens[0] instanceof MonthScreen && cur == 0)
-                    ? ((MonthScreen) screens[0]).selectedMillis() : 0;
+            long day = (screens[0] instanceof CalendarTab && cur == 0)
+                    ? ((CalendarTab) screens[0]).selectedMillis() : 0;
             openEditor(null, day);
         });
         Ui.press(fab);
@@ -131,7 +150,7 @@ public final class MainActivity extends BaseActivity {
     private Screen make(int i) {
         switch (i) {
             case 0:
-                return new MonthScreen(this);
+                return new CalendarTab(this);
             case 1:
                 return new AgendaScreen(this);
             case 2:
@@ -157,6 +176,8 @@ public final class MainActivity extends BaseActivity {
         }
         fab.setVisibility(i == 3 ? View.GONE : View.VISIBLE);
         screens[i].refresh();
+        screens[i].view().setAlpha(0f);
+        screens[i].view().animate().alpha(1f).setDuration(150).start();
     }
 
     void openEditor(String id, long day) {
@@ -166,26 +187,15 @@ public final class MainActivity extends BaseActivity {
         startActivity(in);
     }
 
-    /** Event card: details with Edit, Delete and (when the Notes app is installed) Send to Notes. */
-    void showDetail(Recur.Occ o) {
-        final Event e = o.e;
-        StringBuilder sb = new StringBuilder();
-        sb.append(Fmt.date("EEEEdMMMM", o.start)).append('\n').append(Fmt.line(this, o, false));
-        if (e.repeat > 0) sb.append('\n').append(getString(EditorActivity.REPEAT_LABEL[e.repeat]));
-        if (e.remind >= 0) sb.append('\n').append(getString(Prefs.REMIND_LABEL[Prefs.remindIndex(e.remind)]));
-        if (!e.notes.isEmpty()) sb.append("\n\n").append(e.notes);
-        final String title = e.title.isEmpty() ? getString(R.string.untitled) : e.title;
-        AlertDialog.Builder b = new AlertDialog.Builder(this).setTitle(title).setMessage(sb.toString())
-                .setPositiveButton(R.string.edit, (d, w) -> openEditor(e.id, 0))
-                .setNegativeButton(R.string.delete, (d, w) -> confirmDelete(e));
-        if (Semo.hasNotes(this)) {
-            final String text = sb.toString();
-            b.setNeutralButton(R.string.send_notes, (d, w) -> Semo.sendToNotes(this, title, title + "\n" + text));
-        }
-        b.show();
+    void openEditorAt(long at) {
+        startActivity(new Intent(this, EditorActivity.class).putExtra("at", at));
     }
 
-    private void confirmDelete(final Event e) {
+    void showDetail(Recur.Occ o) {
+        DetailSheet.show(this, o);
+    }
+
+    void confirmDelete(final Event e) {
         String msg = e.repeat > 0 ? getString(R.string.delete_series) : null;
         new AlertDialog.Builder(this).setTitle(R.string.delete_q).setMessage(msg)
                 .setPositiveButton(R.string.delete, (d, w) -> {
@@ -194,5 +204,48 @@ public final class MainActivity extends BaseActivity {
                     if (cur >= 0 && screens[cur] != null) screens[cur].refresh();
                 })
                 .setNegativeButton(R.string.cancel, null).show();
+    }
+
+    void exportIcs() {
+        exportLauncher.launch("semo-calendar.ics");
+    }
+
+    void importIcs() {
+        importLauncher.launch(new String[]{"text/calendar", "text/plain", "application/octet-stream"});
+    }
+
+    private void writeIcs(Uri uri) {
+        try (OutputStream o = getContentResolver().openOutputStream(uri)) {
+            if (o == null) throw new IllegalStateException();
+            o.write(Ics.export(Store.all(this)).getBytes(StandardCharsets.UTF_8));
+            Toast.makeText(this, R.string.exported, Toast.LENGTH_SHORT).show();
+        } catch (Exception ex) {
+            Toast.makeText(this, R.string.export_failed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void readIcs(Uri uri) {
+        int n = 0;
+        try (InputStream in = getContentResolver().openInputStream(uri)) {
+            if (in == null) throw new IllegalStateException();
+            ByteArrayOutputStream bo = new ByteArrayOutputStream();
+            byte[] buf = new byte[8192];
+            int r;
+            while ((r = in.read(buf)) > 0) {
+                bo.write(buf, 0, r);
+                if (bo.size() > 5 * 1024 * 1024) throw new IllegalStateException();
+            }
+            List<Event> list = Ics.parse(new String(bo.toByteArray(), StandardCharsets.UTF_8));
+            for (Event e : list) {
+                Store.save(this, e);
+                Alarms.schedule(getApplicationContext(), e);
+                n++;
+            }
+        } catch (Exception ex) {
+            n = 0;
+        }
+        Toast.makeText(this, n > 0 ? getString(R.string.imported, n) : getString(R.string.import_failed),
+                Toast.LENGTH_SHORT).show();
+        if (cur >= 0 && screens[cur] != null) screens[cur].refresh();
     }
 }

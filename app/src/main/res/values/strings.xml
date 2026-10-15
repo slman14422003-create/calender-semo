@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">تقويم سيمو</string>
-    <string name="tab_month">الشهر</string>
+    <string name="tab_month">التقويم</string>
     <string name="tab_agenda">الأجندة</string>
     <string name="tab_search">بحث</string>
     <string name="tab_settings">الإعدادات</string>
@@ -55,4 +55,18 @@
     <string name="channel_name">تنبيهات الأحداث</string>
     <string name="general">عام</string>
     <string name="repeats_note">التعديل والحذف يشملان كل التكرار</string>
+    <string name="seg_day">يوم</string>
+    <string name="seg_week">أسبوع</string>
+    <string name="seg_month">شهر</string>
+    <string name="data">البيانات</string>
+    <string name="export_ics">تصدير الأحداث (ICS)</string>
+    <string name="import_ics">استيراد أحداث (ICS)</string>
+    <string name="imported">تم استيراد %1$d حدثًا</string>
+    <string name="exported">تم تصدير الأحداث</string>
+    <string name="import_failed">تعذّر قراءة الملف</string>
+    <string name="default_duration">مدة الحدث الافتراضية</string>
+    <string name="minutes_fmt">%1$d دقيقة</string>
+    <string name="more_all_day">طوال اليوم</string>
+    <string name="details">التفاصيل</string>
+    <string name="export_failed">تعذّر حفظ الملف</string>
 </resources>

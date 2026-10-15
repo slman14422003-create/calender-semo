@@ -21,7 +21,7 @@ final class AgendaScreen implements Screen {
         a = act;
         root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
-        TextView t = Ui.text(a, a.getString(R.string.tab_agenda), 30, R.color.text_primary, false);
+        TextView t = Ui.text(a, a.getString(R.string.tab_agenda), 26, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
         t.setPadding(Ui.dp(a, 20), Ui.dp(a, 10), Ui.dp(a, 20), Ui.dp(a, 6));
         root.addView(t);

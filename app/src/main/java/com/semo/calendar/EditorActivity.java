@@ -45,7 +45,10 @@ public final class EditorActivity extends BaseActivity {
             ev = new Event();
             long now = System.currentTimeMillis();
             long day = getIntent().getLongExtra("day", 0);
-            if (day <= 0 || Recur.dayStart(day) == Recur.dayStart(now)) {
+            long at = getIntent().getLongExtra("at", 0);
+            if (at > 0) {
+                start.setTimeInMillis(at);
+            } else if (day <= 0 || Recur.dayStart(day) == Recur.dayStart(now)) {
                 start.setTimeInMillis(now);
                 start.set(Calendar.MINUTE, 0);
                 start.set(Calendar.SECOND, 0);
@@ -55,7 +58,7 @@ public final class EditorActivity extends BaseActivity {
                 start.setTimeInMillis(day);
                 start.set(Calendar.HOUR_OF_DAY, 9);
             }
-            end.setTimeInMillis(start.getTimeInMillis() + 3600000L);
+            end.setTimeInMillis(start.getTimeInMillis() + Prefs.duration(this) * 60000L);
             ev.remind = Prefs.defaultRemind(this);
             String t = getIntent().getStringExtra("title");
             String n = getIntent().getStringExtra("notes");

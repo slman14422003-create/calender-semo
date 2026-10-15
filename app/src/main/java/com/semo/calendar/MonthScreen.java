@@ -15,7 +15,7 @@ import java.util.Calendar;
 import java.util.List;
 
 /** Month tab: large month title, the grid, and the selected day's events in a rounded grey sheet below. */
-final class MonthScreen implements Screen {
+final class MonthScreen implements DayAware {
     private final MainActivity a;
     private final LinearLayout root;
     private final TextView title, dayLabel;
@@ -34,7 +34,7 @@ final class MonthScreen implements Screen {
         LinearLayout head = new LinearLayout(a);
         head.setGravity(Gravity.CENTER_VERTICAL);
         head.setPadding(Ui.dp(a, 20), Ui.dp(a, 10), Ui.dp(a, 8), Ui.dp(a, 4));
-        title = Ui.text(a, "", 30, R.color.text_primary, false);
+        title = Ui.text(a, "", 26, R.color.text_primary, false);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         head.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
         TextView today = Ui.text(a, a.getString(R.string.today), 17, R.color.accent, false);
@@ -91,6 +91,20 @@ final class MonthScreen implements Screen {
 
     long selectedMillis() {
         return dayMillis(sel);
+    }
+
+    @Override
+    public long anchor() {
+        return dayMillis(sel);
+    }
+
+    @Override
+    public void setAnchor(long millis) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(millis);
+        y = c.get(Calendar.YEAR);
+        m = c.get(Calendar.MONTH);
+        sel = c.get(Calendar.DAY_OF_MONTH);
     }
 
     private long dayMillis(int d) {

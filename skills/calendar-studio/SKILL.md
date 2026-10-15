@@ -15,6 +15,13 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - No network at all: CI guard fails the build if INTERNET or network classes appear, or if anything but MainActivity and ShareActivity is exported.
 - Code files contain English only; strings live in res/values (ar) and res/values-en.
 
+## Done (1.1)
+- Launcher icon is now a calendar page (white sheet, blue header band, two binder rings) with the Semo petals mark in the page body; ic_launcher_foreground.xml and ic_launcher_monochrome.xml. Background stays the identity white-to-#EFF6FF gradient.
+- First tab = CalendarTab: iOS segmented control Day | Week | Month over TimeScreen (1 / 7 columns, TimeGridView hour grid, all-day pills, day strip, tap empty slot to create, tap event to open, swipe to move) and MonthScreen. All three share one date (DayAware.anchor / setAnchor) and the last view is remembered (Prefs.view).
+- Event rows show start / end time on the side; event details open as a bottom sheet (DetailSheet) with Edit, Send to Notes, Delete.
+- Settings: first weekday, default alert, default event length, appearance, ICS export / import (Storage Access Framework, no storage permission, no FileProvider), Semo apps list.
+- Ics.java: VEVENT title, place, notes, start, end, all-day, FREQ repeat and one VALARM; UID is kept as the event id so re-importing a file updates instead of duplicating.
+
 ## Not done yet / ideas
 - Not compiled in the authoring environment: build through the GitHub workflow and test on a device.
-- Day and week time-grid views, ICS import/export, per-occurrence edits of repeating events, in-app updater like the other Semo apps.
+- Per-occurrence edits of repeating events, multi-day all-day bars across the week grid, in-app updater like the other Semo apps (would need Net.java and the CI network guard changed on purpose).

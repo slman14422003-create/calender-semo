@@ -5,7 +5,35 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-    <group android:name="mark" android:pivotX="54" android:pivotY="54" android:scaleX="0.7" android:scaleY="0.7">
+    <!-- calendar sheet: soft shadow, white page, blue header band, two binder rings -->
+    <path
+        android:fillColor="#1F0A60E8"
+        android:pathData="M36,31h36a8,8 0 0 1 8,8v36a8,8 0 0 1 -8,8h-36a8,8 0 0 1 -8,-8v-36a8,8 0 0 1 8,-8z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:strokeColor="#FFC4DDFF"
+        android:strokeWidth="1"
+        android:pathData="M36,28h36a8,8 0 0 1 8,8v36a8,8 0 0 1 -8,8h-36a8,8 0 0 1 -8,-8v-36a8,8 0 0 1 8,-8z" />
+    <path android:pathData="M28,36a8,8 0 0 1 8,-8h36a8,8 0 0 1 8,8v8h-52z">
+        <aapt:attr name="android:fillColor">
+            <gradient android:startX="54" android:startY="28" android:endX="54" android:endY="44" android:type="linear">
+                <item android:offset="0" android:color="#FF5CC0FF" />
+                <item android:offset="1" android:color="#FF0A84FF" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:strokeColor="#FF2E9BFF"
+        android:strokeWidth="1.2"
+        android:pathData="M41,22.5a2,2 0 0 1 2,2v6a2,2 0 0 1 -4,0v-6a2,2 0 0 1 2,-2z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:strokeColor="#FF2E9BFF"
+        android:strokeWidth="1.2"
+        android:pathData="M67,22.5a2,2 0 0 1 2,2v6a2,2 0 0 1 -4,0v-6a2,2 0 0 1 2,-2z" />
+    <!-- the Semo petals mark, small, in the page body -->
+    <group android:name="mark" android:pivotX="54" android:pivotY="54" android:scaleX="0.25" android:scaleY="0.25" android:translateY="9">
         <group android:name="petals" android:pivotX="54" android:pivotY="54">
             <group android:pivotX="54" android:pivotY="54" android:rotation="0">
                 <path android:pathData="M44.4,34a9.6,14.6 0 1,0 19.2,0a9.6,14.6 0 1,0 -19.2,0Z">

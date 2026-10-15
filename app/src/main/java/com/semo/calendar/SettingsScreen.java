@@ -69,7 +69,7 @@ final class SettingsScreen implements Screen {
     @Override
     public void refresh() {
         body.removeAllViews();
-        TextView title = Ui.text(a, a.getString(R.string.tab_settings), 30, R.color.text_primary, false);
+        TextView title = Ui.text(a, a.getString(R.string.tab_settings), 26, R.color.text_primary, false);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setPadding(Ui.dp(a, 20), Ui.dp(a, 10), Ui.dp(a, 20), Ui.dp(a, 0));
         body.addView(title);
@@ -92,6 +92,17 @@ final class SettingsScreen implements Screen {
                             w -> Prefs.setDefaultRemind(a, Prefs.REMIND[w]));
                 }));
         g.addView(Ui.hairline(a, 16));
+        g.addView(row(a.getString(R.string.default_duration),
+                a.getString(R.string.minutes_fmt, Prefs.duration(a)), v -> {
+                    CharSequence[] names = new CharSequence[Prefs.DURATION.length];
+                    int cur = 3;
+                    for (int i = 0; i < names.length; i++) {
+                        names[i] = a.getString(R.string.minutes_fmt, Prefs.DURATION[i]);
+                        if (Prefs.DURATION[i] == Prefs.duration(a)) cur = i;
+                    }
+                    choose(R.string.default_duration, names, cur, w -> Prefs.setDuration(a, Prefs.DURATION[w]));
+                }));
+        g.addView(Ui.hairline(a, 16));
         int[] themeRes = {R.string.theme_system, R.string.theme_light, R.string.theme_dark};
         g.addView(row(a.getString(R.string.theme), a.getString(themeRes[Prefs.theme(a)]), v -> {
             CharSequence[] names = {a.getString(themeRes[0]), a.getString(themeRes[1]), a.getString(themeRes[2])};
@@ -102,6 +113,16 @@ final class SettingsScreen implements Screen {
             });
         }));
         body.addView(g);
+
+        // data
+        TextView dh = Ui.text(a, a.getString(R.string.data), 13, R.color.text_secondary, true);
+        dh.setPadding(Ui.dp(a, 32), Ui.dp(a, 22), Ui.dp(a, 32), Ui.dp(a, 0));
+        body.addView(dh);
+        LinearLayout dg = Ui.group(a);
+        dg.addView(row(a.getString(R.string.export_ics), "", v -> a.exportIcs()));
+        dg.addView(Ui.hairline(a, 16));
+        dg.addView(row(a.getString(R.string.import_ics), "", v -> a.importIcs()));
+        body.addView(dg);
 
         // Semo ecosystem
         TextView h = Ui.text(a, a.getString(R.string.semo_apps), 13, R.color.text_secondary, true);

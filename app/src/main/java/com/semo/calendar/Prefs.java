@@ -47,4 +47,23 @@ final class Prefs {
         for (int i = 0; i < REMIND.length; i++) if (REMIND[i] == minutes) return i;
         return 0;
     }
+
+    /** Which calendar view was open last: 0 day, 1 week, 2 month. */
+    static int view(Context c) {
+        return sp(c).getInt("view", 2);
+    }
+
+    static void setView(Context c, int v) {
+        sp(c).edit().putInt("view", v).apply();
+    }
+
+    static final int[] DURATION = {15, 30, 45, 60, 90, 120};
+
+    static int duration(Context c) {
+        return sp(c).getInt("duration", 60);
+    }
+
+    static void setDuration(Context c, int v) {
+        sp(c).edit().putInt("duration", v).apply();
+    }
 }

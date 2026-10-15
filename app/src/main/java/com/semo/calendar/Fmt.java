@@ -29,4 +29,11 @@ final class Fmt {
         if (!o.e.location.isEmpty()) sb.append(" · ").append(o.e.location);
         return sb.toString();
     }
+
+    /** Second line of an event row: the place, or the date and place when the list mixes days. */
+    static String sub(Recur.Occ o, boolean withDate) {
+        String d = withDate ? date("EEEdMMM", o.start) : "";
+        if (o.e.location.isEmpty()) return d;
+        return d.isEmpty() ? o.e.location : d + " · " + o.e.location;
+    }
 }
