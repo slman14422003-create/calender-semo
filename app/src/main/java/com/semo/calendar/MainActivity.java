@@ -37,7 +37,7 @@ public final class MainActivity extends BaseActivity {
     private final ImageView[] icons = new ImageView[COUNT];
     private final TextView[] names = new TextView[COUNT];
     private final GradientDrawable[] pills = new GradientDrawable[COUNT];
-    private DateIconDrawable dateIcon;
+    private final TabIconDrawable[] tabIcons = new TabIconDrawable[COUNT];
     private FrameLayout content;
     private int cur = -1;
 
@@ -75,7 +75,7 @@ public final class MainActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (dateIcon != null) dateIcon.invalidateSelf();
+        if (tabIcons[0] != null) tabIcons[0].invalidateSelf();
         refreshCurrent();
     }
 
@@ -91,7 +91,6 @@ public final class MainActivity extends BaseActivity {
         bar.setBackground(bg);
         bar.setPadding(Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5));
         bar.setElevation(Ui.dp(this, 8));
-        int[] ic = {0, R.drawable.ic_agenda, R.drawable.ic_tasks, R.drawable.ic_search, R.drawable.ic_settings};
         int[] lb = {R.string.tab_month, R.string.tab_agenda, R.string.tab_tasks, R.string.tab_search,
                 R.string.tab_settings};
         for (int i = 0; i < COUNT; i++) {
@@ -105,14 +104,11 @@ public final class MainActivity extends BaseActivity {
             pills[i] = pill;
             it.setContentDescription(getString(lb[i]));
             ImageView icon = new ImageView(this);
-            if (i == 0) {
-                dateIcon = new DateIconDrawable(this);
-                icon.setImageDrawable(dateIcon);
-            } else {
-                icon.setImageResource(ic[i]);
-            }
+            tabIcons[i] = new TabIconDrawable(this, i);
+            icon.setImageDrawable(tabIcons[i]);
             it.addView(icon, new LinearLayout.LayoutParams(Ui.dp(this, 24), Ui.dp(this, 24)));
             TextView t = Ui.text(this, getString(lb[i]), 10, R.color.text_secondary, true);
+            t.setLetterSpacing(0.01f);
             t.setSingleLine(true);
             t.setGravity(Gravity.CENTER);
             androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
@@ -166,8 +162,7 @@ public final class MainActivity extends BaseActivity {
             boolean on = k == i;
             int col = Ui.color(this, on ? R.color.accent : R.color.text_secondary);
             pills[k].setAlpha(on ? 255 : 0);
-            if (k == 0) dateIcon.setColor(col);
-            else icons[k].setImageTintList(android.content.res.ColorStateList.valueOf(col));
+            tabIcons[k].setState(on, col);
             names[k].setTextColor(col);
         }
         screens[i].refresh();

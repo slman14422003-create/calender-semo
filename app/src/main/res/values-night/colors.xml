@@ -37,4 +37,5 @@
     <color name="cal_yellow">#FFD60A</color>
     <color name="sheet_bg">#1C1C1E</color>
     <color name="sheet_cell">#2C2C2E</color>
+    <color name="cell_highlight">#3A3A3C</color>
 </resources>

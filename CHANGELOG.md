@@ -1,5 +1,8 @@
 # Changelog
 
+## 2.1
+- Redrawn tab icons (filled when selected), iOS grey press on every cell, separators in the segmented control.
+
 ## 2.0
 - Year view, jump to date, Calendars (visibility, colours, Holidays), Tasks tab, richer event editor (repeat end, two alerts, travel time, availability, URL, emoji), event details sheet with Duplicate / Share / Maps, snooze, week numbers, Hijri calendar, ICS carries the new fields.
 

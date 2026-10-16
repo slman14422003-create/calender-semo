@@ -39,4 +39,5 @@
     <color name="cal_yellow">#FFCC00</color>
     <color name="sheet_bg">#F2F2F7</color>
     <color name="sheet_cell">#FFFFFF</color>
+    <color name="cell_highlight">#D1D1D6</color>
 </resources>

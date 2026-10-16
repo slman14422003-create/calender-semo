@@ -38,6 +38,7 @@ final class DetailSheet {
         LinearLayout r = Ui.cell(a, a.getString(labelRes));
         ((TextView) r.getChildAt(0)).setTextColor(Ui.color(a, colorRes));
         r.setOnClickListener(v -> run.run());
+        Ui.highlight(r);
         card.addView(r);
     }
 

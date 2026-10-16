@@ -55,7 +55,7 @@ public final class CalendarsActivity extends BaseActivity {
         LinearLayout row = Ui.cell(this, getString(R.string.add_calendar));
         ((TextView) row.getChildAt(0)).setTextColor(Ui.color(this, R.color.accent));
         row.setOnClickListener(v -> CalendarSheet.show(this, null, this::refresh));
-        Ui.press(row);
+        Ui.highlight(row);
         add.addView(row);
         body.addView(add);
         refresh();
@@ -100,6 +100,7 @@ public final class CalendarsActivity extends BaseActivity {
                 Cals.save(this, x);
                 refresh();
             });
+            Ui.highlight(r);
             list.addView(r);
         }
     }

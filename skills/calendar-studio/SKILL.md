@@ -52,6 +52,11 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - ICS import / export carries repeat interval, weekdays, until, count, URL, free / busy and two alerts.
 - Strings: 6 languages, all keys present everywhere (checked by script). Emoji list lives in res/values/arrays.xml.
 
+## Done (2.1, iOS polish)
+- Tab bar icons are drawn in code (TabIconDrawable) on a 24-unit grid like SF Symbols: outlined when idle, filled when selected (calendar with today's number cut out, bulleted list, check circle, magnifier, 8-tooth gear).
+- iOS cell press: rows turn grey (Ui.highlight, colour cell_highlight) instead of shrinking; group cards clip their children to the rounded outline; event rows keep their own corners while pressed.
+- Segmented control has hairline separators between idle segments (hidden next to the selected one).
+
 ## Build fixes
 - Hijri.cal() uses Calendar.getInstance(new ULocale("en@calendar=islamic-umalqura")): IslamicCalendar.CalendarType is not in the SDK stubs (first CI build failed on it).
 

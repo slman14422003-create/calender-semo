@@ -79,6 +79,7 @@ final class Ui {
     static LinearLayout group(Context c, int topDp, int fillRes) {
         LinearLayout l = vertical(c);
         l.setBackground(shape(color(c, fillRes), dp(c, 10)));
+        l.setClipToOutline(true);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         lp.setMargins(dp(c, 16), dp(c, topDp), dp(c, 16), 0);
         l.setLayoutParams(lp);
@@ -194,5 +195,25 @@ final class Ui {
         lp.setMarginEnd(dp(a, 8));
         row.addView(b, lp);
         return row;
+    }
+
+    /**
+     * iOS cell press: the row turns grey while the finger is down (no scaling). A Drawable stored as the view's tag
+     * is used instead of the plain rectangle, so rows with rounded corners keep their shape.
+     */
+    @android.annotation.SuppressLint("ClickableViewAccessibility")
+    static void highlight(final View v) {
+        v.setOnTouchListener((x, e) -> {
+            int a = e.getActionMasked();
+            if (a == MotionEvent.ACTION_DOWN) {
+                Object t = x.getTag();
+                x.setForeground(t instanceof android.graphics.drawable.Drawable
+                        ? (android.graphics.drawable.Drawable) t
+                        : new android.graphics.drawable.ColorDrawable(color(x.getContext(), R.color.cell_highlight)));
+            } else if (a == MotionEvent.ACTION_UP || a == MotionEvent.ACTION_CANCEL) {
+                x.setForeground(null);
+            }
+            return false;
+        });
     }
 }

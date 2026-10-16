@@ -5,7 +5,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -104,14 +103,8 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
         return t;
     }
 
-    @android.annotation.SuppressLint("ClickableViewAccessibility")
     private void highlight(View root) {
-        root.setOnTouchListener((v, e) -> {
-            int a = e.getActionMasked();
-            if (a == MotionEvent.ACTION_DOWN) v.setAlpha(0.6f);
-            else if (a == MotionEvent.ACTION_UP || a == MotionEvent.ACTION_CANCEL) v.setAlpha(1f);
-            return false;
-        });
+        Ui.highlight(root);
     }
 
     @NonNull
@@ -201,10 +194,15 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
         float r = Ui.dp(c, 10);
         float tr = first ? r : 0;
         float br = last ? r : 0;
+        float[] radii = {tr, tr, tr, tr, br, br, br, br};
         GradientDrawable g = new GradientDrawable();
         g.setColor(Ui.color(c, R.color.surface));
-        g.setCornerRadii(new float[]{tr, tr, tr, tr, br, br, br, br});
+        g.setCornerRadii(radii);
         h.itemView.setBackground(g);
+        GradientDrawable hl = new GradientDrawable();
+        hl.setColor(Ui.color(c, R.color.cell_highlight));
+        hl.setCornerRadii(radii);
+        h.itemView.setTag(hl);
         h.divider.setVisibility(last ? View.GONE : View.VISIBLE);
 
         if (type == TASK) {

@@ -82,7 +82,7 @@ final class TasksScreen implements Screen {
         if (!sub.isEmpty()) col.addView(Ui.text(a, sub, 13, R.color.text_secondary, false));
         r.addView(col, new LinearLayout.LayoutParams(0, -2, 1f));
         r.setOnClickListener(v -> TaskSheet.show(a, t, 0));
-        Ui.press(r);
+        Ui.highlight(r);
         return r;
     }
 

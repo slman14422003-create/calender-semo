@@ -144,7 +144,7 @@ public final class EditorActivity extends BaseActivity {
         r.addView(value);
         r.addView(Ui.chevron(this));
         r.setOnClickListener(v -> run.run());
-        Ui.press(r);
+        Ui.highlight(r);
         return r;
     }
 

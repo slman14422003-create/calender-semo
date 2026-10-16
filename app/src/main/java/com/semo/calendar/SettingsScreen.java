@@ -58,7 +58,7 @@ final class SettingsScreen implements Screen {
         if (chevron) r.addView(Ui.chevron(a));
         if (click != null) {
             r.setOnClickListener(click);
-            Ui.press(r);
+            Ui.highlight(r);
         }
         return r;
     }

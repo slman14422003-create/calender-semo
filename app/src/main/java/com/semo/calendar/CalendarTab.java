@@ -20,6 +20,7 @@ final class CalendarTab implements Screen {
     private final FrameLayout host;
     private final DayAware[] panes = new DayAware[COUNT];
     private final TextView[] segs = new TextView[COUNT];
+    private final View[] divs = new View[COUNT - 1];
     private int mode;
 
     CalendarTab(MainActivity act) {
@@ -44,7 +45,7 @@ final class CalendarTab implements Screen {
         int[] labels = {R.string.seg_day, R.string.seg_week, R.string.seg_month, R.string.seg_year};
         for (int i = 0; i < COUNT; i++) {
             final int idx = i;
-            TextView t = Ui.text(a, a.getString(labels[i]), 12.5f, R.color.text_primary, false);
+            TextView t = Ui.text(a, a.getString(labels[i]), 13, R.color.text_primary, false);
             t.setGravity(Gravity.CENTER);
             t.setSingleLine(true);
             androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
@@ -54,6 +55,14 @@ final class CalendarTab implements Screen {
             });
             seg.addView(t, new LinearLayout.LayoutParams(0, Ui.dp(a, 28), 1f));
             segs[i] = t;
+            if (i < COUNT - 1) {
+                View dv = new View(a);
+                dv.setBackgroundColor(Ui.color(a, R.color.stroke));
+                LinearLayout.LayoutParams dl = new LinearLayout.LayoutParams(Math.max(1, Ui.dp(a, 1)), Ui.dp(a, 14));
+                dl.gravity = Gravity.CENTER_VERTICAL;
+                seg.addView(dv, dl);
+                divs[i] = dv;
+            }
         }
         nav.addView(seg, new LinearLayout.LayoutParams(0, -2, 1f));
 
@@ -108,6 +117,9 @@ final class CalendarTab implements Screen {
                 segs[k].setBackground(null);
                 segs[k].setElevation(0);
             }
+        }
+        for (int k = 0; k < COUNT - 1; k++) {
+            divs[k].setVisibility(k == i || k + 1 == i ? View.INVISIBLE : View.VISIBLE);
         }
         p.refresh();
         if (changed) {
