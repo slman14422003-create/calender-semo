@@ -103,6 +103,10 @@ final class TabIconDrawable extends Drawable {
         cv.save();
         cv.translate(b.left, b.top);
         cv.scale(u, u);
+        if (kind == LIST && getLayoutDirection() == android.view.View.LAYOUT_DIRECTION_RTL) {
+            cv.translate(24, 0);
+            cv.scale(-1, 1);
+        }
         switch (kind) {
             case CAL:
                 if (selected) {

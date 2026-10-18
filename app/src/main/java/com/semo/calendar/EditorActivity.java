@@ -48,6 +48,9 @@ public final class EditorActivity extends BaseActivity {
     private DatePicker startDatePicker, endDatePicker;
     private TimePicker startTimePicker, endTimePicker;
     private final View[] rings = new View[Event.COLORS.length + 1];
+    private TextView conflictText;
+    private View suggestRow;
+    private boolean emojiManual;
 
     @Override
     protected void onCreate(Bundle b) {
@@ -79,6 +82,14 @@ public final class EditorActivity extends BaseActivity {
             String n = getIntent().getStringExtra("notes");
             if (t != null) ev.title = t;
             if (n != null) ev.notes = n;
+            // a draft from Smart add or from shared text
+            long exEnd = getIntent().getLongExtra("end", 0);
+            if (exEnd > start.getTimeInMillis()) end.setTimeInMillis(exEnd);
+            ev.allDay = getIntent().getBooleanExtra("allday", false);
+            ev.repeat = getIntent().getIntExtra("repeat", 0);
+            if (getIntent().hasExtra("remind")) ev.remind = getIntent().getIntExtra("remind", ev.remind);
+            String loc = getIntent().getStringExtra("loc");
+            if (loc != null) ev.location = loc;
         } else {
             start.setTimeInMillis(ev.start);
             end.setTimeInMillis(ev.end);
@@ -94,6 +105,7 @@ public final class EditorActivity extends BaseActivity {
         free = ev.free;
         cal = ev.cal;
         emoji = ev.emoji;
+        emojiManual = editing;
         build();
         syncPickers();
         refreshChips();
@@ -234,6 +246,25 @@ public final class EditorActivity extends BaseActivity {
                 | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         urlField = field(R.string.url_hint, ev.url, false, InputType.TYPE_CLASS_TEXT
                 | InputType.TYPE_TEXT_VARIATION_URI);
+        title.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int st, int c, int af) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int st, int b2, int c) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                if (emojiManual || emojiVal == null || !Prefs.smart(EditorActivity.this)) return;
+                String em = Smart.emoji(EditorActivity.this, s.toString());
+                if (!em.equals(emoji)) {
+                    emoji = em;
+                    refreshChips();
+                }
+            }
+        });
         g1.addView(title);
         g1.addView(Ui.hairline(this, 16));
         g1.addView(place);
@@ -282,6 +313,19 @@ public final class EditorActivity extends BaseActivity {
                 refreshChips();
             });
         }));
+        conflictText = Ui.text(this, "", 13, R.color.warn, false);
+        conflictText.setPadding(Ui.dp(this, 16), Ui.dp(this, 4), Ui.dp(this, 16), Ui.dp(this, 10));
+        conflictText.setVisibility(View.GONE);
+        g2.addView(conflictText);
+        LinearLayout sug = Ui.cell(this, getString(R.string.suggest_time));
+        ((TextView) sug.getChildAt(0)).setTextColor(Ui.color(this, R.color.accent));
+        sug.setOnClickListener(v -> suggestTime());
+        Ui.highlight(sug);
+        LinearLayout sugBox = Ui.vertical(this);
+        sugBox.addView(Ui.hairline(this, 16));
+        sugBox.addView(sug);
+        suggestRow = sugBox;
+        g2.addView(sugBox);
         body.addView(g2);
 
         // calendar, repeat, alerts, availability
@@ -375,6 +419,7 @@ public final class EditorActivity extends BaseActivity {
         g4.addView(choiceRow(getString(R.string.emoji), emojiVal, () ->
                 Sheets.emojiPicker(this, getString(R.string.emoji), s -> {
                     emoji = s;
+                    emojiManual = true;
                     refreshChips();
                 })));
         g4.addView(Ui.hairline(this, 16));
@@ -522,6 +567,42 @@ public final class EditorActivity extends BaseActivity {
         rem2Val.setText(Prefs.REMIND_LABEL[Prefs.remindIndex(remind2)]);
         availVal.setText(free ? R.string.free : R.string.busy);
         emojiVal.setText(emoji.isEmpty() ? getString(R.string.none_label) : emoji);
+
+        suggestRow.setVisibility(allDay || !Prefs.smart(this) ? View.GONE : View.VISIBLE);
+        boolean clash = false;
+        if (!allDay && !free && Prefs.smart(this)) {
+            List<Recur.Occ> cf = Smart.conflicts(this, start.getTimeInMillis(), end.getTimeInMillis(), ev.id);
+            if (!cf.isEmpty()) {
+                clash = true;
+                Recur.Occ first = cf.get(0);
+                String what = first.e.label(getString(R.string.untitled)) + " (" + Fmt.time(this, first.start) + ")";
+                conflictText.setText(getString(R.string.conflict_fmt, what) + (cf.size() > 1 ? " +" + (cf.size() - 1) : ""));
+            }
+        }
+        conflictText.setVisibility(clash ? View.VISIBLE : View.GONE);
+    }
+
+    /** Offers the next free slots of this event's length; picking one moves the event there. */
+    private void suggestTime() {
+        int dur = (int) Math.max(15, (end.getTimeInMillis() - start.getTimeInMillis()) / 60000L);
+        final List<long[]> slots = Smart.freeSlots(this, dur, System.currentTimeMillis(), 5);
+        if (slots.isEmpty()) {
+            android.widget.Toast.makeText(this, R.string.no_free_time, android.widget.Toast.LENGTH_SHORT).show();
+            return;
+        }
+        CharSequence[] n = new CharSequence[slots.size()];
+        for (int i = 0; i < n.length; i++) {
+            long[] sl = slots.get(i);
+            String day = Fmt.dayLabel(this, Recur.dayStart(sl[0]));
+            n[i] = (day != null ? day : Fmt.date("EEEdMMM", sl[0])) + "  " + Fmt.time(this, sl[0]) + " \u2013 "
+                    + Fmt.time(this, sl[1]);
+        }
+        Sheets.actionSheet(this, getString(R.string.suggest_time), n, -1, w -> {
+            start.setTimeInMillis(slots.get(w)[0]);
+            end.setTimeInMillis(slots.get(w)[1]);
+            syncPickers();
+            refreshChips();
+        });
     }
 
     /** Moving the start moves the end with it (same length); an end before the start is pulled up to it. */

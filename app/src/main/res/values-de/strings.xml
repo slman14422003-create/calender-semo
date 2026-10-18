@@ -135,4 +135,23 @@
     <string name="upcoming">Demnächst</string>
     <string name="url_hint">URL</string>
     <string name="week_numbers">Kalenderwochen</string>
+    <string name="add">Hinzufügen</string>
+    <string name="conflict_fmt">Überschneidet sich mit %1$s</string>
+    <string name="glance">Heute im Überblick</string>
+    <string name="glance_events">Termine heute: %1$d · erster um %2$s</string>
+    <string name="glance_events_all">Termine heute: %1$d</string>
+    <string name="glance_free">Dein Tag ist frei</string>
+    <string name="glance_next_free">Nächste freie Stunde: %1$s</string>
+    <string name="glance_overdue">Überfällige Aufgaben: %1$d</string>
+    <string name="glance_tasks">Heute fällige Aufgaben: %1$d</string>
+    <string name="kind_event">Termin</string>
+    <string name="kind_task">Aufgabe</string>
+    <string name="more_details">Mehr Details</string>
+    <string name="no_free_time">Keine freie Zeit in den nächsten zwei Wochen</string>
+    <string name="smart_add">Intelligent hinzufügen</string>
+    <string name="smart_empty">Schreib, was du planen willst. Datum, Uhrzeit, Wiederholung, Erinnerung und Ort werden aus dem Satz gelesen.</string>
+    <string name="smart_features">Intelligente Vorschläge</string>
+    <string name="smart_hint">Mittagessen mit Sara morgen um 13 Uhr für 1 Stunde</string>
+    <string name="smart_local">Wird auf deinem Gerät verstanden. Nichts wird irgendwohin gesendet.</string>
+    <string name="suggest_time">Freie Zeit vorschlagen</string>
 </resources>

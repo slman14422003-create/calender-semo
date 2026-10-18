@@ -158,7 +158,14 @@ final class SettingsScreen implements Screen {
                     CharSequence[] names = {a.getString(R.string.alt_off), a.getString(R.string.alt_hijri)};
                     choose(R.string.alt_calendar, names, Prefs.alt(a), w -> Prefs.setAlt(a, w));
                 }));
+        dsp.addView(Ui.hairline(a, 16));
+        LinearLayout sm = Ui.cell(a, a.getString(R.string.smart_features));
+        sm.addView(Ui.iosSwitch(a, Prefs.smart(a), (v, on) -> Prefs.setSmart(a, on)));
+        dsp.addView(sm);
         body.addView(dsp);
+        TextView smNote = Ui.text(a, a.getString(R.string.smart_local), 13, R.color.text_secondary, false);
+        smNote.setPadding(Ui.dp(a, 32), Ui.dp(a, 8), Ui.dp(a, 32), 0);
+        body.addView(smNote);
 
         body.addView(Ui.sectionHeader(a, a.getString(R.string.data)));
         LinearLayout dg = Ui.group(a, 0);

@@ -135,4 +135,23 @@
     <string name="upcoming">Próximas</string>
     <string name="url_hint">URL</string>
     <string name="week_numbers">Números de semana</string>
+    <string name="add">Añadir</string>
+    <string name="conflict_fmt">Coincide con %1$s</string>
+    <string name="glance">Hoy de un vistazo</string>
+    <string name="glance_events">Eventos hoy: %1$d · el primero a las %2$s</string>
+    <string name="glance_events_all">Eventos hoy: %1$d</string>
+    <string name="glance_free">Tu día está libre</string>
+    <string name="glance_next_free">Próxima hora libre: %1$s</string>
+    <string name="glance_overdue">Tareas atrasadas: %1$d</string>
+    <string name="glance_tasks">Tareas de hoy: %1$d</string>
+    <string name="kind_event">Evento</string>
+    <string name="kind_task">Tarea</string>
+    <string name="more_details">Más detalles</string>
+    <string name="no_free_time">No hay huecos libres en las próximas dos semanas</string>
+    <string name="smart_add">Añadir inteligente</string>
+    <string name="smart_empty">Escribe lo que quieres programar. La fecha, la hora, la repetición, la alerta y el lugar se extraen de la frase.</string>
+    <string name="smart_features">Sugerencias inteligentes</string>
+    <string name="smart_hint">Almuerzo con Sara mañana a las 13:00 durante 1 hora</string>
+    <string name="smart_local">Se entiende en tu dispositivo. No se envía nada a ningún sitio.</string>
+    <string name="suggest_time">Sugerir un hueco libre</string>
 </resources>

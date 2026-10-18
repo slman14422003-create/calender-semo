@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0
+- Smart add (one sentence becomes an event or task), automatic emoji, overlap warning, free-time suggestions, "today at a glance"; all on the device.
+- Design audit: right-to-left padding fixes, iOS weekday letters in Arabic, mirrored list icon, fitted "Today" label.
+
 ## 2.1
 - Redrawn tab icons (filled when selected), iOS grey press on every cell, separators in the segmented control.
 

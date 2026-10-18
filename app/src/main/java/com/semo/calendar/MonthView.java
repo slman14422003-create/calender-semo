@@ -140,13 +140,9 @@ final class MonthView extends View {
         float x0 = rtl ? 0 : gw;
         p.setStyle(Paint.Style.FILL);
         if (narrow == null) {
+            String[] letters = getResources().getStringArray(R.array.weekday_narrow);
             narrow = new String[8];
-            java.text.SimpleDateFormat nf = new java.text.SimpleDateFormat("EEEEE", Locale.getDefault());
-            Calendar nc = Calendar.getInstance();
-            for (int k = 1; k <= 7; k++) {
-                nc.set(Calendar.DAY_OF_WEEK, k);
-                narrow[k] = nf.format(nc.getTime());
-            }
+            for (int k = 1; k <= 7; k++) narrow[k] = letters[k - 1];
         }
         // weekday header
         p.setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));

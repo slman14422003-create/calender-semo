@@ -35,7 +35,7 @@ final class MonthScreen implements DayAware {
         title.setSingleLine(true);
         androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
                 title, 20, 34, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
-        title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 12), Ui.dp(a, 2));
+        title.setPaddingRelative(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 12), Ui.dp(a, 2));
         root.addView(Ui.titleRow(a, title, v -> Sheets.pickDate(a, anchor(), ms -> {
             setAnchor(ms);
             refresh();

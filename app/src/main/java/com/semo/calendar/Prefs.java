@@ -91,4 +91,13 @@ final class Prefs {
     static void setDefaultCal(Context c, String id) {
         sp(c).edit().putString("defcal", id).apply();
     }
+
+    /** Automatic emoji, conflict warnings and the daily summary. */
+    static boolean smart(Context c) {
+        return sp(c).getBoolean("smart", true);
+    }
+
+    static void setSmart(Context c, boolean v) {
+        sp(c).edit().putBoolean("smart", v).apply();
+    }
 }

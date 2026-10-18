@@ -135,4 +135,23 @@
     <string name="upcoming">القادمة</string>
     <string name="url_hint">الرابط</string>
     <string name="week_numbers">أرقام الأسابيع</string>
+    <string name="add">إضافة</string>
+    <string name="conflict_fmt">يتعارض مع %1$s</string>
+    <string name="glance">نظرة على اليوم</string>
+    <string name="glance_events">أحداث اليوم: %1$d · أولها في %2$s</string>
+    <string name="glance_events_all">أحداث اليوم: %1$d</string>
+    <string name="glance_free">يومك فارغ</string>
+    <string name="glance_next_free">أقرب ساعة فارغة: %1$s</string>
+    <string name="glance_overdue">مهام متأخرة: %1$d</string>
+    <string name="glance_tasks">مهام اليوم: %1$d</string>
+    <string name="kind_event">حدث</string>
+    <string name="kind_task">مهمة</string>
+    <string name="more_details">مزيد من التفاصيل</string>
+    <string name="no_free_time">لا يوجد وقت فارغ خلال أسبوعين</string>
+    <string name="smart_add">إضافة ذكية</string>
+    <string name="smart_empty">اكتب ما تريد جدولته. التاريخ والوقت والتكرار والتنبيه والمكان تُستخرج من الجملة.</string>
+    <string name="smart_features">اقتراحات ذكية</string>
+    <string name="smart_hint">غداء مع سارة بكرا الساعة 1 ظهرا لمدة ساعة</string>
+    <string name="smart_local">يُفهم النص على جهازك. لا يُرسل شيء إلى أي مكان.</string>
+    <string name="suggest_time">اقتراح وقت فارغ</string>
 </resources>

@@ -135,4 +135,23 @@
     <string name="upcoming">Upcoming</string>
     <string name="url_hint">URL</string>
     <string name="week_numbers">Week numbers</string>
+    <string name="add">Add</string>
+    <string name="conflict_fmt">Overlaps with %1$s</string>
+    <string name="glance">Today at a glance</string>
+    <string name="glance_events">Events today: %1$d · first at %2$s</string>
+    <string name="glance_events_all">Events today: %1$d</string>
+    <string name="glance_free">Your day is free</string>
+    <string name="glance_next_free">Next free hour: %1$s</string>
+    <string name="glance_overdue">Overdue tasks: %1$d</string>
+    <string name="glance_tasks">Tasks due today: %1$d</string>
+    <string name="kind_event">Event</string>
+    <string name="kind_task">Task</string>
+    <string name="more_details">More details</string>
+    <string name="no_free_time">No free time found in the next two weeks</string>
+    <string name="smart_add">Smart add</string>
+    <string name="smart_empty">Type what you want to schedule. Date, time, repeat, alert and place are picked out of the sentence.</string>
+    <string name="smart_features">Smart suggestions</string>
+    <string name="smart_hint">Lunch with Sara tomorrow at 1pm for 1 hour</string>
+    <string name="smart_local">Understood on your device. Nothing is sent anywhere.</string>
+    <string name="suggest_time">Suggest a free time</string>
 </resources>

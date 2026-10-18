@@ -135,4 +135,23 @@
     <string name="upcoming">À venir</string>
     <string name="url_hint">URL</string>
     <string name="week_numbers">Numéros de semaine</string>
+    <string name="add">Ajouter</string>
+    <string name="conflict_fmt">Chevauche %1$s</string>
+    <string name="glance">Aujourd’hui en un coup d’œil</string>
+    <string name="glance_events">Événements aujourd’hui : %1$d · premier à %2$s</string>
+    <string name="glance_events_all">Événements aujourd’hui : %1$d</string>
+    <string name="glance_free">Votre journée est libre</string>
+    <string name="glance_next_free">Prochaine heure libre : %1$s</string>
+    <string name="glance_overdue">Tâches en retard : %1$d</string>
+    <string name="glance_tasks">Tâches du jour : %1$d</string>
+    <string name="kind_event">Événement</string>
+    <string name="kind_task">Tâche</string>
+    <string name="more_details">Plus de détails</string>
+    <string name="no_free_time">Aucun créneau libre dans les deux prochaines semaines</string>
+    <string name="smart_add">Ajout intelligent</string>
+    <string name="smart_empty">Écrivez ce que vous voulez planifier. La date, l’heure, la répétition, l’alerte et le lieu sont extraits de la phrase.</string>
+    <string name="smart_features">Suggestions intelligentes</string>
+    <string name="smart_hint">Déjeuner avec Sara demain à 13h pendant 1 heure</string>
+    <string name="smart_local">Compris sur votre appareil. Rien n’est envoyé nulle part.</string>
+    <string name="suggest_time">Suggérer un créneau libre</string>
 </resources>

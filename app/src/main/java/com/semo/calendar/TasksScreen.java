@@ -137,7 +137,7 @@ final class TasksScreen implements Screen {
         section(a.getString(R.string.upcoming), R.color.text_secondary, upcoming, null);
         section(a.getString(R.string.no_date), R.color.text_secondary, nodate, null);
         TextView clear = Ui.text(a, a.getString(R.string.clear_completed), 15, R.color.accent, false);
-        clear.setPadding(Ui.dp(a, 16), Ui.dp(a, 18), Ui.dp(a, 32), Ui.dp(a, 6));
+        clear.setPaddingRelative(Ui.dp(a, 16), Ui.dp(a, 18), Ui.dp(a, 32), Ui.dp(a, 6));
         clear.setOnClickListener(v -> {
             Tasks.clearDone(a);
             refresh();

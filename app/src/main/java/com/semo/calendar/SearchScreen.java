@@ -57,7 +57,7 @@ final class SearchScreen implements Screen {
         field.setInputType(InputType.TYPE_CLASS_TEXT);
         field.setImeOptions(EditorInfo.IME_ACTION_SEARCH);
         field.setBackground(null);
-        field.setPadding(Ui.dp(a, 8), 0, 0, 0);
+        field.setPaddingRelative(Ui.dp(a, 8), 0, 0, 0);
         bar.addView(field, new LinearLayout.LayoutParams(0, -1, 1f));
         LinearLayout.LayoutParams bp = new LinearLayout.LayoutParams(-1, Ui.dp(a, 36));
         bp.setMargins(Ui.dp(a, 16), 0, Ui.dp(a, 16), Ui.dp(a, 6));

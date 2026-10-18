@@ -57,6 +57,11 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - iOS cell press: rows turn grey (Ui.highlight, colour cell_highlight) instead of shrinking; group cards clip their children to the rounded outline; event rows keep their own corners while pressed.
 - Segmented control has hairline separators between idle segments (hidden next to the selected one).
 
+## Done (3.0, on-device smart features + design audit)
+- Smart add (sparkle button in the title row of Day / Week / Month / Year): QuickAddSheet + NlParser turn one sentence into an event or task (date, time, range, length, repeat, alert lead, place, "remind me" = task). Rule based, fully offline, no model. Vocabulary: res/values/nlp.xml (generated from /tmp/nlp/lex.py, normalised words for en, ar incl. Levantine, fr, es, de, tr); NlLex.java is generated from the same list. The algorithm was prototyped and tested in Python (36 sentences) then ported to Java; keep both in step when changing rules. Share-to-Calendar also runs the parser.
+- Smart helpers (Settings > Smart suggestions): automatic emoji from the title (res arrays smart_emoji_rules), overlap warning and "Suggest a free time" in the editor (Smart.conflicts / freeSlots, 09:00-21:00, 14 days), "Today at a glance" card in Agenda (Smart.glance).
+- Design audit: paddings that were not symmetric now use setPaddingRelative (the Today button touched the edge in Arabic); one-letter weekday names come from res arrays weekday_narrow (Arabic uses the iOS letters, the old ICU letters showed two identical letters); the list tab icon mirrors in right-to-left; the Today label shrinks to fit long languages.
+
 ## Build fixes
 - Hijri.cal() uses Calendar.getInstance(new ULocale("en@calendar=islamic-umalqura")): IslamicCalendar.CalendarType is not in the SDK stubs (first CI build failed on it).
 

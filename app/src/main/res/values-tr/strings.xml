@@ -135,4 +135,23 @@
     <string name="upcoming">Yaklaşan</string>
     <string name="url_hint">URL</string>
     <string name="week_numbers">Hafta numaraları</string>
+    <string name="add">Ekle</string>
+    <string name="conflict_fmt">%1$s ile çakışıyor</string>
+    <string name="glance">Bugüne bir bakış</string>
+    <string name="glance_events">Bugünkü etkinlikler: %1$d · ilki %2$s</string>
+    <string name="glance_events_all">Bugünkü etkinlikler: %1$d</string>
+    <string name="glance_free">Gününüz boş</string>
+    <string name="glance_next_free">Sonraki boş saat: %1$s</string>
+    <string name="glance_overdue">Geciken görevler: %1$d</string>
+    <string name="glance_tasks">Bugün biten görevler: %1$d</string>
+    <string name="kind_event">Etkinlik</string>
+    <string name="kind_task">Görev</string>
+    <string name="more_details">Daha fazla ayrıntı</string>
+    <string name="no_free_time">Önümüzdeki iki haftada boş zaman yok</string>
+    <string name="smart_add">Akıllı ekle</string>
+    <string name="smart_empty">Planlamak istediğini yaz. Tarih, saat, tekrar, uyarı ve yer cümleden çıkarılır.</string>
+    <string name="smart_features">Akıllı öneriler</string>
+    <string name="smart_hint">Sara ile öğle yemeği yarın saat 13:00 1 saat boyunca</string>
+    <string name="smart_local">Cihazında anlaşılır. Hiçbir yere bir şey gönderilmez.</string>
+    <string name="suggest_time">Boş zaman öner</string>
 </resources>

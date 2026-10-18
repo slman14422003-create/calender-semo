@@ -34,10 +34,12 @@ final class CalendarTab implements Screen {
         TextView today = Ui.text(a, a.getString(R.string.today), 17, R.color.accent, false);
         today.setGravity(Gravity.CENTER_VERTICAL | Gravity.START);
         today.setSingleLine(true);
-        today.setPadding(Ui.dp(a, 10), 0, 0, 0);
+        androidx.core.widget.TextViewCompat.setAutoSizeTextTypeUniformWithConfiguration(
+                today, 11, 17, 1, android.util.TypedValue.COMPLEX_UNIT_SP);
+        today.setPaddingRelative(Ui.dp(a, 10), 0, 0, 0);
         today.setOnClickListener(v -> pane(mode).goToday());
         Ui.press(today);
-        nav.addView(today, new LinearLayout.LayoutParams(Ui.dp(a, 64), Ui.dp(a, 40)));
+        nav.addView(today, new LinearLayout.LayoutParams(Ui.dp(a, 68), Ui.dp(a, 40)));
 
         LinearLayout seg = new LinearLayout(a);
         seg.setBackground(Ui.shape(Ui.color(a, R.color.seg_track), Ui.dp(a, 9)));
@@ -71,7 +73,7 @@ final class CalendarTab implements Screen {
         plus.setContentDescription(a.getString(R.string.new_event));
         plus.setOnClickListener(v -> a.openEditor(null, selectedMillis()));
         right.addView(plus, new FrameLayout.LayoutParams(Ui.dp(a, 40), Ui.dp(a, 40), Gravity.END));
-        nav.addView(right, new LinearLayout.LayoutParams(Ui.dp(a, 64), Ui.dp(a, 40)));
+        nav.addView(right, new LinearLayout.LayoutParams(Ui.dp(a, 68), Ui.dp(a, 40)));
         root.addView(nav);
 
         host = new FrameLayout(a);

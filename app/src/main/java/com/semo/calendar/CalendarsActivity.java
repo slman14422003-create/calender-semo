@@ -35,7 +35,7 @@ public final class CalendarsActivity extends BaseActivity {
         TextView done = Ui.text(this, getString(R.string.done), 17, R.color.accent, false);
         done.setTypeface(Typeface.create("sans-serif-medium", Typeface.BOLD));
         done.setGravity(Gravity.CENTER_VERTICAL | Gravity.END);
-        done.setPadding(0, 0, Ui.dp(this, 12), 0);
+        done.setPaddingRelative(0, 0, Ui.dp(this, 12), 0);
         done.setOnClickListener(v -> finish());
         nav.addView(done, new LinearLayout.LayoutParams(Ui.dp(this, 72), Ui.dp(this, 40)));
         root.addView(nav);

@@ -188,6 +188,10 @@ final class Ui {
         row.setGravity(android.view.Gravity.CENTER_VERTICAL);
         title.setOnClickListener(onTitle);
         row.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
+        android.widget.ImageButton sparkle = iconButton(a, R.drawable.ic_sparkles, R.color.accent, 44);
+        sparkle.setContentDescription(a.getString(R.string.smart_add));
+        sparkle.setOnClickListener(v -> QuickAddSheet.show(a));
+        row.addView(sparkle, new LinearLayout.LayoutParams(dp(a, 44), dp(a, 44)));
         android.widget.ImageButton b = iconButton(a, R.drawable.ic_layers, R.color.accent, 44);
         b.setContentDescription(a.getString(R.string.calendars));
         b.setOnClickListener(v -> a.startActivity(new android.content.Intent(a, CalendarsActivity.class)));

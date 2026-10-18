@@ -24,7 +24,7 @@ final class YearScreen implements DayAware {
         title = Ui.text(a, "", 34, R.color.text_primary, false);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setSingleLine(true);
-        title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 12), Ui.dp(a, 6));
+        title.setPaddingRelative(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 12), Ui.dp(a, 6));
         root.addView(Ui.titleRow(a, title, v -> Sheets.pickDate(a, anchor(), ms -> {
             setAnchor(ms);
             refresh();

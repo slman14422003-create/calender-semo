@@ -21,6 +21,7 @@ final class AgendaScreen implements Screen {
     private final MainActivity a;
     private final LinearLayout root;
     private final EventAdapter adapter;
+    private final LinearLayout glance;
 
     AgendaScreen(MainActivity act) {
         a = act;
@@ -36,6 +37,11 @@ final class AgendaScreen implements Screen {
         TextView t = Ui.text(a, a.getString(R.string.tab_agenda), 34, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
         t.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
+        LinearLayout head = Ui.vertical(a);
+        head.addView(t);
+        glance = Ui.group(a, 4);
+        glance.setPadding(Ui.dp(a, 16), Ui.dp(a, 12), Ui.dp(a, 16), Ui.dp(a, 12));
+        head.addView(glance);
 
         final RecyclerView rv = new RecyclerView(a);
         rv.setLayoutManager(new LinearLayoutManager(a));
@@ -44,7 +50,7 @@ final class AgendaScreen implements Screen {
         rv.setOverScrollMode(View.OVER_SCROLL_NEVER);
         adapter = new EventAdapter(a, false, R.string.no_events, o -> a.showDetail(o));
         adapter.setTaskHandler(a.taskHandler());
-        rv.setAdapter(new ConcatAdapter(new HeaderAdapter(t), adapter));
+        rv.setAdapter(new ConcatAdapter(new HeaderAdapter(head), adapter));
         new ItemTouchHelper(new SwipeDelete(a)).attachToRecyclerView(rv);
         rv.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -60,8 +66,26 @@ final class AgendaScreen implements Screen {
         return root;
     }
 
+    private void fillGlance() {
+        glance.removeAllViews();
+        if (!Prefs.smart(a)) {
+            glance.setVisibility(View.GONE);
+            return;
+        }
+        glance.setVisibility(View.VISIBLE);
+        TextView h = Ui.text(a, a.getString(R.string.glance), 13, R.color.accent, true);
+        h.setPadding(0, 0, 0, Ui.dp(a, 4));
+        glance.addView(h);
+        for (String line : Smart.glance(a)) {
+            TextView l = Ui.text(a, line, 15, R.color.text_primary, false);
+            l.setPadding(0, Ui.dp(a, 2), 0, Ui.dp(a, 2));
+            glance.addView(l);
+        }
+    }
+
     @Override
     public void refresh() {
+        fillGlance();
         long now = System.currentTimeMillis();
         long from = Recur.dayStart(now);
         long to = from + 90 * Recur.DAY;
