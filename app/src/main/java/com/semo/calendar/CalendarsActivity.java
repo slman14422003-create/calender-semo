@@ -17,6 +17,11 @@ public final class CalendarsActivity extends BaseActivity {
     private LinearLayout list;
 
     @Override
+    protected boolean modal() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         LinearLayout root = Ui.vertical(this);

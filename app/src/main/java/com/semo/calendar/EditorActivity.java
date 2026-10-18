@@ -53,6 +53,11 @@ public final class EditorActivity extends BaseActivity {
     private boolean emojiManual;
 
     @Override
+    protected boolean modal() {
+        return true;
+    }
+
+    @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
         String id = getIntent().getStringExtra("id");
@@ -235,11 +240,13 @@ public final class EditorActivity extends BaseActivity {
         sv.setClipToPadding(false);
         sv.setPadding(0, 0, 0, Ui.dp(this, 32));
         LinearLayout body = Ui.vertical(this);
+        Motion.animateChanges(body);
         sv.addView(body, new ScrollView.LayoutParams(-1, -2));
         root.addView(sv, new LinearLayout.LayoutParams(-1, 0, 1f));
 
         // title, place, link
         LinearLayout g1 = Ui.group(this, 12);
+        Motion.animateChanges(g1);
         title = field(R.string.title_hint, ev.title, false, InputType.TYPE_CLASS_TEXT
                 | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         place = field(R.string.location, ev.location, false, InputType.TYPE_CLASS_TEXT
@@ -274,6 +281,7 @@ public final class EditorActivity extends BaseActivity {
 
         // dates
         LinearLayout g2 = Ui.group(this, 24);
+        Motion.animateChanges(g2);
         LinearLayout allRow = Ui.cell(this, getString(R.string.all_day));
         allRow.addView(Ui.iosSwitch(this, allDay, (v, on) -> {
             allDay = on;
@@ -330,6 +338,7 @@ public final class EditorActivity extends BaseActivity {
 
         // calendar, repeat, alerts, availability
         LinearLayout g3 = Ui.group(this, 24);
+        Motion.animateChanges(g3);
         calVal = value();
         LinearLayout calRow = choiceRow(getString(R.string.calendar), calVal, () -> {
             final List<Cals.Cal> own = new java.util.ArrayList<>();
@@ -415,6 +424,7 @@ public final class EditorActivity extends BaseActivity {
 
         // emoji and colour
         LinearLayout g4 = Ui.group(this, 24);
+        Motion.animateChanges(g4);
         emojiVal = value();
         g4.addView(choiceRow(getString(R.string.emoji), emojiVal, () ->
                 Sheets.emojiPicker(this, getString(R.string.emoji), s -> {
@@ -452,12 +462,14 @@ public final class EditorActivity extends BaseActivity {
         paintRings();
 
         LinearLayout g5 = Ui.group(this, 24);
+        Motion.animateChanges(g5);
         notes = field(R.string.notes, ev.notes, true, InputType.TYPE_CLASS_TEXT);
         g5.addView(notes);
         body.addView(g5);
 
         if (editing) {
             LinearLayout g6 = Ui.group(this, 24);
+        Motion.animateChanges(g6);
             TextView del = Ui.text(this, getString(R.string.delete), 17, R.color.bad, false);
             del.setGravity(Gravity.CENTER);
             del.setPadding(0, Ui.dp(this, 13), 0, Ui.dp(this, 13));

@@ -19,6 +19,8 @@ final class MonthScreen implements DayAware {
     private final LinearLayout root;
     private final TextView title, sub, dayLabel;
     private final MonthView grid;
+    private RecyclerView list;
+    private boolean moving;
     private final EventAdapter adapter;
     private int y, m, sel;
 
@@ -52,6 +54,7 @@ final class MonthScreen implements DayAware {
             public void onDay(int day) {
                 sel = day;
                 showDay();
+                Motion.swap(list);
             }
 
             @Override
@@ -68,7 +71,8 @@ final class MonthScreen implements DayAware {
         dayLabel = Ui.text(a, "", 13, R.color.text_secondary, true);
         dayLabel.setPadding(Ui.dp(a, 20), Ui.dp(a, 16), Ui.dp(a, 20), Ui.dp(a, 2));
         sheet.addView(dayLabel);
-        RecyclerView rv = new RecyclerView(a);
+        final RecyclerView rv = new RecyclerView(a);
+        list = rv;
         rv.setLayoutManager(new LinearLayoutManager(a));
         rv.setClipToPadding(false);
         rv.setPadding(0, 0, 0, Ui.dp(a, 160));
@@ -117,6 +121,8 @@ final class MonthScreen implements DayAware {
     }
 
     private void move(int dir) {
+        if (moving) return;
+        moving = true;
         m += dir;
         if (m < 0) {
             m = 11;
@@ -127,7 +133,16 @@ final class MonthScreen implements DayAware {
         }
         Calendar n = Calendar.getInstance();
         sel = (n.get(Calendar.YEAR) == y && n.get(Calendar.MONTH) == m) ? n.get(Calendar.DAY_OF_MONTH) : 1;
-        refresh();
+        final float off = Ui.dp(a, 44) * dir * (grid.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL ? -1 : 1);
+        grid.animate().cancel();
+        grid.animate().alpha(0f).translationX(-off).setDuration(120).setInterpolator(Motion.IN)
+                .withEndAction(() -> {
+                    moving = false;
+                    refresh();
+                    grid.setTranslationX(off);
+                    grid.animate().alpha(1f).translationX(0f).setDuration(340).setInterpolator(Motion.OUT).start();
+                    Motion.swap(list);
+                }).start();
     }
 
     private static void addDot(int[][] dots, int d, int col) {

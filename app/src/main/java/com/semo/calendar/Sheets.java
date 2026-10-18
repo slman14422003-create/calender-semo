@@ -40,9 +40,10 @@ final class Sheets {
     /** Alert with Cancel and one action; destructive actions are red, others bold blue. */
     static void alert(Context c, CharSequence title, CharSequence message, CharSequence okLabel,
                       boolean destructive, final Runnable ok) {
-        final Dialog d = new Dialog(c, R.style.Sheet);
+        final Dialog d = new SheetDialog(c);
         LinearLayout box = Ui.vertical(c);
         box.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        box.setClipToOutline(true);
         TextView t = Ui.text(c, title, 17, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
         t.setGravity(Gravity.CENTER);
@@ -59,6 +60,7 @@ final class Sheets {
         TextView cancel = Ui.text(c, c.getString(R.string.cancel), 17, R.color.accent, false);
         cancel.setGravity(Gravity.CENTER);
         cancel.setOnClickListener(v -> d.dismiss());
+        Ui.highlight(cancel);
         row.addView(cancel, new LinearLayout.LayoutParams(0, Ui.dp(c, 44), 1f));
         row.addView(vline(c));
         TextView go = Ui.text(c, okLabel, 17, destructive ? R.color.bad : R.color.accent, false);
@@ -68,6 +70,7 @@ final class Sheets {
             d.dismiss();
             ok.run();
         });
+        Ui.highlight(go);
         row.addView(go, new LinearLayout.LayoutParams(0, Ui.dp(c, 44), 1f));
         box.addView(row);
         d.setContentView(box);
@@ -75,18 +78,18 @@ final class Sheets {
         if (w != null) {
             w.setLayout(Ui.dp(c, 270), ViewGroup.LayoutParams.WRAP_CONTENT);
             w.setGravity(Gravity.CENTER);
-            w.setWindowAnimations(android.R.style.Animation_Dialog);
         }
         d.show();
     }
 
     /** Bottom action sheet with a check on the current choice and a separate Cancel card. */
     static void actionSheet(Context c, CharSequence title, CharSequence[] items, int checked, final Pick pick) {
-        final Dialog d = new Dialog(c, R.style.Sheet);
+        final Dialog d = new SheetDialog(c);
         LinearLayout root = Ui.vertical(c);
         root.setPadding(Ui.dp(c, 8), 0, Ui.dp(c, 8), Ui.dp(c, 28));
         LinearLayout card = Ui.vertical(c);
         card.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        card.setClipToOutline(true);
         if (title != null) {
             TextView t = Ui.text(c, title, 13, R.color.text_secondary, true);
             t.setGravity(Gravity.CENTER);
@@ -113,6 +116,7 @@ final class Sheets {
                 d.dismiss();
                 pick.on(idx);
             });
+            Ui.highlight(cell);
             card.addView(cell, new LinearLayout.LayoutParams(-1, Ui.dp(c, 56)));
         }
         root.addView(card);
@@ -120,7 +124,9 @@ final class Sheets {
         cancel.setTypeface(Typeface.DEFAULT_BOLD);
         cancel.setGravity(Gravity.CENTER);
         cancel.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        cancel.setClipToOutline(true);
         cancel.setOnClickListener(v -> d.dismiss());
+        Ui.highlight(cancel);
         LinearLayout.LayoutParams cl = new LinearLayout.LayoutParams(-1, Ui.dp(c, 56));
         cl.topMargin = Ui.dp(c, 8);
         root.addView(cancel, cl);
@@ -135,11 +141,12 @@ final class Sheets {
 
     /** Bottom card with Cancel | title | Done above a picker view. */
     private static void pickerSheet(Context c, CharSequence title, View picker, final Runnable done) {
-        final Dialog d = new Dialog(c, R.style.Sheet);
+        final Dialog d = new SheetDialog(c);
         LinearLayout root = Ui.vertical(c);
         root.setPadding(Ui.dp(c, 8), 0, Ui.dp(c, 8), Ui.dp(c, 28));
         LinearLayout card = Ui.vertical(c);
         card.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        card.setClipToOutline(true);
         LinearLayout nav = new LinearLayout(c);
         nav.setGravity(Gravity.CENTER_VERTICAL);
         TextView cancel = Ui.text(c, c.getString(R.string.cancel), 17, R.color.accent, false);
@@ -204,11 +211,12 @@ final class Sheets {
 
     /** Emoji grid (6 per row) with a "None" row on top; the callback gets "" for none. */
     static void emojiPicker(Context c, CharSequence title, final Consumer<String> cb) {
-        final Dialog d = new Dialog(c, R.style.Sheet);
+        final Dialog d = new SheetDialog(c);
         LinearLayout root = Ui.vertical(c);
         root.setPadding(Ui.dp(c, 8), 0, Ui.dp(c, 8), Ui.dp(c, 28));
         LinearLayout card = Ui.vertical(c);
         card.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        card.setClipToOutline(true);
         TextView t = Ui.text(c, title, 13, R.color.text_secondary, true);
         t.setGravity(Gravity.CENTER);
         t.setPadding(Ui.dp(c, 16), Ui.dp(c, 14), Ui.dp(c, 16), Ui.dp(c, 8));
@@ -219,6 +227,7 @@ final class Sheets {
             d.dismiss();
             cb.accept("");
         });
+        Ui.highlight(none);
         card.addView(none, new LinearLayout.LayoutParams(-1, Ui.dp(c, 44)));
         card.addView(Ui.hairline(c, 0));
         String[] list = c.getResources().getStringArray(R.array.emoji_list);
@@ -244,7 +253,9 @@ final class Sheets {
         cancel.setTypeface(Typeface.DEFAULT_BOLD);
         cancel.setGravity(Gravity.CENTER);
         cancel.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        cancel.setClipToOutline(true);
         cancel.setOnClickListener(v -> d.dismiss());
+        Ui.highlight(cancel);
         LinearLayout.LayoutParams cl = new LinearLayout.LayoutParams(-1, Ui.dp(c, 56));
         cl.topMargin = Ui.dp(c, 8);
         root.addView(cancel, cl);

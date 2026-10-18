@@ -67,7 +67,9 @@ final class TasksScreen implements Screen {
         LinearLayout.LayoutParams rp = new LinearLayout.LayoutParams(Ui.dp(a, 24), Ui.dp(a, 24));
         rp.setMarginEnd(Ui.dp(a, 14));
         r.addView(ring, rp);
+        if (Motion.takeToggled(t.id)) Motion.pop(ring);
         ring.setOnClickListener(v -> {
+            Motion.markToggled(t.id);
             t.done = !t.done;
             Tasks.save(a, t);
             Alarms.scheduleTask(a, t);

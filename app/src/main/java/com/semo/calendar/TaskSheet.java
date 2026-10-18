@@ -78,7 +78,7 @@ final class TaskSheet {
             st.due.set(Calendar.HOUR_OF_DAY, 9);
         }
 
-        final Dialog d = new Dialog(a, R.style.Sheet);
+        final Dialog d = new SheetDialog(a);
         LinearLayout box = Ui.vertical(a);
         box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 24)));
 
@@ -115,6 +115,7 @@ final class TaskSheet {
         body.addView(g1);
 
         LinearLayout g2 = Ui.group(a, 20, R.color.sheet_cell);
+        Motion.animateChanges(g2);
         final TextView dateChip = chip(a, v -> {
         });
         final TextView timeChip = chip(a, v -> {

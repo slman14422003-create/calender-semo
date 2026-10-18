@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.1
+- iOS motion everywhere: one motion vocabulary (Motion), one touch-feedback system (PressFx) and one dialog base (SheetDialog).
+- Buttons shrink, dim and spring back; text buttons dim like iOS bar buttons; list rows turn grey after a short delay and fade out after release.
+- Sheets rise with the iOS curve, follow the finger when dragged down by the top edge, and fly out on a quick flick; alerts pop in and fade out; the dim fades with them.
+- Editor and Calendars open as modal sheets while the screen below scales back.
+- Tab bar capsule and the Day / Week / Month / Year thumb slide with a spring; icons bounce on selection; views zoom between Month and Year.
+- Month grid: selection circle springs in, months slide in the swipe direction, the day list swaps softly.
+- Rows in the editor and sheets open and close smoothly (inline pickers, alerts, repeat end); switches fade their track; task circles pop when ticked.
+- Animated splash: the calendar page pops in, the binder rings drop in, the day cells fade in and today's tile pops; on exit the icon grows away and the app settles in.
+
 ## 3.0
 - Smart add (one sentence becomes an event or task), automatic emoji, overlap warning, free-time suggestions, "today at a glance"; all on the device.
 - Design audit: right-to-left padding fixes, iOS weekday letters in Arabic, mirrored list icon, fitted "Today" label.

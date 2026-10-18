@@ -1,6 +1,7 @@
 package com.semo.calendar;
 
 import android.content.Context;
+import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
@@ -37,6 +38,8 @@ final class MonthView extends View {
     private boolean showWeeks, alt;
     private Listener listener;
     private String[] narrow;
+    private float pop = 1f;
+    private ValueAnimator popAnim;
 
     MonthView(Context c) {
         super(c);
@@ -113,13 +116,28 @@ final class MonthView extends View {
             }
         }
         narrow = null;
+        if (popAnim != null) popAnim.cancel();
+        pop = 1f;
         requestLayout();
         invalidate();
     }
 
     void select(int d) {
         selected = d;
-        invalidate();
+        playPop();
+    }
+
+    /** The selection circle springs in at the tapped day. */
+    private void playPop() {
+        if (popAnim != null) popAnim.cancel();
+        popAnim = ValueAnimator.ofFloat(0.4f, 1f);
+        popAnim.setDuration(420);
+        popAnim.setInterpolator(Motion.SPRING);
+        popAnim.addUpdateListener(a -> {
+            pop = (Float) a.getAnimatedValue();
+            invalidate();
+        });
+        popAnim.start();
     }
 
     @Override
@@ -173,7 +191,7 @@ final class MonthView extends View {
             boolean isToday = d == today;
             if (sel) {
                 p.setColor(Ui.color(c, isToday ? R.color.accent : R.color.text_primary));
-                cv.drawCircle(cx, cy, r, p);
+                cv.drawCircle(cx, cy, r * pop, p);
             }
             p.setColor(sel ? Ui.color(c, isToday ? R.color.on_accent : R.color.bg)
                     : isToday ? Ui.color(c, R.color.accent) : Ui.color(c, R.color.text_primary));
@@ -221,7 +239,7 @@ final class MonthView extends View {
         int d = row * 7 + col - offset + 1;
         if (d < 1 || d > days) return;
         selected = d;
-        invalidate();
+        playPop();
         performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
         if (listener != null) listener.onDay(d);
     }

@@ -7,6 +7,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.core.splashscreen.SplashScreen;
+import androidx.core.splashscreen.SplashScreenViewProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -36,9 +38,10 @@ public final class MainActivity extends BaseActivity {
     private final View[] items = new View[COUNT];
     private final ImageView[] icons = new ImageView[COUNT];
     private final TextView[] names = new TextView[COUNT];
-    private final GradientDrawable[] pills = new GradientDrawable[COUNT];
     private final TabIconDrawable[] tabIcons = new TabIconDrawable[COUNT];
     private FrameLayout content;
+    private FrameLayout appRoot;
+    private View pillView;
     private int cur = -1;
 
     private final ActivityResultLauncher<String> exportLauncher = registerForActivityResult(
@@ -52,9 +55,13 @@ public final class MainActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle b) {
-        SplashScreen.installSplashScreen(this);
+        final long born = SystemClock.uptimeMillis();
+        SplashScreen splash = SplashScreen.installSplashScreen(this);
+        splash.setKeepOnScreenCondition(() -> SystemClock.uptimeMillis() - born < 520);
+        splash.setOnExitAnimationListener(this::leaveSplash);
         super.onCreate(b);
         FrameLayout root = new FrameLayout(this);
+        appRoot = root;
         root.setBackgroundColor(Ui.color(this, R.color.bg));
         applyInsets(root);
         setContentView(root);
@@ -72,6 +79,23 @@ public final class MainActivity extends BaseActivity {
         new Thread(() -> Alarms.rescheduleAll(app)).start();
     }
 
+    /** The splash icon grows and fades while the app settles in underneath it, like opening an app on iOS. */
+    private void leaveSplash(final SplashScreenViewProvider p) {
+        final View sv = p.getView();
+        View icon = p.getIconView();
+        if (icon != null) {
+            icon.animate().scaleX(1.3f).scaleY(1.3f).alpha(0f).setDuration(320).setInterpolator(Motion.IN).start();
+        }
+        if (appRoot != null) {
+            appRoot.setScaleX(1.06f);
+            appRoot.setScaleY(1.06f);
+            appRoot.setAlpha(0.4f);
+            appRoot.animate().scaleX(1f).scaleY(1f).alpha(1f).setDuration(480).setInterpolator(Motion.OUT).start();
+        }
+        sv.animate().alpha(0f).setDuration(300).setStartDelay(60).setInterpolator(Motion.DECEL)
+                .withEndAction(p::remove).start();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -84,13 +108,21 @@ public final class MainActivity extends BaseActivity {
     }
 
     private View buildNav() {
-        LinearLayout bar = new LinearLayout(this);
-        bar.setGravity(Gravity.CENTER_VERTICAL);
+        FrameLayout bar = new FrameLayout(this);
         GradientDrawable bg = Ui.shape(Ui.color(this, R.color.surface), Ui.dp(this, 100));
         bg.setStroke(Math.max(1, Ui.dp(this, 0.5f)), Ui.color(this, R.color.stroke));
         bar.setBackground(bg);
         bar.setPadding(Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5));
         bar.setElevation(Ui.dp(this, 8));
+
+        pillView = new View(this);
+        pillView.setBackground(Ui.shape(Ui.color(this, R.color.neutral_soft), Ui.dp(this, 100)));
+        pillView.setVisibility(View.INVISIBLE);
+        bar.addView(pillView, new FrameLayout.LayoutParams(Ui.dp(this, 60), Ui.dp(this, 54),
+                Gravity.LEFT | Gravity.TOP));
+
+        LinearLayout row = new LinearLayout(this);
+        row.setGravity(Gravity.CENTER_VERTICAL);
         int[] lb = {R.string.tab_month, R.string.tab_agenda, R.string.tab_tasks, R.string.tab_search,
                 R.string.tab_settings};
         for (int i = 0; i < COUNT; i++) {
@@ -98,10 +130,6 @@ public final class MainActivity extends BaseActivity {
             LinearLayout it = new LinearLayout(this);
             it.setOrientation(LinearLayout.VERTICAL);
             it.setGravity(Gravity.CENTER);
-            GradientDrawable pill = Ui.shape(Ui.color(this, R.color.neutral_soft), Ui.dp(this, 100));
-            pill.setAlpha(0);
-            it.setBackground(pill);
-            pills[i] = pill;
             it.setContentDescription(getString(lb[i]));
             ImageView icon = new ImageView(this);
             tabIcons[i] = new TabIconDrawable(this, i);
@@ -120,20 +148,48 @@ public final class MainActivity extends BaseActivity {
             Ui.press(it);
             it.setOnClickListener(v -> {
                 v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                if (idx != cur) select(idx);
-                else if (screens[idx] != null) screens[idx].refresh();
+                if (idx != cur) {
+                    select(idx);
+                    Motion.bounce(icons[idx]);
+                } else if (screens[idx] != null) {
+                    screens[idx].refresh();
+                }
             });
             LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(0, Ui.dp(this, 54), 1f);
             lp.setMargins(Ui.dp(this, 1), 0, Ui.dp(this, 1), 0);
-            bar.addView(it, lp);
+            row.addView(it, lp);
             items[i] = it;
             icons[i] = icon;
             names[i] = t;
         }
+        bar.addView(row, new FrameLayout.LayoutParams(-1, -2));
+        row.addOnLayoutChangeListener((v, l, t, r, bt, ol, ot, or, ob) -> {
+            if (r - l != or - ol) placePill(false);
+        });
         FrameLayout.LayoutParams blp = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
         blp.setMargins(Ui.dp(this, 14), Ui.dp(this, 6), Ui.dp(this, 14), Ui.dp(this, 10));
         bar.setLayoutParams(blp);
         return bar;
+    }
+
+    /** Moves the selection capsule under the chosen tab; it glides with a spring when {@code animate} is true. */
+    private void placePill(boolean animate) {
+        if (cur < 0 || pillView == null || items[cur] == null) return;
+        View it = items[cur];
+        if (it.getWidth() == 0) return;
+        android.view.ViewGroup.LayoutParams lp = pillView.getLayoutParams();
+        if (lp.width != it.getWidth()) {
+            lp.width = it.getWidth();
+            pillView.setLayoutParams(lp);
+        }
+        pillView.setVisibility(View.VISIBLE);
+        pillView.animate().cancel();
+        float x = it.getLeft();
+        if (animate) {
+            pillView.animate().translationX(x).setDuration(480).setInterpolator(Motion.SPRING_SOFT).start();
+        } else {
+            pillView.setTranslationX(x);
+        }
     }
 
     private Screen make(int i) {
@@ -156,18 +212,21 @@ public final class MainActivity extends BaseActivity {
             screens[i] = make(i);
             content.addView(screens[i].view(), new FrameLayout.LayoutParams(-1, -1));
         }
+        int prev = cur;
         cur = i;
         for (int k = 0; k < COUNT; k++) {
-            if (screens[k] != null) screens[k].view().setVisibility(k == i ? View.VISIBLE : View.GONE);
+            if (screens[k] != null) {
+                screens[k].view().animate().cancel();
+                screens[k].view().setVisibility(k == i ? View.VISIBLE : View.GONE);
+            }
             boolean on = k == i;
             int col = Ui.color(this, on ? R.color.accent : R.color.text_secondary);
-            pills[k].setAlpha(on ? 255 : 0);
             tabIcons[k].setState(on, col);
             names[k].setTextColor(col);
         }
         screens[i].refresh();
-        screens[i].view().setAlpha(0f);
-        screens[i].view().animate().alpha(1f).setDuration(150).start();
+        if (prev >= 0) Motion.enter(screens[i].view(), 10);
+        placePill(prev >= 0);
     }
 
     void openEditor(String id, long day) {

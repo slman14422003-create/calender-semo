@@ -49,7 +49,7 @@ final class DetailSheet {
 
     static void show(final MainActivity a, final Recur.Occ o) {
         final Event e = o.e;
-        final Dialog d = new Dialog(a, R.style.Sheet);
+        final Dialog d = new SheetDialog(a);
         final String title = e.label(a.getString(R.string.untitled));
 
         LinearLayout box = Ui.vertical(a);

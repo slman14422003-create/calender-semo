@@ -62,6 +62,16 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - Smart helpers (Settings > Smart suggestions): automatic emoji from the title (res arrays smart_emoji_rules), overlap warning and "Suggest a free time" in the editor (Smart.conflicts / freeSlots, 09:00-21:00, 14 days), "Today at a glance" card in Agenda (Smart.glance).
 - Design audit: paddings that were not symmetric now use setPaddingRelative (the Today button touched the edge in Arabic); one-letter weekday names come from res arrays weekday_narrow (Arabic uses the iOS letters, the old ICU letters showed two identical letters); the list tab icon mirrors in right-to-left; the Today label shrinks to fit long languages.
 
+## Done (3.1, iOS motion)
+- Motion.java: curves (OUT, IN, ALERT) and a damped spring (SPRING, SPRING_SOFT) used by every animation; helpers enter, swap, bounce, pop, layout transitions.
+- PressFx.java: global touch feedback. BaseActivity and SheetDialog forward touch events to it. Small clickable views scale + dim, clickable text dims, rows use Ui.highlight (delayed grey that fades out). Views marked with R.id.fx_skip (Ui.press, Ui.highlight) are ignored by the global handler.
+- SheetDialog.java replaces Dialog for every sheet and alert: bottom sheets slide, drag down from the top 64dp, alerts pop; window animations are off in style Sheet.
+- Modal screens: BaseActivity.modal() true for EditorActivity and CalendarsActivity (res/anim modal_*; API 34 uses overrideActivityTransition).
+- MainActivity: sliding tab capsule (placePill), icon bounce, splash exit animation (leaveSplash) and a short hold so the splash animation can play.
+- Splash: res/drawable/ic_splash_vec.xml (named groups) + ic_splash_anim.xml + res/animator/splash_*; used on Android 12+ through values-v31/themes.xml, older versions keep the static icon.
+- CalendarTab: sliding segmented thumb, zoom crossfade between views. MonthView: spring selection circle. MonthScreen: slide on month change.
+- IosSwitch.java: track colour fades with the thumb glide.
+
 ## Build fixes
 - Hijri.cal() uses Calendar.getInstance(new ULocale("en@calendar=islamic-umalqura")): IslamicCalendar.CalendarType is not in the SDK stubs (first CI build failed on it).
 

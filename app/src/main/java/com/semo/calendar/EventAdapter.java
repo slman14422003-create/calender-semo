@@ -226,7 +226,9 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
             h.ring.setBackground(ring);
             h.tick.setVisibility(t.done ? View.VISIBLE : View.GONE);
             h.content.setAlpha(t.done ? 0.7f : 1f);
+            if (Motion.takeToggled(t.id)) Motion.pop(h.ring);
             h.ring.setOnClickListener(v -> {
+                Motion.markToggled(t.id);
                 if (taskHandler != null) taskHandler.toggle(t);
             });
             h.itemView.setOnClickListener(v -> {

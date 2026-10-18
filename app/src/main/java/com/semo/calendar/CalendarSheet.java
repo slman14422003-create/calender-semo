@@ -31,7 +31,7 @@ final class CalendarSheet {
             cal.id = Cals.newId();
             cal.color = 1;
         }
-        final Dialog d = new Dialog(a, R.style.Sheet);
+        final Dialog d = new SheetDialog(a);
         LinearLayout box = Ui.vertical(a);
         box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 24)));
         box.setPadding(0, 0, 0, Ui.dp(a, 28));

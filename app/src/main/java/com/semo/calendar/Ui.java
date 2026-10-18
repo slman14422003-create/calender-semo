@@ -49,14 +49,14 @@ final class Ui {
         return v;
     }
 
-    /** A soft press: the view shrinks slightly while a finger is on it. */
+    /** A soft press: the view shrinks and dims while a finger is on it and springs back on release. */
     @android.annotation.SuppressLint("ClickableViewAccessibility")
     static void press(View v) {
+        v.setTag(R.id.fx_skip, Boolean.TRUE);
         v.setOnTouchListener((x, e) -> {
             int a = e.getActionMasked();
-            if (a == MotionEvent.ACTION_DOWN) x.animate().scaleX(0.97f).scaleY(0.97f).setDuration(90).start();
-            else if (a == MotionEvent.ACTION_UP || a == MotionEvent.ACTION_CANCEL)
-                x.animate().scaleX(1f).scaleY(1f).setDuration(140).start();
+            if (a == MotionEvent.ACTION_DOWN) PressFx.down(x, true);
+            else if (a == MotionEvent.ACTION_UP || a == MotionEvent.ACTION_CANCEL) PressFx.up(x);
             return false;
         });
     }
@@ -173,10 +173,7 @@ final class Ui {
     /** The green iOS switch. */
     static androidx.appcompat.widget.SwitchCompat iosSwitch(Context c, boolean on,
                                                             android.widget.CompoundButton.OnCheckedChangeListener l) {
-        androidx.appcompat.widget.SwitchCompat sw = new androidx.appcompat.widget.SwitchCompat(c);
-        sw.setThumbDrawable(c.getDrawable(R.drawable.switch_thumb));
-        sw.setTrackDrawable(c.getDrawable(R.drawable.switch_track));
-        sw.setSplitTrack(false);
+        androidx.appcompat.widget.SwitchCompat sw = new IosSwitch(c);
         sw.setChecked(on);
         sw.setOnCheckedChangeListener(l);
         return sw;
@@ -202,21 +199,15 @@ final class Ui {
     }
 
     /**
-     * iOS cell press: the row turns grey while the finger is down (no scaling). A Drawable stored as the view's tag
-     * is used instead of the plain rectangle, so rows with rounded corners keep their shape.
+     * iOS cell press: the row turns grey a moment after the finger lands (not while a scroll starts) and fades out
+     * after release. A Drawable stored as the view's tag is used instead of the plain rectangle, so rows with
+     * rounded corners keep their shape.
      */
     @android.annotation.SuppressLint("ClickableViewAccessibility")
     static void highlight(final View v) {
+        v.setTag(R.id.fx_skip, Boolean.TRUE);
         v.setOnTouchListener((x, e) -> {
-            int a = e.getActionMasked();
-            if (a == MotionEvent.ACTION_DOWN) {
-                Object t = x.getTag();
-                x.setForeground(t instanceof android.graphics.drawable.Drawable
-                        ? (android.graphics.drawable.Drawable) t
-                        : new android.graphics.drawable.ColorDrawable(color(x.getContext(), R.color.cell_highlight)));
-            } else if (a == MotionEvent.ACTION_UP || a == MotionEvent.ACTION_CANCEL) {
-                x.setForeground(null);
-            }
+            PressFx.rowTouch(x, e);
             return false;
         });
     }

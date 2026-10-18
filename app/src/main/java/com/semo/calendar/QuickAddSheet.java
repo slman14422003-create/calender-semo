@@ -73,7 +73,7 @@ final class QuickAddSheet {
     }
 
     static void show(final MainActivity a) {
-        final Dialog dlg = new Dialog(a, R.style.Sheet);
+        final Dialog dlg = new SheetDialog(a);
         LinearLayout box = Ui.vertical(a);
         box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 24)));
 
@@ -142,6 +142,7 @@ final class QuickAddSheet {
         body.addView(seg, sp);
 
         final LinearLayout preview = Ui.group(a, 14, R.color.sheet_cell);
+        Motion.animateChanges(preview);
         body.addView(preview);
         TextView local = Ui.text(a, a.getString(R.string.smart_local), 12, R.color.text_secondary, false);
         local.setGravity(Gravity.CENTER);
