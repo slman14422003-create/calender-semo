@@ -191,7 +191,16 @@ final class SettingsScreen implements Screen {
         }
         body.addView(s);
 
-        LinearLayout ab = Ui.group(a, 24);
+        body.addView(Ui.sectionHeader(a, a.getString(R.string.about)));
+        LinearLayout ab = Ui.group(a, 0);
+        ab.addView(row(a.getString(R.string.upd_title), "", true,
+                v -> a.startActivity(new android.content.Intent(a, UpdateActivity.class)),
+                Ui.tile(a, R.drawable.ic_download, Ui.color(a, R.color.accent))));
+        ab.addView(Ui.hairline(a, 58));
+        ab.addView(row(a.getString(R.string.privacy_title), "", true,
+                v -> a.startActivity(new android.content.Intent(a, PrivacyActivity.class)),
+                Ui.tile(a, R.drawable.ic_shield, Ui.color(a, R.color.ok))));
+        ab.addView(Ui.hairline(a, 58));
         ab.addView(row(a.getString(R.string.version), BuildConfig.VERSION_NAME, false, null));
         body.addView(ab);
     }

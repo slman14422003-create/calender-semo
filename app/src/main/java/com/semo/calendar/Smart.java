@@ -133,8 +133,10 @@ final class Smart {
             if (t.due >= d0 && t.due < d1 && (!t.hasTime || t.due >= now)) dueToday++;
             else if (t.hasTime ? t.due < now : t.due < d0) overdue++;
         }
+        ClockLink.Summary clk = ClockLink.read(c);
         if (events == 0 && dueToday == 0 && overdue == 0) {
             lines.add(c.getString(R.string.glance_free));
+            addClockLines(c, lines, clk, now);
             return lines;
         }
         if (events > 0) {
@@ -153,6 +155,19 @@ final class Smart {
         }
         if (dueToday > 0) lines.add(c.getString(R.string.glance_tasks, dueToday));
         if (overdue > 0) lines.add(c.getString(R.string.glance_overdue, overdue));
+        addClockLines(c, lines, clk, now);
         return lines;
+    }
+
+    /** What the Semo Clock knows: the next alarm and the next prayer (only when that app is installed). */
+    private static void addClockLines(Context c, List<String> lines, ClockLink.Summary k, long now) {
+        if (k == null) return;
+        long limit = now + 24L * 3600 * 1000;
+        if (k.nextAlarm > now && k.nextAlarm < limit) {
+            lines.add(c.getString(R.string.glance_alarm, Fmt.time(c, k.nextAlarm)));
+        }
+        if (k.prayerAt > now && k.prayerAt < limit && !k.prayerName.isEmpty()) {
+            lines.add(c.getString(R.string.glance_prayer, k.prayerName, Fmt.time(c, k.prayerAt)));
+        }
     }
 }

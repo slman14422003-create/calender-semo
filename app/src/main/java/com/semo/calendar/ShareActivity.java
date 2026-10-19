@@ -9,9 +9,34 @@ import android.os.Bundle;
  * alert and place out of it, and opens a prefilled new event.
  */
 public class ShareActivity extends Activity {
+    /** Other Semo apps (the clock) send a task or alarm here; it only opens a prefilled editor, nothing is saved unasked. */
+    static final String ADD_EVENT = "app.semo.calendar.ADD_EVENT";
+
+    private void addFromSibling() {
+        Intent src = getIntent();
+        String title = src.getStringExtra("title");
+        String notes = src.getStringExtra("notes");
+        long start = src.getLongExtra("start", 0);
+        long end = src.getLongExtra("end", 0);
+        if (title == null) title = "";
+        if (title.length() > 120) title = title.substring(0, 120);
+        if (notes != null && notes.length() > 800) notes = notes.substring(0, 800);
+        Intent in = new Intent(this, EditorActivity.class).putExtra("title", title);
+        if (notes != null) in.putExtra("notes", notes);
+        if (start > 0) in.putExtra("at", start);
+        if (end > start) in.putExtra("end", end);
+        in.putExtra("allday", src.getBooleanExtra("allday", false));
+        startActivity(in);
+        finish();
+    }
+
     @Override
     protected void onCreate(Bundle b) {
         super.onCreate(b);
+        if (ADD_EVENT.equals(getIntent().getAction())) {
+            addFromSibling();
+            return;
+        }
         CharSequence cs = getIntent().getCharSequenceExtra(Intent.EXTRA_TEXT);
         String s = cs == null ? "" : cs.toString().trim();
         if (s.length() > 800) s = s.substring(0, 800);

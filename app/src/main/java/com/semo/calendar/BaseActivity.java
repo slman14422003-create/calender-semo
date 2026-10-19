@@ -46,6 +46,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         return super.dispatchTouchEvent(e);
     }
 
+    /** Same as {@link #applyInsets(View)}, callable from helper classes in this package. */
+    final void applyInsetsPublic(View root) {
+        applyInsets(root);
+    }
+
     protected void applyInsets(View root) {
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, w) -> {
             Insets i = w.getInsets(WindowInsetsCompat.Type.systemBars()

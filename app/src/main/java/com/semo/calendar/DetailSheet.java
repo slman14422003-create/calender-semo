@@ -153,6 +153,14 @@ final class DetailSheet {
                 }
             });
         }
+        // within the next 24 hours only: a one-time clock alarm rings at the next occurrence of that time
+        long untilStart = o.start - System.currentTimeMillis();
+        if (!e.allDay && untilStart > 0 && untilStart < 24L * 3600 * 1000 && ClockLink.available(a)) {
+            action(a, acts, R.string.alarm_in_clock, R.color.accent, () -> {
+                d.dismiss();
+                ClockLink.newAlarm(a, o.start, title);
+            });
+        }
         if (Semo.hasNotes(a)) {
             final String text = Fmt.shareText(a, o);
             action(a, acts, R.string.send_notes, R.color.accent, () -> {

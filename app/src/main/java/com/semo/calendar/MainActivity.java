@@ -77,6 +77,8 @@ public final class MainActivity extends BaseActivity {
         }
         final android.content.Context app = getApplicationContext();
         new Thread(() -> Alarms.rescheduleAll(app)).start();
+        // once a day at most: offers the update screen when GitHub has a newer release
+        root.postDelayed(() -> Updater.autoCheck(this), 2500);
     }
 
     /** The splash icon grows and fades while the app settles in underneath it, like opening an app on iOS. */

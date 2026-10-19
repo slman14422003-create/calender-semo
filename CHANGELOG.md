@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.2
+- Fix: the selected Day / Week / Month / Year segment showed a plain grey box and hid its label (the thumb's shadow made it draw above the text).
+- New Updates screen (Settings > About): checks this project's GitHub releases, downloads the APK, verifies SHA-256 and installs it from inside the app. Calendar only. Optional daily automatic check.
+- New Privacy Policy screen (Settings > About), English and Arabic.
+- Calendar <-> Clock link: today at a glance shows the Clock's next alarm and next prayer; an event in the next 24 hours has "Set alarm in Clock"; the Clock can send a task to "Add to Calendar"; the Clock shows the next calendar event. Only times and counts are shared, never titles or notes.
+- New permissions: INTERNET (updates only) and REQUEST_INSTALL_PACKAGES (installing the update you choose).
+
 ## 3.1
 - iOS motion everywhere: one motion vocabulary (Motion), one touch-feedback system (PressFx) and one dialog base (SheetDialog).
 - Buttons shrink, dim and spring back; text buttons dim like iOS bar buttons; list rows turn grey after a short delay and fade out after release.

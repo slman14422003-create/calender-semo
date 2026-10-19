@@ -154,4 +154,69 @@
     <string name="smart_hint">Lunch with Sara tomorrow at 1pm for 1 hour</string>
     <string name="smart_local">Understood on your device. Nothing is sent anywhere.</string>
     <string name="suggest_time">Suggest a free time</string>
+
+    <!-- Updates (calendar only) -->
+    <string name="upd_title">Updates</string>
+    <string name="upd_current">Current version: %1$s</string>
+    <string name="upd_check">Check for updates</string>
+    <string name="upd_checking">Checking…</string>
+    <string name="upd_latest">You have the latest version</string>
+    <string name="upd_available">New version available: %1$s</string>
+    <string name="upd_download">Download and install</string>
+    <string name="upd_downloading">Downloading…</string>
+    <string name="upd_progress">%1$d%%</string>
+    <string name="upd_size">Update size: %1$s</string>
+    <string name="upd_cancel">Cancel download</string>
+    <string name="upd_cancelled">Download cancelled</string>
+    <string name="upd_ready">Download complete and verified</string>
+    <string name="upd_ready_sub">The file was checked; Android also checks the signature when installing</string>
+    <string name="upd_install">Install now</string>
+    <string name="upd_err_net">Could not reach GitHub. Check your connection and try again</string>
+    <string name="upd_err_none">No release has been published yet</string>
+    <string name="upd_err_verify">The file could not be verified. Try again</string>
+    <string name="upd_err_install">Could not open the app installer</string>
+    <string name="upd_no_apk">This release has no APK file yet</string>
+    <string name="upd_perm_title">Allow installing</string>
+    <string name="upd_perm_msg">To install the update from inside the app, allow Semo Calendar to install apps on the next screen, then come back and tap Install.</string>
+    <string name="upd_perm_open">Open Settings</string>
+    <string name="upd_open_page">Releases page on GitHub</string>
+    <string name="upd_notes">What’s new</string>
+    <string name="upd_footnote">Updates are downloaded only from this project’s official releases page, and the SHA-256 fingerprint is checked before installing. Only the calendar is updated.</string>
+    <string name="upd_auto">Check automatically</string>
+    <string name="upd_now">Update</string>
+    <string name="upd_new_msg">Version %1$s is available. Update now?</string>
+
+    <!-- Privacy policy -->
+    <string name="privacy_title">Privacy Policy</string>
+    <string name="privacy_updated">Last updated: October 2026</string>
+    <string name="privacy_contact">Contact and transparency</string>
+    <string name="privacy_issues">Report a problem or ask a question</string>
+    <string name="privacy_source">Source code on GitHub</string>
+    <string-array name="privacy_titles">
+        <item>Summary</item>
+        <item>What is stored on your device</item>
+        <item>Internet use</item>
+        <item>Permissions and why</item>
+        <item>Smart features</item>
+        <item>Link with other Semo apps</item>
+        <item>Security</item>
+        <item>Deleting your data</item>
+        <item>Changes to this policy</item>
+    </string-array>
+    <string-array name="privacy_bodies">
+        <item>Semo Calendar needs no account, shows no ads, uses no analytics or tracking, and never sells or shares your data. What you enter stays on your device.</item>
+        <item>Events, tasks, calendars and settings are saved only in the app’s private storage. Cloud backup and device-to-device transfer of app data are turned off. Files are created only when you choose to export (ICS).</item>
+        <item>The app goes online only for updates, over HTTPS, and only to api.github.com and github.com (release files are served by GitHub’s download servers). Nothing from your calendar is sent, and no personal data is included in these requests; GitHub sees your IP address like any website. You can turn the automatic check off in Updates.</item>
+        <item>• Notifications: for event and task reminders.\n• Run at start-up: to re-arm reminders after a restart or a time change.\n• Internet: for the update check and download only.\n• Install apps: to install an update when you choose to.</item>
+        <item>Smart add, automatic emoji, overlap warnings and free-time suggestions run entirely on your device. What you type is not sent anywhere.</item>
+        <item>If other Semo apps are installed, Semo Calendar can find them to open them, send an event to Notes, or show the Semo Clock’s next alarm and next prayer in “today at a glance”. The calendar gives the Clock only the time of your next event and the number of today’s events, never titles, places or notes. This exchange stays on the device.</item>
+        <item>The parts other apps can reach are: the main screen, the “Share to Calendar” doorway (it only opens a prefilled new event and saves nothing by itself) and a read-only summary of times and counts. Update files are accepted only from this project’s releases, checked with SHA-256, and Android refuses to install them unless they are signed with the same key as the installed app.</item>
+        <item>Your data is only on your device. Clear the app’s data in Android settings (Storage → Clear data) or uninstall the app to delete everything. There is no copy elsewhere to delete.</item>
+        <item>If data handling changes, this text and its “Last updated” line will change. The app is open source, so you can read the code yourself.</item>
+    </string-array>
+
+    <!-- Link with the Semo Clock -->
+    <string name="glance_alarm">Next alarm in Clock: %1$s</string>
+    <string name="glance_prayer">Next prayer: %1$s at %2$s</string>
+    <string name="alarm_in_clock">Set alarm in Clock</string>
 </resources>

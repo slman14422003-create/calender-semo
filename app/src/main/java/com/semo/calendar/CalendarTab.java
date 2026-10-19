@@ -74,6 +74,9 @@ final class CalendarTab implements Screen {
                 divs[i] = dv;
             }
         }
+        // The thumb has an elevation (soft shadow), and an elevated view is drawn above its non-elevated siblings:
+        // without this the thumb covered the selected label and showed a plain grey box.
+        segRow.setElevation(Ui.dp(a, 2));
         seg.addView(segRow, new FrameLayout.LayoutParams(-1, -2));
         segRow.addOnLayoutChangeListener((v, l, t, r, b, ol, ot, or, ob) -> {
             if (r - l != or - ol) moveThumb(false);

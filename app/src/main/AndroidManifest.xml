@@ -4,6 +4,9 @@
     <!-- reminders: notifications (Android 13+) and re-arming alarms after a reboot -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Updates only: GitHub release check and APK download. No other network use. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
 
@@ -55,6 +58,20 @@
             android:name=".CalendarsActivity"
             android:exported="false" />
 
+        <activity android:name=".UpdateActivity" android:exported="false" />
+        <activity android:name=".PrivacyActivity" android:exported="false" />
+
+        <!-- hands the downloaded update APK to the system installer -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <!-- "Share to Calendar": reads only the shared text and opens a prefilled new event -->
         <activity
             android:name=".ShareActivity"
@@ -66,7 +83,18 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
             </intent-filter>
+            <!-- from the Semo Clock: "add to calendar" opens a prefilled new event -->
+            <intent-filter>
+                <action android:name="app.semo.calendar.ADD_EVENT" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
+
+        <!-- Semo ecosystem: read-only summary for the clock (times and counts only, never titles) -->
+        <provider
+            android:name=".SemoProvider"
+            android:authorities="${applicationId}.semo"
+            android:exported="true" />
 
         <!-- remembers the language picked in the app on Android 12 and older -->
         <service

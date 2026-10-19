@@ -24,6 +24,7 @@ final class Semo {
     static final String ACTION_ECO = "app.semo.ECOSYSTEM";
     static final String META_ROLE = "app.semo.ROLE";
     static final String ROLE_NOTES = "notes";
+    static final String ROLE_CLOCK = "clock";
 
     static final class Sibling {
         String pkg = "";
