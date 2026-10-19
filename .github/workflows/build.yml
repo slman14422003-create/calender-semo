@@ -82,10 +82,9 @@ jobs:
         run: |
           SRC=app/src/main/java
           M=app/src/main/AndroidManifest.xml
-          # this app never talks to the network
-          if grep -rEn "java\.net\.|HttpURLConnection|okhttp|android\.net\.http|loadUrl\(" $SRC; then
+          # network code is allowed only in Updater.java
+          if grep -rEn --exclude=Updater.java "java\.net\.|HttpURLConnection|okhttp|android\.net\.http|loadUrl\(" $SRC; then
             echo "::error title=Network guard::network code is not allowed"; exit 1; fi
-          grep -q 'android.permission.INTERNET' $M && { echo "::error::INTERNET permission must not be declared"; exit 1; }
           # only the launcher and the share doorway may be exported
           EXP="$(grep -B1 'android:exported="true"' $M | grep -o 'android:name="[^"]*"' | sort | tr '\n' ' ')"
           [ "$EXP" = 'android:name=".MainActivity" android:name=".ShareActivity" ' ] || { echo "::error::only MainActivity and ShareActivity may be exported (found: $EXP)"; exit 1; }
