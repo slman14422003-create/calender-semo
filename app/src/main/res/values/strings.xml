@@ -189,9 +189,6 @@
     <!-- Privacy policy -->
     <string name="privacy_title">Privacy Policy</string>
     <string name="privacy_updated">Last updated: October 2026</string>
-    <string name="privacy_contact">Contact and transparency</string>
-    <string name="privacy_issues">Report a problem or ask a question</string>
-    <string name="privacy_source">Source code on GitHub</string>
     <string-array name="privacy_titles">
         <item>Summary</item>
         <item>What is stored on your device</item>
@@ -212,7 +209,7 @@
         <item>If other Semo apps are installed, Semo Calendar can find them to open them, send an event to Notes, or show the Semo Clock’s next alarm and next prayer in “today at a glance”. The calendar gives the Clock only the time of your next event and the number of today’s events, never titles, places or notes. This exchange stays on the device.</item>
         <item>The parts other apps can reach are: the main screen, the “Share to Calendar” doorway (it only opens a prefilled new event and saves nothing by itself) and a read-only summary of times and counts. Update files are accepted only from this project’s releases, checked with SHA-256, and Android refuses to install them unless they are signed with the same key as the installed app.</item>
         <item>Your data is only on your device. Clear the app’s data in Android settings (Storage → Clear data) or uninstall the app to delete everything. There is no copy elsewhere to delete.</item>
-        <item>If data handling changes, this text and its “Last updated” line will change. The app is open source, so you can read the code yourself.</item>
+        <item>If data handling changes, this text and its “Last updated” line will change.</item>
     </string-array>
 
     <!-- Link with the Semo Clock -->

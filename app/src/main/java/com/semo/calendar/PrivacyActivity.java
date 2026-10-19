@@ -29,22 +29,5 @@ public final class PrivacyActivity extends BaseActivity {
             g.addView(t, new LinearLayout.LayoutParams(-1, -2));
             body.addView(g);
         }
-
-        body.addView(Ui.sectionHeader(this, getString(R.string.privacy_contact)));
-        LinearLayout lg = Ui.group(this, 0);
-        LinearLayout issues = Ui.cell(this, getString(R.string.privacy_issues),
-                Ui.tile(this, R.drawable.ic_info, Ui.color(this, R.color.ok)));
-        issues.addView(Ui.chevron(this));
-        issues.setOnClickListener(v -> Pages.open(this, Updater.ISSUES));
-        Ui.highlight(issues);
-        lg.addView(issues);
-        lg.addView(Ui.hairline(this, 58));
-        LinearLayout src = Ui.cell(this, getString(R.string.privacy_source),
-                Ui.tile(this, R.drawable.ic_layers, Ui.color(this, R.color.cal_indigo)));
-        src.addView(Ui.chevron(this));
-        src.setOnClickListener(v -> Pages.open(this, Updater.SOURCE));
-        Ui.highlight(src);
-        lg.addView(src);
-        body.addView(lg);
     }
 }
