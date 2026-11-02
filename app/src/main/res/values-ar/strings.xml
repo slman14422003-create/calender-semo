@@ -216,4 +216,16 @@
     <string name="glance_alarm">المنبّه القادم في الساعة: %1$s</string>
     <string name="glance_prayer">الصلاة القادمة: %1$s عند %2$s</string>
     <string name="alarm_in_clock">ضبط منبّه في الساعة</string>
+    <string name="mark_undone">إلغاء الإنجاز</string>
+    <string name="app_icon">أيقونة التطبيق</string>
+    <string name="app_icon_note">تتغير أيقونة الشاشة الرئيسية خلال ثوانٍ قليلة.</string>
+    <string name="icon_blue">أزرق</string>
+    <string name="icon_violet">بنفسجي</string>
+    <string name="icon_green">أخضر</string>
+    <string name="icon_pink">وردي</string>
+    <string name="icon_red">أحمر</string>
+    <string name="icon_orange">برتقالي</string>
+    <string name="icon_gold">ذهبي</string>
+    <string name="icon_night">أزرق ليلي</string>
+    <string name="icon_graphite">رمادي داكن</string>
 </resources>
