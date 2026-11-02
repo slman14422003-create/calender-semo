@@ -34,6 +34,7 @@ final class YearView extends View {
         rowH = Ui.dp(c, 15);
         gapY = Ui.dp(c, 14);
         p.setTextAlign(Paint.Align.CENTER);
+        LongPress.set(this, -1, this::menuAt);
         gd = new GestureDetector(c, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
@@ -136,13 +137,32 @@ final class YearView extends View {
         }
     }
 
-    private void hit(float x, float y) {
+    /** Month index under a point of this view, or -1. */
+    private int monthAt(float x, float y) {
         float bw = (getWidth() - 2 * pad) / 3f;
         int col = (int) ((x - pad) / bw);
         int row = (int) ((y - pad) / blockH());
-        if (col < 0 || col > 2 || row < 0 || row > 3) return;
+        if (col < 0 || col > 2 || row < 0 || row > 3) return -1;
         if (rtl()) col = 2 - col;
-        if (listener != null) listener.onMonth(row * 3 + col);
+        return row * 3 + col;
+    }
+
+    private void hit(float x, float y) {
+        int m = monthAt(x, y);
+        if (m >= 0 && listener != null) listener.onMonth(m);
+    }
+
+    private java.util.List<LongPress.Item> menuAt(float rawX, float rawY) {
+        java.util.List<LongPress.Item> l = new java.util.ArrayList<>();
+        int[] loc = new int[2];
+        getLocationOnScreen(loc);
+        final int m = monthAt(rawX - loc[0], rawY - loc[1]);
+        if (m < 0 || listener == null) return l;
+        CharSequence label = names != null && names[m] != null ? names[m] : getContext().getString(R.string.open);
+        l.add(LongPress.item(label, () -> {
+            if (listener != null) listener.onMonth(m);
+        }));
+        return l;
     }
 
     @Override

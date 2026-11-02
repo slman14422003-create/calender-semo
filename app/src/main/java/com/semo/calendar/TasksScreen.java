@@ -85,6 +85,7 @@ final class TasksScreen implements Screen {
         r.addView(col, new LinearLayout.LayoutParams(0, -2, 1f));
         r.setOnClickListener(v -> TaskSheet.show(a, t, 0));
         Ui.highlight(r);
+        LongPress.set(r, 12, (x, y) -> Menus.task(a, t));
         return r;
     }
 

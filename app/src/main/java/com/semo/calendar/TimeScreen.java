@@ -78,6 +78,7 @@ final class TimeScreen implements DayAware {
                 move(dir);
             }
         });
+        LongPress.set(grid, -1, (rx, ry) -> grid.menuAt(a, rx, ry));
         sv.addView(grid, new ScrollView.LayoutParams(-1, -2));
         root.addView(sv, new LinearLayout.LayoutParams(-1, 0, 1f));
     }
@@ -137,6 +138,7 @@ final class TimeScreen implements DayAware {
         t.setLayoutParams(lp);
         t.setOnClickListener(v -> a.showDetail(o));
         Ui.press(t);
+        LongPress.set(t, 7, (x, y) -> Menus.event(a, o));
         return t;
     }
 

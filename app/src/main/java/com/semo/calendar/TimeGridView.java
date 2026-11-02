@@ -259,23 +259,46 @@ final class TimeGridView extends View {
         }
     }
 
-    private void tap(float x, float y) {
-        if (listener == null) return;
+    private Recur.Occ eventAt(float x, float y) {
         float cw = (getWidth() - gutter) / days;
         for (int i = items.size() - 1; i >= 0; i--) {
             rectOf(items.get(i), cw, rf);
-            if (rf.contains(x, y)) {
-                listener.onEvent(items.get(i).o);
-                return;
-            }
+            if (rf.contains(x, y)) return items.get(i).o;
         }
+        return null;
+    }
+
+    /** Start of the half hour under the point, or -1 outside the grid. */
+    private long slotAt(float x, float y) {
+        float cw = (getWidth() - gutter) / days;
         float gx = rtl() ? getWidth() - gutter - x : x - gutter;
-        if (gx < 0) return;
+        if (gx < 0) return -1;
         int d = Math.min(days - 1, (int) (gx / cw));
         float hours = (y - topPad) / hourH;
-        if (hours < 0 || hours >= 24) return;
-        long at = dayStarts[d] + (long) (Math.floor(hours * 2) * 30) * 60000L;
-        listener.onSlot(at);
+        if (hours < 0 || hours >= 24) return -1;
+        return dayStarts[d] + (long) (Math.floor(hours * 2) * 30) * 60000L;
+    }
+
+    private void tap(float x, float y) {
+        if (listener == null) return;
+        Recur.Occ o = eventAt(x, y);
+        if (o != null) {
+            listener.onEvent(o);
+            return;
+        }
+        long at = slotAt(x, y);
+        if (at >= 0) listener.onSlot(at);
+    }
+
+    /** Long-press menu: the event under the finger, or "new" at the pressed time. */
+    java.util.List<LongPress.Item> menuAt(MainActivity a, float rawX, float rawY) {
+        int[] loc = new int[2];
+        getLocationOnScreen(loc);
+        float x = rawX - loc[0], y = rawY - loc[1];
+        Recur.Occ o = eventAt(x, y);
+        if (o != null) return Menus.event(a, o);
+        long at = slotAt(x, y);
+        return at >= 0 ? Menus.slot(a, at) : new ArrayList<>();
     }
 
     @Override

@@ -3,12 +3,14 @@ package com.semo.calendar;
 import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Context;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.Window;
+import android.view.WindowManager;
 
 /**
  * Base of every dialog in the app. Bottom sheets rise with the iOS curve, can be dragged down by their top edge
@@ -28,15 +30,29 @@ class SheetDialog extends Dialog {
         super(c, R.style.Sheet);
         slop = ViewConfiguration.get(c).getScaledTouchSlop();
         Window w = getWindow();
-        if (w != null) w.setDimAmount(0f);
+        if (w != null) {
+            if (Build.VERSION.SDK_INT >= 31) w.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+            setDim(0f);
+        }
+    }
+
+    /** Dim behind the dialog plus (Android 12+) a blur of the screen below that grows with it. */
+    private void setDim(float amount) {
+        Window w = getWindow();
+        if (w == null) return;
+        w.setDimAmount(amount);
+        if (Build.VERSION.SDK_INT >= 31) {
+            WindowManager.LayoutParams lp = w.getAttributes();
+            lp.setBlurBehindRadius(Math.round(Ui.dp(getContext(), 20) * (amount / DIM)));
+            w.setAttributes(lp);
+        }
     }
 
     @Override
     public void setContentView(View v) {
         super.setContentView(v);
         content = v;
-        Window win = getWindow();
-        if (win != null) win.setDimAmount(0f);
+        setDim(0f);
         v.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
             public void onLayoutChange(View x, int l, int t, int r, int b, int ol, int ot, int or, int ob) {
@@ -59,7 +75,7 @@ class SheetDialog extends Dialog {
         if (dimAnim != null) dimAnim.cancel();
         dimAnim = ValueAnimator.ofFloat(w.getAttributes().dimAmount, to);
         dimAnim.setDuration(ms);
-        dimAnim.addUpdateListener(a -> w.setDimAmount((Float) a.getAnimatedValue()));
+        dimAnim.addUpdateListener(a -> setDim((Float) a.getAnimatedValue()));
         dimAnim.start();
     }
 
@@ -145,11 +161,8 @@ class SheetDialog extends Dialog {
             if (dragging) {
                 float ty = Math.max(0f, dy - slop);
                 content.setTranslationY(ty);
-                Window w = getWindow();
-                if (w != null) {
-                    float p = Math.min(1f, ty / Math.max(1, content.getHeight()));
-                    w.setDimAmount(DIM * (1f - p));
-                }
+                float p = Math.min(1f, ty / Math.max(1, content.getHeight()));
+                setDim(DIM * (1f - p));
                 return true;
             }
             return false;
