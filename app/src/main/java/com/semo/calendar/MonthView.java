@@ -227,17 +227,30 @@ final class MonthView extends View {
         }
     }
 
-    private void hit(float x, float y) {
-        if (y < headH) return;
+    /** Day of the month under a point of this view, or -1. */
+    int dayAt(float x, float y) {
+        if (y < headH) return -1;
         float gw = showWeeks ? weekGutter : 0;
         float x0 = rtl() ? 0 : gw;
         float cw = (getWidth() - gw) / 7f;
         int row = (int) ((y - headH) / rowH);
         int col = (int) ((x - x0) / cw);
-        if (col < 0 || col > 6) return;
+        if (col < 0 || col > 6) return -1;
         if (rtl()) col = 6 - col;
         int d = row * 7 + col - offset + 1;
-        if (d < 1 || d > days) return;
+        return d < 1 || d > days ? -1 : d;
+    }
+
+    /** Same as {@link #dayAt} for a point in screen coordinates. */
+    int dayAtRaw(float rawX, float rawY) {
+        int[] loc = new int[2];
+        getLocationOnScreen(loc);
+        return dayAt(rawX - loc[0], rawY - loc[1]);
+    }
+
+    private void hit(float x, float y) {
+        int d = dayAt(x, y);
+        if (d < 0) return;
         selected = d;
         playPop();
         performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);

@@ -7,3 +7,4 @@
 }
 -repackageclasses ''
 -allowaccessmodification
+-keep class eightbitlab.com.blurview.** { *; }

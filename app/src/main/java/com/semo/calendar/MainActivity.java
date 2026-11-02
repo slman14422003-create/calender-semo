@@ -3,6 +3,10 @@ package com.semo.calendar;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Canvas;
+import android.graphics.Outline;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -11,6 +15,7 @@ import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
+import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,7 +31,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+
+import eightbitlab.com.blurview.BlurTarget;
+import eightbitlab.com.blurview.BlurView;
 
 /**
  * Five tabs (Calendar, Agenda, Tasks, Search, Settings) in an iPhone-style floating capsule bar. The Calendar tab
@@ -39,7 +48,7 @@ public final class MainActivity extends BaseActivity {
     private final ImageView[] icons = new ImageView[COUNT];
     private final TextView[] names = new TextView[COUNT];
     private final TabIconDrawable[] tabIcons = new TabIconDrawable[COUNT];
-    private FrameLayout content;
+    private BlurTarget content;
     private FrameLayout appRoot;
     private View pillView;
     private int cur = -1;
@@ -66,8 +75,11 @@ public final class MainActivity extends BaseActivity {
         applyInsets(root);
         setContentView(root);
 
-        content = new FrameLayout(this);
+        content = new BlurTarget(this);
+        root.setClipChildren(false);
         root.addView(content, new FrameLayout.LayoutParams(-1, -1));
+        FrameLayout.LayoutParams navLp = navParams();
+        root.addView(new NavShadow(this), navLp);
         root.addView(buildNav());
 
         select(0);
@@ -110,12 +122,22 @@ public final class MainActivity extends BaseActivity {
     }
 
     private View buildNav() {
-        FrameLayout bar = new FrameLayout(this);
-        GradientDrawable bg = Ui.shape(Ui.color(this, R.color.surface), Ui.dp(this, 100));
+        BlurView bar = new BlurView(this);
+        bar.setupWith(content).setFrameClearDrawable(new ColorDrawable(Ui.color(this, R.color.bg)))
+                .setBlurRadius(24f)
+                .setOverlayColor((Ui.color(this, R.color.surface) & 0x00FFFFFF) | 0xB0000000);
+        GradientDrawable bg = Ui.shape(0, Ui.dp(this, 100));
         bg.setStroke(Math.max(1, Ui.dp(this, 0.5f)), Ui.color(this, R.color.stroke));
         bar.setBackground(bg);
+        bar.setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View v, Outline o) {
+                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), v.getHeight() / 2f);
+                o.setAlpha(1f);
+            }
+        });
+        bar.setClipToOutline(true);
         bar.setPadding(Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5));
-        bar.setElevation(Ui.dp(this, 8));
 
         pillView = new View(this);
         pillView.setBackground(Ui.shape(Ui.color(this, R.color.neutral_soft), Ui.dp(this, 100)));
@@ -148,6 +170,7 @@ public final class MainActivity extends BaseActivity {
             tp.setMargins(Ui.dp(this, 2), Ui.dp(this, 2), Ui.dp(this, 2), 0);
             it.addView(t, tp);
             Ui.press(it);
+            LongPress.set(it, 26, (x, y) -> tabMenu(idx));
             it.setOnClickListener(v -> {
                 v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 if (idx != cur) {
@@ -168,10 +191,69 @@ public final class MainActivity extends BaseActivity {
         row.addOnLayoutChangeListener((v, l, t, r, bt, ol, ot, or, ob) -> {
             if (r - l != or - ol) placePill(false);
         });
-        FrameLayout.LayoutParams blp = new FrameLayout.LayoutParams(-1, -2, Gravity.BOTTOM);
-        blp.setMargins(Ui.dp(this, 14), Ui.dp(this, 6), Ui.dp(this, 14), Ui.dp(this, 10));
-        bar.setLayoutParams(blp);
+        bar.setLayoutParams(navParams());
         return bar;
+    }
+
+    private FrameLayout.LayoutParams navParams() {
+        FrameLayout.LayoutParams blp = new FrameLayout.LayoutParams(-1, Ui.dp(this, 64), Gravity.BOTTOM);
+        blp.setMargins(Ui.dp(this, 14), Ui.dp(this, 6), Ui.dp(this, 14), Ui.dp(this, 10));
+        return blp;
+    }
+
+    /** Soft drop shadow of the glass bar, drawn by hand because elevation shadows do not survive blur recording. */
+    private static final class NavShadow extends View {
+        private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private final float step;
+
+        NavShadow(MainActivity a) {
+            super(a);
+            step = Ui.dp(a, 1.4f);
+            p.setColor(0xFF000000);
+            setClickable(false);
+        }
+
+        @Override
+        protected void onDraw(Canvas cv) {
+            float h = getHeight(), w = getWidth(), dy = step * 2.5f;
+            for (int i = 9; i >= 1; i--) {
+                p.setAlpha(Math.max(2, 13 - i));
+                float g = i * step;
+                cv.drawRoundRect(-g, -g + dy, w + g, h + g + dy, h / 2f + g, h / 2f + g, p);
+            }
+        }
+    }
+
+    private List<LongPress.Item> tabMenu(final int idx) {
+        List<LongPress.Item> l = new ArrayList<>();
+        if (idx != cur) l.add(LongPress.item(getString(R.string.open), () -> {
+            select(idx);
+            Motion.bounce(icons[idx]);
+        }));
+        switch (idx) {
+            case 0:
+                l.add(LongPress.item(getString(R.string.today), () -> {
+                    if (idx != cur) select(idx);
+                    ((CalendarTab) screens[0]).goToday();
+                }));
+                l.add(LongPress.item(getString(R.string.new_event), () -> openEditor(null, ((CalendarTab) screens[0]).selectedMillis())));
+                l.add(LongPress.item(getString(R.string.new_task), () -> TaskSheet.show(this, null, 0)));
+                break;
+            case 1:
+                l.add(LongPress.item(getString(R.string.new_event), () -> openEditor(null, 0)));
+                l.add(LongPress.item(getString(R.string.smart_add), () -> QuickAddSheet.show(this)));
+                break;
+            case 2:
+                l.add(LongPress.item(getString(R.string.new_task), () -> TaskSheet.show(this, null, 0)));
+                break;
+            case 4:
+                l.add(LongPress.item(getString(R.string.app_icon),
+                        () -> startActivity(new Intent(this, IconActivity.class))));
+                break;
+            default:
+                break;
+        }
+        return l;
     }
 
     /** Moves the selection capsule under the chosen tab; it glides with a spring when {@code animate} is true. */

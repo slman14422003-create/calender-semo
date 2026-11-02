@@ -234,6 +234,10 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
             h.itemView.setOnClickListener(v -> {
                 if (taskHandler != null) taskHandler.open(t);
             });
+            if (c instanceof MainActivity) {
+                final MainActivity m = (MainActivity) c;
+                LongPress.set(h.itemView, 12, (x, y) -> Menus.task(m, t));
+            }
             return;
         }
 
@@ -254,5 +258,9 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
         h.bar.setBackground(Ui.shape(Cals.color(c, o.e), Ui.dp(c, 2)));
         h.content.setAlpha(o.end < System.currentTimeMillis() ? 0.5f : 1f);
         h.itemView.setOnClickListener(v -> click.on(o));
+        if (c instanceof MainActivity) {
+            final MainActivity m = (MainActivity) c;
+            LongPress.set(h.itemView, 12, (x, y) -> Menus.event(m, o));
+        }
     }
 }

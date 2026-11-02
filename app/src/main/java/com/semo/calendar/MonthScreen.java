@@ -62,6 +62,10 @@ final class MonthScreen implements DayAware {
                 move(dir);
             }
         });
+        LongPress.set(grid, -1, (rx, ry) -> {
+            int d = grid.dayAtRaw(rx, ry);
+            return d < 1 ? new java.util.ArrayList<>() : Menus.day(a, dayMillis(d));
+        });
         root.addView(grid, new LinearLayout.LayoutParams(-1, -2));
 
         LinearLayout sheet = Ui.vertical(a);

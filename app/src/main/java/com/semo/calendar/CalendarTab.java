@@ -187,6 +187,10 @@ final class CalendarTab implements Screen {
         }
     }
 
+    void goToday() {
+        pane(mode).goToday();
+    }
+
     long selectedMillis() {
         return Recur.dayStart(pane(mode).anchor());
     }
