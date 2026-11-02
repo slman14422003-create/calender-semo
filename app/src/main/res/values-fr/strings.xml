@@ -154,4 +154,16 @@
     <string name="smart_hint">Déjeuner avec Sara demain à 13h pendant 1 heure</string>
     <string name="smart_local">Compris sur votre appareil. Rien n’est envoyé nulle part.</string>
     <string name="suggest_time">Suggérer un créneau libre</string>
+    <string name="mark_undone">Marquer comme non terminée</string>
+    <string name="app_icon">Icône de l’app</string>
+    <string name="app_icon_note">L’icône de l’écran d’accueil change en quelques secondes.</string>
+    <string name="icon_blue">Bleu</string>
+    <string name="icon_violet">Violet</string>
+    <string name="icon_green">Vert</string>
+    <string name="icon_pink">Rose</string>
+    <string name="icon_red">Rouge</string>
+    <string name="icon_orange">Orange</string>
+    <string name="icon_gold">Or</string>
+    <string name="icon_night">Bleu nuit</string>
+    <string name="icon_graphite">Gris foncé</string>
 </resources>
