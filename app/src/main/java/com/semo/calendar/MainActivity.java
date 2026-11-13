@@ -22,7 +22,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -80,8 +79,6 @@ public final class MainActivity extends BaseActivity {
         content = new BlurTarget(this);
         root.setClipChildren(false);
         root.addView(content, new FrameLayout.LayoutParams(-1, -1));
-        FrameLayout.LayoutParams navLp = navParams();
-        root.addView(new NavShadow(this), navLp);
         root.addView(buildNav());
 
         select(0);
@@ -127,24 +124,19 @@ public final class MainActivity extends BaseActivity {
 
     private View buildNav() {
         BlurView bar = new NavBar(this);
-        bar.setupWith(content).setFrameClearDrawable(new ColorDrawable(Ui.color(this, R.color.bg)))
-                .setBlurRadius(24f)
-                .setOverlayColor((Ui.color(this, R.color.surface) & 0x00FFFFFF) | 0xB0000000);
-        GradientDrawable bg = Ui.shape(0, Ui.dp(this, 100));
-        bg.setStroke(Math.max(1, Ui.dp(this, 0.5f)), Ui.color(this, R.color.stroke));
-        bar.setBackground(bg);
-        bar.setOutlineProvider(new ViewOutlineProvider() {
-            @Override
-            public void getOutline(View v, Outline o) {
-                o.setRoundRect(0, 0, v.getWidth(), v.getHeight(), v.getHeight() / 2f);
-                o.setAlpha(1f);
-            }
-        });
+        if (Glass.enabled(this)) {
+            bar.setupWith(content).setFrameClearDrawable(new ColorDrawable(Ui.color(this, R.color.bg)))
+                    .setBlurRadius(Glass.blurRadius(this));
+        }
+        bar.setBackground(new GlassDrawable(this, Ui.dpf(this, 100), Glass.panelFill(this), 1f));
+        bar.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
         bar.setClipToOutline(true);
+        bar.setElevation(0f);
         bar.setPadding(Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5), Ui.dp(this, 5));
 
         pillView = new View(this);
-        pillView.setBackground(Ui.shape(Ui.color(this, R.color.neutral_soft), Ui.dp(this, 100)));
+        pillView.setBackground(new GlassDrawable(this, Ui.dpf(this, 100),
+                Glass.night(this) ? 0x33FFFFFF : 0x1F000000, 0f));
         pillView.setVisibility(View.INVISIBLE);
         bar.addView(pillView, new FrameLayout.LayoutParams(Ui.dp(this, 60), Ui.dp(this, 54),
                 Gravity.LEFT | Gravity.TOP));
@@ -201,31 +193,8 @@ public final class MainActivity extends BaseActivity {
 
     private FrameLayout.LayoutParams navParams() {
         FrameLayout.LayoutParams blp = new FrameLayout.LayoutParams(-1, Ui.dp(this, 64), Gravity.BOTTOM);
-        blp.setMargins(Ui.dp(this, 14), Ui.dp(this, 6), Ui.dp(this, 14), Ui.dp(this, 10));
+        blp.setMargins(Ui.dp(this, 18), 0, Ui.dp(this, 18), Ui.dp(this, 10));
         return blp;
-    }
-
-    /** Soft drop shadow of the glass bar, drawn by hand because elevation shadows do not survive blur recording. */
-    private static final class NavShadow extends View {
-        private final Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
-        private final float step;
-
-        NavShadow(MainActivity a) {
-            super(a);
-            step = Ui.dp(a, 1.4f);
-            p.setColor(0xFF000000);
-            setClickable(false);
-        }
-
-        @Override
-        protected void onDraw(Canvas cv) {
-            float h = getHeight(), w = getWidth(), dy = step * 2.5f;
-            for (int i = 9; i >= 1; i--) {
-                p.setAlpha(Math.max(2, 13 - i));
-                float g = i * step;
-                cv.drawRoundRect(-g, -g + dy, w + g, h + g + dy, h / 2f + g, h / 2f + g, p);
-            }
-        }
     }
 
     private List<LongPress.Item> tabMenu(final int idx) {
@@ -469,9 +438,9 @@ public final class MainActivity extends BaseActivity {
         try (OutputStream o = getContentResolver().openOutputStream(uri)) {
             if (o == null) throw new IllegalStateException();
             o.write(Ics.export(Store.all(this)).getBytes(StandardCharsets.UTF_8));
-            Toast.makeText(this, R.string.exported, Toast.LENGTH_SHORT).show();
+            Glass.toast(this, getString(R.string.exported));
         } catch (Exception ex) {
-            Toast.makeText(this, R.string.export_failed, Toast.LENGTH_SHORT).show();
+            Glass.toast(this, getString(R.string.export_failed));
         }
     }
 
@@ -502,8 +471,7 @@ public final class MainActivity extends BaseActivity {
         } catch (Exception ex) {
             n = 0;
         }
-        Toast.makeText(this, n > 0 ? getString(R.string.imported, n) : getString(R.string.import_failed),
-                Toast.LENGTH_SHORT).show();
+        Glass.toast(this, n > 0 ? getString(R.string.imported, n) : getString(R.string.import_failed));
         refreshCurrent();
     }
 }

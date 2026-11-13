@@ -73,7 +73,7 @@ final class SettingsScreen implements Screen {
     @Override
     public void refresh() {
         body.removeAllViews();
-        TextView title = Ui.text(a, a.getString(R.string.tab_settings), 34, R.color.text_primary, false);
+        TextView title = Ui.text(a, a.getString(R.string.tab_settings), 32, R.color.text_primary, false);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
         body.addView(title);
@@ -146,6 +146,25 @@ final class SettingsScreen implements Screen {
                         : w == 2 ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             });
         }, Ui.tile(a, R.drawable.ic_moon, Ui.color(a, R.color.violet))));
+        g.addView(Ui.hairline(a, 58));
+        LinearLayout gl = Ui.cell(a, a.getString(R.string.glass),
+                Ui.tile(a, R.drawable.ic_sparkles, Ui.color(a, R.color.info)));
+        gl.addView(Ui.iosSwitch(a, Prefs.glass(a), (v, on) -> {
+            Prefs.setGlass(a, on);
+            a.recreate();
+        }));
+        g.addView(gl);
+        if (Prefs.glass(a)) {
+            g.addView(Ui.hairline(a, 58));
+            final String[] lv = {a.getString(R.string.glass_soft), a.getString(R.string.glass_normal),
+                    a.getString(R.string.glass_strong)};
+            final int lvNow = Math.max(0, Math.min(2, Prefs.glassLevel(a)));
+            g.addView(row(a.getString(R.string.glass_level), lv[lvNow], true,
+                    v -> choose(R.string.glass_level, lv, lvNow, w -> {
+                        Prefs.setGlassLevel(a, w);
+                        a.recreate();
+                    }), Ui.tile(a, R.drawable.ic_layers, Ui.color(a, R.color.violet))));
+        }
         body.addView(g);
 
         LinearLayout dsp = Ui.group(a, 20);

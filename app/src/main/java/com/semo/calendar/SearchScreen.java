@@ -35,7 +35,7 @@ final class SearchScreen implements Screen {
         root.addView(nav.view(), new LinearLayout.LayoutParams(-1, nav.height()));
 
         LinearLayout head = Ui.vertical(a);
-        TextView t = Ui.text(a, a.getString(R.string.tab_search), 34, R.color.text_primary, false);
+        TextView t = Ui.text(a, a.getString(R.string.tab_search), 32, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
         t.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 8));
         head.addView(t);

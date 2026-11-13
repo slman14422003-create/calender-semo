@@ -42,7 +42,7 @@ final class Sheets {
                       boolean destructive, final Runnable ok) {
         final Dialog d = new SheetDialog(c);
         LinearLayout box = Ui.vertical(c);
-        box.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        box.setBackground(Glass.card(c, 28, Ui.color(c, R.color.alert_bg)));
         box.setClipToOutline(true);
         TextView t = Ui.text(c, title, 17, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
@@ -88,7 +88,7 @@ final class Sheets {
         LinearLayout root = Ui.vertical(c);
         root.setPadding(Ui.dp(c, 8), 0, Ui.dp(c, 8), Ui.dp(c, 28));
         LinearLayout card = Ui.vertical(c);
-        card.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        card.setBackground(Glass.card(c, 24, Ui.color(c, R.color.alert_bg)));
         card.setClipToOutline(true);
         if (title != null) {
             TextView t = Ui.text(c, title, 13, R.color.text_secondary, true);
@@ -123,7 +123,7 @@ final class Sheets {
         TextView cancel = Ui.text(c, c.getString(R.string.cancel), 20, R.color.accent, false);
         cancel.setTypeface(Typeface.DEFAULT_BOLD);
         cancel.setGravity(Gravity.CENTER);
-        cancel.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        cancel.setBackground(Glass.card(c, 24, Ui.color(c, R.color.alert_bg)));
         cancel.setClipToOutline(true);
         cancel.setOnClickListener(v -> d.dismiss());
         Ui.highlight(cancel);
@@ -145,7 +145,7 @@ final class Sheets {
         LinearLayout root = Ui.vertical(c);
         root.setPadding(Ui.dp(c, 8), 0, Ui.dp(c, 8), Ui.dp(c, 28));
         LinearLayout card = Ui.vertical(c);
-        card.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        card.setBackground(Glass.card(c, 24, Ui.color(c, R.color.alert_bg)));
         card.setClipToOutline(true);
         LinearLayout nav = new LinearLayout(c);
         nav.setGravity(Gravity.CENTER_VERTICAL);
@@ -215,7 +215,7 @@ final class Sheets {
         LinearLayout root = Ui.vertical(c);
         root.setPadding(Ui.dp(c, 8), 0, Ui.dp(c, 8), Ui.dp(c, 28));
         LinearLayout card = Ui.vertical(c);
-        card.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        card.setBackground(Glass.card(c, 24, Ui.color(c, R.color.alert_bg)));
         card.setClipToOutline(true);
         TextView t = Ui.text(c, title, 13, R.color.text_secondary, true);
         t.setGravity(Gravity.CENTER);
@@ -252,7 +252,7 @@ final class Sheets {
         TextView cancel = Ui.text(c, c.getString(R.string.cancel), 20, R.color.accent, false);
         cancel.setTypeface(Typeface.DEFAULT_BOLD);
         cancel.setGravity(Gravity.CENTER);
-        cancel.setBackground(Ui.shape(Ui.color(c, R.color.alert_bg), Ui.dp(c, 14)));
+        cancel.setBackground(Glass.card(c, 24, Ui.color(c, R.color.alert_bg)));
         cancel.setClipToOutline(true);
         cancel.setOnClickListener(v -> d.dismiss());
         Ui.highlight(cancel);

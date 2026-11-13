@@ -75,7 +75,7 @@ final class QuickAddSheet {
     static void show(final MainActivity a) {
         final Dialog dlg = new SheetDialog(a);
         LinearLayout box = Ui.vertical(a);
-        box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 24)));
+        box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 28)));
 
         LinearLayout nav = new LinearLayout(a);
         nav.setGravity(Gravity.CENTER_VERTICAL);

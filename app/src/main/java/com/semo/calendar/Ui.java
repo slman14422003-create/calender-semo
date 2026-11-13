@@ -18,6 +18,10 @@ final class Ui {
         return Math.round(v * c.getResources().getDisplayMetrics().density);
     }
 
+    static float dpf(Context c, float v) {
+        return v * c.getResources().getDisplayMetrics().density;
+    }
+
     static float sp(Context c, float v) {
         return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, v, c.getResources().getDisplayMetrics());
     }
@@ -78,7 +82,7 @@ final class Ui {
 
     static LinearLayout group(Context c, int topDp, int fillRes) {
         LinearLayout l = vertical(c);
-        l.setBackground(shape(color(c, fillRes), dp(c, 10)));
+        l.setBackground(fillRes == R.color.surface ? Glass.card(c, 20) : Glass.card(c, 20, color(c, fillRes)));
         l.setClipToOutline(true);
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(-1, -2);
         lp.setMargins(dp(c, 16), dp(c, topDp), dp(c, 16), 0);
@@ -159,6 +163,13 @@ final class Ui {
         return v;
     }
 
+    /** Header button on a round glass disc, like the ones in Clock Studio. */
+    static android.widget.ImageButton glassButton(Context c, int res, int tintRes, int sizeDp) {
+        android.widget.ImageButton b = iconButton(c, res, tintRes, sizeDp);
+        b.setBackground(Glass.circle(c));
+        return b;
+    }
+
     static android.widget.ImageButton iconButton(Context c, int res, int tintRes, int sizeDp) {
         android.widget.ImageButton b = new android.widget.ImageButton(c);
         b.setImageResource(res);
@@ -185,11 +196,11 @@ final class Ui {
         row.setGravity(android.view.Gravity.CENTER_VERTICAL);
         title.setOnClickListener(onTitle);
         row.addView(title, new LinearLayout.LayoutParams(0, -2, 1f));
-        android.widget.ImageButton sparkle = iconButton(a, R.drawable.ic_sparkles, R.color.accent, 44);
+        android.widget.ImageButton sparkle = glassButton(a, R.drawable.ic_sparkles, R.color.accent, 44);
         sparkle.setContentDescription(a.getString(R.string.smart_add));
         sparkle.setOnClickListener(v -> QuickAddSheet.show(a));
         row.addView(sparkle, new LinearLayout.LayoutParams(dp(a, 44), dp(a, 44)));
-        android.widget.ImageButton b = iconButton(a, R.drawable.ic_layers, R.color.accent, 44);
+        android.widget.ImageButton b = glassButton(a, R.drawable.ic_layers, R.color.accent, 44);
         b.setContentDescription(a.getString(R.string.calendars));
         b.setOnClickListener(v -> a.startActivity(new android.content.Intent(a, CalendarsActivity.class)));
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(dp(a, 44), dp(a, 44));

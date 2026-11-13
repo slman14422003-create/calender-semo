@@ -53,7 +53,7 @@ final class DetailSheet {
         final String title = e.label(a.getString(R.string.untitled));
 
         LinearLayout box = Ui.vertical(a);
-        box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 24)));
+        box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 28)));
         View grab = new View(a);
         grab.setBackground(Ui.shape(Ui.color(a, R.color.stroke), Ui.dp(a, 3)));
         LinearLayout.LayoutParams gp = new LinearLayout.LayoutParams(Ui.dp(a, 36), Ui.dp(a, 5));

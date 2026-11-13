@@ -26,7 +26,7 @@ final class TasksScreen implements Screen {
         a = act;
         root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
-        ImageButton plus = Ui.iconButton(a, R.drawable.ic_add, R.color.accent, 40);
+        ImageButton plus = Ui.glassButton(a, R.drawable.ic_add, R.color.accent, 40);
         plus.setContentDescription(a.getString(R.string.new_task));
         plus.setOnClickListener(v -> TaskSheet.show(a, null, 0));
         final LargeNav nav = new LargeNav(a, a.getString(R.string.tab_tasks), plus);
@@ -109,7 +109,7 @@ final class TasksScreen implements Screen {
     @Override
     public void refresh() {
         body.removeAllViews();
-        TextView title = Ui.text(a, a.getString(R.string.tab_tasks), 34, R.color.text_primary, false);
+        TextView title = Ui.text(a, a.getString(R.string.tab_tasks), 32, R.color.text_primary, false);
         title.setTypeface(Typeface.DEFAULT_BOLD);
         title.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 0));
         body.addView(title);

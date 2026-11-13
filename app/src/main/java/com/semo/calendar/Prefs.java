@@ -92,6 +92,24 @@ final class Prefs {
         sp(c).edit().putString("defcal", id).apply();
     }
 
+    /** Liquid Glass (live blur and translucent surfaces), shared look with Clock Studio. */
+    static boolean glass(Context c) {
+        return sp(c).getBoolean("glass", true);
+    }
+
+    static void setGlass(Context c, boolean v) {
+        sp(c).edit().putBoolean("glass", v).apply();
+    }
+
+    /** Blur strength: 0 soft, 1 medium, 2 strong. */
+    static int glassLevel(Context c) {
+        return sp(c).getInt("glass_level", 1);
+    }
+
+    static void setGlassLevel(Context c, int v) {
+        sp(c).edit().putInt("glass_level", v).apply();
+    }
+
     /** Automatic emoji, conflict warnings and the daily summary. */
     static boolean smart(Context c) {
         return sp(c).getBoolean("smart", true);

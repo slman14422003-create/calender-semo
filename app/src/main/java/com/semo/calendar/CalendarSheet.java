@@ -33,7 +33,7 @@ final class CalendarSheet {
         }
         final Dialog d = new SheetDialog(a);
         LinearLayout box = Ui.vertical(a);
-        box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 24)));
+        box.setBackground(Ui.topRounded(Ui.color(a, R.color.sheet_bg), Ui.dp(a, 28)));
         box.setPadding(0, 0, 0, Ui.dp(a, 28));
 
         LinearLayout nav = new LinearLayout(a);

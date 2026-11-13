@@ -191,12 +191,12 @@ final class EventAdapter extends RecyclerView.Adapter<EventAdapter.VH> {
         }
         boolean first = pos == 0 || !isRow(items.get(pos - 1));
         boolean last = pos == items.size() - 1 || !isRow(items.get(pos + 1));
-        float r = Ui.dp(c, 10);
+        float r = Ui.dp(c, 20);
         float tr = first ? r : 0;
         float br = last ? r : 0;
         float[] radii = {tr, tr, tr, tr, br, br, br, br};
         GradientDrawable g = new GradientDrawable();
-        g.setColor(Ui.color(c, R.color.surface));
+        g.setColor(Glass.surface(c));
         g.setCornerRadii(radii);
         h.itemView.setBackground(g);
         GradientDrawable hl = new GradientDrawable();

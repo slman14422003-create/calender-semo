@@ -599,7 +599,7 @@ public final class EditorActivity extends BaseActivity {
         int dur = (int) Math.max(15, (end.getTimeInMillis() - start.getTimeInMillis()) / 60000L);
         final List<long[]> slots = Smart.freeSlots(this, dur, System.currentTimeMillis(), 5);
         if (slots.isEmpty()) {
-            android.widget.Toast.makeText(this, R.string.no_free_time, android.widget.Toast.LENGTH_SHORT).show();
+            Glass.toast(this, getString(R.string.no_free_time));
             return;
         }
         CharSequence[] n = new CharSequence[slots.size()];

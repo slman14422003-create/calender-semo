@@ -280,7 +280,7 @@ final class Updater {
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
             a.startActivity(i);
         } catch (Throwable e) {
-            android.widget.Toast.makeText(a, R.string.upd_err_install, android.widget.Toast.LENGTH_LONG).show();
+            Glass.toast(a, a.getString(R.string.upd_err_install));
         }
     }
 

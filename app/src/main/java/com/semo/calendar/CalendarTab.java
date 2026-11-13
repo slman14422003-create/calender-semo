@@ -84,7 +84,7 @@ final class CalendarTab implements Screen {
         nav.addView(seg, new LinearLayout.LayoutParams(0, -2, 1f));
 
         FrameLayout right = new FrameLayout(a);
-        ImageButton plus = Ui.iconButton(a, R.drawable.ic_add, R.color.accent, 40);
+        ImageButton plus = Ui.glassButton(a, R.drawable.ic_add, R.color.accent, 40);
         plus.setContentDescription(a.getString(R.string.new_event));
         plus.setOnClickListener(v -> a.openEditor(null, selectedMillis()));
         right.addView(plus, new FrameLayout.LayoutParams(Ui.dp(a, 40), Ui.dp(a, 40), Gravity.END));

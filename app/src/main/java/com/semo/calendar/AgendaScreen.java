@@ -28,13 +28,13 @@ final class AgendaScreen implements Screen {
         root = Ui.vertical(a);
         root.setBackgroundColor(Ui.color(a, R.color.bg_group));
 
-        ImageButton plus = Ui.iconButton(a, R.drawable.ic_add, R.color.accent, 40);
+        ImageButton plus = Ui.glassButton(a, R.drawable.ic_add, R.color.accent, 40);
         plus.setContentDescription(a.getString(R.string.new_event));
         plus.setOnClickListener(v -> a.openEditor(null, 0));
         final LargeNav nav = new LargeNav(a, a.getString(R.string.tab_agenda), plus);
         root.addView(nav.view(), new LinearLayout.LayoutParams(-1, nav.height()));
 
-        TextView t = Ui.text(a, a.getString(R.string.tab_agenda), 34, R.color.text_primary, false);
+        TextView t = Ui.text(a, a.getString(R.string.tab_agenda), 32, R.color.text_primary, false);
         t.setTypeface(Typeface.DEFAULT_BOLD);
         t.setPadding(Ui.dp(a, 20), Ui.dp(a, 2), Ui.dp(a, 20), Ui.dp(a, 6));
         LinearLayout head = Ui.vertical(a);

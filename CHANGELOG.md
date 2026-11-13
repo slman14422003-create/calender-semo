@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.3
+- Same design as Clock Studio: Liquid Glass. Cards, grouped rows and event rows are translucent glass with a hairline edge (corner 20), the floating tab bar is the same blurred glass capsule with the same selection lens (no hand-drawn shadow), header buttons sit on round glass discs, large titles are 32sp bold.
+- Dialogs: alerts and action sheets use the Clock's 28 / 24 corner glass card over the blurred app; bottom sheets have 28 corners.
+- Toasts are glass capsules above the tab bar (export, import, free time, install error).
+- New Settings rows: Liquid Glass switch and blur strength (soft / medium / strong), same values as the Clock. Switching it off gives the solid iOS surfaces.
+- Same glass colours day and night as the Clock (glass_surface, glass_field, glass_neutral). The calendar keeps its red accent, the clock keeps orange.
+- README.md removed from the project.
+
 ## 3.2
 - Fix: the selected Day / Week / Month / Year segment showed a plain grey box and hid its label (the thumb's shadow made it draw above the text).
 - New Updates screen (Settings > About): checks this project's GitHub releases, downloads the APK, verifies SHA-256 and installs it from inside the app. Calendar only. Optional daily automatic check.
