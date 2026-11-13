@@ -155,15 +155,4 @@
     <string name="smart_local">Cihazında anlaşılır. Hiçbir yere bir şey gönderilmez.</string>
     <string name="suggest_time">Boş zaman öner</string>
     <string name="mark_undone">Tamamlanmadı olarak işaretle</string>
-    <string name="app_icon">Uygulama simgesi</string>
-    <string name="app_icon_note">Ana ekran simgesi birkaç saniye içinde değişir.</string>
-    <string name="icon_blue">Mavi</string>
-    <string name="icon_violet">Mor</string>
-    <string name="icon_green">Yeşil</string>
-    <string name="icon_pink">Pembe</string>
-    <string name="icon_red">Kırmızı</string>
-    <string name="icon_orange">Turuncu</string>
-    <string name="icon_gold">Altın</string>
-    <string name="icon_night">Gece mavisi</string>
-    <string name="icon_graphite">Koyu gri</string>
 </resources>

@@ -155,15 +155,4 @@
     <string name="smart_local">Se entiende en tu dispositivo. No se envía nada a ningún sitio.</string>
     <string name="suggest_time">Sugerir un hueco libre</string>
     <string name="mark_undone">Marcar como pendiente</string>
-    <string name="app_icon">Icono de la app</string>
-    <string name="app_icon_note">El icono de la pantalla de inicio cambia en unos segundos.</string>
-    <string name="icon_blue">Azul</string>
-    <string name="icon_violet">Violeta</string>
-    <string name="icon_green">Verde</string>
-    <string name="icon_pink">Rosa</string>
-    <string name="icon_red">Rojo</string>
-    <string name="icon_orange">Naranja</string>
-    <string name="icon_gold">Dorado</string>
-    <string name="icon_night">Azul noche</string>
-    <string name="icon_graphite">Gris oscuro</string>
 </resources>

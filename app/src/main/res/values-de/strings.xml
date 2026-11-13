@@ -155,15 +155,4 @@
     <string name="smart_local">Wird auf deinem Gerät verstanden. Nichts wird irgendwohin gesendet.</string>
     <string name="suggest_time">Freie Zeit vorschlagen</string>
     <string name="mark_undone">Als offen markieren</string>
-    <string name="app_icon">App-Symbol</string>
-    <string name="app_icon_note">Das Symbol auf dem Home-Bildschirm ändert sich in wenigen Sekunden.</string>
-    <string name="icon_blue">Blau</string>
-    <string name="icon_violet">Violett</string>
-    <string name="icon_green">Grün</string>
-    <string name="icon_pink">Rosa</string>
-    <string name="icon_red">Rot</string>
-    <string name="icon_orange">Orange</string>
-    <string name="icon_gold">Gold</string>
-    <string name="icon_night">Nachtblau</string>
-    <string name="icon_graphite">Dunkelgrau</string>
 </resources>

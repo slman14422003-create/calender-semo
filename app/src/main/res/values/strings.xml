@@ -217,15 +217,4 @@
     <string name="glance_prayer">Next prayer: %1$s at %2$s</string>
     <string name="alarm_in_clock">Set alarm in Clock</string>
     <string name="mark_undone">Mark as not done</string>
-    <string name="app_icon">App icon</string>
-    <string name="app_icon_note">The home screen icon changes in a few seconds.</string>
-    <string name="icon_blue">Blue</string>
-    <string name="icon_violet">Violet</string>
-    <string name="icon_green">Green</string>
-    <string name="icon_pink">Pink</string>
-    <string name="icon_red">Red</string>
-    <string name="icon_orange">Orange</string>
-    <string name="icon_gold">Gold</string>
-    <string name="icon_night">Night blue</string>
-    <string name="icon_graphite">Dark gray</string>
 </resources>
