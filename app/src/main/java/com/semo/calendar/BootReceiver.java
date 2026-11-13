@@ -7,6 +7,8 @@ import android.content.Intent;
 public class BootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context c, Intent in) {
-        Alarms.rescheduleAll(c);
+        DynamicIcon.sync(c);
+        DynamicIcon.schedule(c);
+        if (!DynamicIcon.TICK.equals(in.getAction())) Alarms.rescheduleAll(c);
     }
 }

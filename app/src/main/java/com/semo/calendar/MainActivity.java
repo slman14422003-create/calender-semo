@@ -14,7 +14,9 @@ import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.HapticFeedbackConstants;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewOutlineProvider;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -114,6 +116,8 @@ public final class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         if (tabIcons[0] != null) tabIcons[0].invalidateSelf();
+        DynamicIcon.sync(this);
+        DynamicIcon.schedule(this);
         refreshCurrent();
     }
 
@@ -122,7 +126,7 @@ public final class MainActivity extends BaseActivity {
     }
 
     private View buildNav() {
-        BlurView bar = new BlurView(this);
+        BlurView bar = new NavBar(this);
         bar.setupWith(content).setFrameClearDrawable(new ColorDrawable(Ui.color(this, R.color.bg)))
                 .setBlurRadius(24f)
                 .setOverlayColor((Ui.color(this, R.color.surface) & 0x00FFFFFF) | 0xB0000000);
@@ -246,14 +250,108 @@ public final class MainActivity extends BaseActivity {
             case 2:
                 l.add(LongPress.item(getString(R.string.new_task), () -> TaskSheet.show(this, null, 0)));
                 break;
-            case 4:
-                l.add(LongPress.item(getString(R.string.app_icon),
-                        () -> startActivity(new Intent(this, IconActivity.class))));
-                break;
             default:
                 break;
         }
         return l;
+    }
+
+    private void paintTabs(int on) {
+        for (int k = 0; k < COUNT; k++) {
+            int col = Ui.color(this, k == on ? R.color.accent : R.color.text_secondary);
+            tabIcons[k].setState(k == on, col);
+            names[k].setTextColor(col);
+        }
+    }
+
+    private final class NavBar extends BlurView {
+        private final float slop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
+        private float downX, downY;
+        private boolean dragging;
+        private int hover;
+
+        NavBar(android.content.Context c) {
+            super(c);
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(MotionEvent e) {
+            switch (e.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    downX = e.getX();
+                    downY = e.getY();
+                    dragging = false;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    float dx = Math.abs(e.getX() - downX);
+                    if (!dragging && dx > slop && dx > Math.abs(e.getY() - downY) && pillView != null) {
+                        dragging = true;
+                        hover = cur;
+                        pillView.animate().cancel();
+                        pillView.animate().scaleX(1.12f).scaleY(1.1f).setDuration(180)
+                                .setInterpolator(Motion.SPRING).start();
+                        performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+                        getParent().requestDisallowInterceptTouchEvent(true);
+                        return true;
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onTouchEvent(MotionEvent e) {
+            if (!dragging) return super.onTouchEvent(e);
+            switch (e.getActionMasked()) {
+                case MotionEvent.ACTION_MOVE:
+                    dragTo(e.getX());
+                    return true;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    dragging = false;
+                    pillView.animate().scaleX(1f).scaleY(1f).setDuration(260).setInterpolator(Motion.SPRING).start();
+                    int target = e.getActionMasked() == MotionEvent.ACTION_UP ? hover : cur;
+                    if (target != cur) {
+                        select(target);
+                        Motion.bounce(icons[target]);
+                    } else {
+                        paintTabs(cur);
+                        placePill(true);
+                    }
+                    return true;
+                default:
+                    return true;
+            }
+        }
+
+        private void dragTo(float x) {
+            float min = Float.MAX_VALUE, max = -Float.MAX_VALUE;
+            for (View it : items) {
+                min = Math.min(min, it.getLeft());
+                max = Math.max(max, it.getLeft());
+            }
+            float w = pillView.getWidth();
+            float want = Math.max(min, Math.min(max, x - getPaddingLeft() - w / 2f));
+            float now = pillView.getTranslationX();
+            pillView.setTranslationX(now + (want - now) * 0.6f);
+            float center = pillView.getTranslationX() + w / 2f;
+            int best = hover;
+            float gap = Float.MAX_VALUE;
+            for (int k = 0; k < COUNT; k++) {
+                float d = Math.abs(items[k].getLeft() + items[k].getWidth() / 2f - center);
+                if (d < gap) {
+                    gap = d;
+                    best = k;
+                }
+            }
+            if (best != hover) {
+                hover = best;
+                paintTabs(hover);
+                performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
+            }
+        }
     }
 
     /** Moves the selection capsule under the chosen tab; it glides with a spring when {@code animate} is true. */
@@ -303,11 +401,8 @@ public final class MainActivity extends BaseActivity {
                 screens[k].view().animate().cancel();
                 screens[k].view().setVisibility(k == i ? View.VISIBLE : View.GONE);
             }
-            boolean on = k == i;
-            int col = Ui.color(this, on ? R.color.accent : R.color.text_secondary);
-            tabIcons[k].setState(on, col);
-            names[k].setTextColor(col);
         }
+        paintTabs(i);
         screens[i].refresh();
         if (prev >= 0) Motion.enter(screens[i].view(), 10);
         placePill(prev >= 0);

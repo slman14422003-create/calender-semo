@@ -146,11 +146,6 @@ final class SettingsScreen implements Screen {
                         : w == 2 ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             });
         }, Ui.tile(a, R.drawable.ic_moon, Ui.color(a, R.color.violet))));
-        g.addView(Ui.hairline(a, 58));
-        final int iconNow = Icons.current(a);
-        g.addView(row(a.getString(R.string.app_icon), a.getString(Icons.NAMES[iconNow]), true,
-                v -> a.startActivity(new android.content.Intent(a, IconActivity.class)),
-                Ui.appIcon(a, Icons.preview(a, iconNow))));
         body.addView(g);
 
         LinearLayout dsp = Ui.group(a, 20);
