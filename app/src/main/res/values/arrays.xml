@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- language names are shown in their own language, in every language -->
+    <string-array name="lang_names" translatable="false">
+        <item>System</item>
+        <item>English</item>
+        <item>العربية</item>
+        <item>Français</item>
+        <item>Español</item>
+        <item>Deutsch</item>
+        <item>Türkçe</item>
+    </string-array>
+    <string-array name="emoji_list" translatable="false">
+        <item>🎂</item><item>🎉</item><item>🎁</item><item>❤️</item><item>⭐</item><item>🔥</item>
+        <item>✈️</item><item>🚗</item><item>🏠</item><item>💼</item><item>📞</item><item>💻</item>
+        <item>🍽️</item><item>☕</item><item>🛒</item><item>🏋️</item><item>⚽</item><item>🎬</item>
+        <item>📚</item><item>🎓</item><item>🏥</item><item>💊</item><item>🕌</item><item>🌙</item>
+    </string-array>
+    <string-array name="weekday_narrow">
+        <item>S</item>
+        <item>M</item>
+        <item>T</item>
+        <item>W</item>
+        <item>T</item>
+        <item>F</item>
+        <item>S</item>
+    </string-array>
+    <!-- title keywords (normalised) that suggest an emoji for new events -->
+    <string-array name="smart_emoji_rules" translatable="false">
+        <item>🎂=birthday|bday|عيد ميلاد|ميلاد|anniversaire|cumpleanos|cumpleaños|geburtstag|dogum gunu|doğum günü</item>
+        <item>📞=call|phone|اتصال|اتصل|مكالمه|appel|llamada|anruf|telefon</item>
+        <item>💼=meeting|standup|اجتماع|ميتنج|reunion|réunion|reunión|besprechung|toplanti|toplantı</item>
+        <item>🏥=doctor|dentist|clinic|hospital|طبيب|دكتور|عياده|مستشفي|اسنان|medecin|médecin|dentiste|medico|médico|dentista|arzt|zahnarzt|doktor|hastane</item>
+        <item>✈️=flight|airport|رحله|طيران|مطار|vol|aeroport|aéroport|vuelo|aeropuerto|flug|flughafen|ucus|uçuş|havalimani|havalimanı</item>
+        <item>🍽️=lunch|dinner|breakfast|restaurant|غداء|عشاء|فطور|مطعم|dejeuner|déjeuner|diner|dîner|almuerzo|cena|desayuno|mittagessen|abendessen|fruhstuck|frühstück|kahvalti|kahvaltı</item>
+        <item>☕=coffee|قهوه|cafe|café|kaffee|kahve</item>
+        <item>🏋️=gym|workout|training|نادي|تمرين|رياضه|entrainement|entraînement|entrenamiento|spor</item>
+        <item>🛒=shopping|groceries|تسوق|سوق|courses|compras|einkaufen|alisveris|alışveriş</item>
+        <item>🎓=exam|class|lecture|school|اختبار|امتحان|محاضره|مدرسه|examen|cours|clase|prufung|prüfung|vorlesung|sinav|sınav|ders</item>
+        <item>🎉=party|حفله|حفل|fete|fête|fiesta|feier|parti</item>
+        <item>💍=wedding|زفاف|عرس|خطوبه|mariage|boda|hochzeit|dugun|düğün</item>
+        <item>🕌=prayer|mosque|صلاه|مسجد</item>
+        <item>💊=medicine|pills|دواء|دوا|medicament|médicament|medicina|medikament|ilac|ilaç</item>
+        <item>📚=study|reading|دراسه|مذاكره|قراءه|etude|étude|estudio|studieren|calisma|çalışma</item>
+    </string-array>
+</resources>

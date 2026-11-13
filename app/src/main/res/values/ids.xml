@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="fx_skip" type="id" />
+    <item name="fx_alpha" type="id" />
+    <item name="fx_anim" type="id" />
+    <item name="fx_run" type="id" />
+    <item name="lp_menu" type="id" />
+</resources>

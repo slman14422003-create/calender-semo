@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="about">About</string>
+    <string name="all_day">All-day</string>
+    <string name="app_name">Semo Calendar</string>
+    <string name="cancel">Cancel</string>
+    <string name="channel_name">Event reminders</string>
+    <string name="close">Close</string>
+    <string name="color">Color</string>
+    <string name="data">Data</string>
+    <string name="default_duration">Default event length</string>
+    <string name="default_reminder">Default alert</string>
+    <string name="delete">Delete</string>
+    <string name="delete_q">Delete this event?</string>
+    <string name="delete_series">A repeating event is deleted with all its repeats.</string>
+    <string name="details">Details</string>
+    <string name="edit">Edit</string>
+    <string name="edit_event">Edit event</string>
+    <string name="ends">Ends</string>
+    <string name="export_failed">Could not save the file</string>
+    <string name="export_ics">Export events (ICS)</string>
+    <string name="exported">Events exported</string>
+    <string name="first_day">First day of week</string>
+    <string name="general">General</string>
+    <string name="import_failed">Could not read the file</string>
+    <string name="import_ics">Import events (ICS)</string>
+    <string name="imported">Imported %1$d events</string>
+    <string name="lang_system">System</string>
+    <string name="language">Language</string>
+    <string name="location">Location</string>
+    <string name="minutes_fmt">%1$d min</string>
+    <string name="more_all_day">All-day</string>
+    <string name="new_event">New event</string>
+    <string name="no_events">No events</string>
+    <string name="none_installed">No other Semo apps installed</string>
+    <string name="notes">Notes</string>
+    <string name="open">Open</string>
+    <string name="rem_0">At time of event</string>
+    <string name="rem_1440">1 day before</string>
+    <string name="rem_15">15 minutes before</string>
+    <string name="rem_30">30 minutes before</string>
+    <string name="rem_5">5 minutes before</string>
+    <string name="rem_60">1 hour before</string>
+    <string name="rem_none">None</string>
+    <string name="reminder">Alert</string>
+    <string name="rep_daily">Daily</string>
+    <string name="rep_monthly">Monthly</string>
+    <string name="rep_none">Never</string>
+    <string name="rep_weekly">Weekly</string>
+    <string name="rep_yearly">Yearly</string>
+    <string name="repeat">Repeat</string>
+    <string name="repeats_note">Editing and deleting affect the whole series</string>
+    <string name="save">Save</string>
+    <string name="search_empty">Type to search titles, places and notes</string>
+    <string name="search_hint">Search events</string>
+    <string name="seg_day">Day</string>
+    <string name="seg_month">Month</string>
+    <string name="seg_week">Week</string>
+    <string name="semo_apps">Semo apps</string>
+    <string name="send_notes">Send to Notes</string>
+    <string name="starts">Starts</string>
+    <string name="tab_agenda">Agenda</string>
+    <string name="tab_month">Calendar</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_settings">Settings</string>
+    <string name="theme">Appearance</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_system">System</string>
+    <string name="title_hint">Title</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="untitled">Untitled event</string>
+    <string name="version">Version</string>
+    <string name="yesterday">Yesterday</string>
+    <string name="add_calendar">Add calendar</string>
+    <string name="alt_calendar">Alternate calendar</string>
+    <string name="alt_hijri">Hijri</string>
+    <string name="alt_off">Off</string>
+    <string name="availability">Availability</string>
+    <string name="busy">Busy</string>
+    <string name="cal_holidays">Holidays</string>
+    <string name="cal_personal">Personal</string>
+    <string name="cal_work">Work</string>
+    <string name="calendar">Calendar</string>
+    <string name="calendar_name">Calendar name</string>
+    <string name="calendars">Calendars</string>
+    <string name="clear_completed">Clear</string>
+    <string name="completed">Completed</string>
+    <string name="date_label">Date</string>
+    <string name="default_calendar">Default calendar</string>
+    <string name="delete_cal_msg">All events in this calendar will be deleted too.</string>
+    <string name="delete_cal_q">Delete this calendar?</string>
+    <string name="done">Done</string>
+    <string name="due_fmt">Due %1$s</string>
+    <string name="duplicate">Duplicate</string>
+    <string name="edit_task">Edit task</string>
+    <string name="emoji">Emoji</string>
+    <string name="end_after">After a number of times</string>
+    <string name="end_never">Never</string>
+    <string name="end_on">On date</string>
+    <string name="end_repeat">End repeat</string>
+    <string name="end_times_fmt">After %1$d times</string>
+    <string name="end_until_fmt">Until %1$s</string>
+    <string name="free">Free</string>
+    <string name="go_to_date">Go to date</string>
+    <string name="h_arafah">Day of Arafah</string>
+    <string name="h_ashura">Day of Ashura</string>
+    <string name="h_christmas">Christmas Day</string>
+    <string name="h_eid_adha">Eid al-Adha</string>
+    <string name="h_eid_fitr">Eid al-Fitr</string>
+    <string name="h_hijri_new_year">Islamic New Year</string>
+    <string name="h_isra">Isra and Mi’raj</string>
+    <string name="h_labour">Labour Day</string>
+    <string name="h_mawlid">Mawlid (Prophet’s Birthday)</string>
+    <string name="h_new_year">New Year’s Day</string>
+    <string name="h_ramadan">First day of Ramadan</string>
+    <string name="mark_done">Mark as done</string>
+    <string name="new_calendar_default">New calendar</string>
+    <string name="new_task">New task</string>
+    <string name="no_date">No date</string>
+    <string name="no_tasks">No tasks</string>
+    <string name="none_label">None</string>
+    <string name="open_link">Open link</string>
+    <string name="open_maps">Open in Maps</string>
+    <string name="overdue">Overdue</string>
+    <string name="rep_biweekly">Every 2 weeks</string>
+    <string name="rep_weekdays">Weekdays</string>
+    <string name="seg_year">Year</string>
+    <string name="share">Share</string>
+    <string name="snooze">Snooze</string>
+    <string name="tab_tasks">Tasks</string>
+    <string name="time_label">Time</string>
+    <string name="travel_time">Travel time</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="url_hint">URL</string>
+    <string name="week_numbers">Week numbers</string>
+    <string name="add">Add</string>
+    <string name="conflict_fmt">Overlaps with %1$s</string>
+    <string name="glance">Today at a glance</string>
+    <string name="glance_events">Events today: %1$d · first at %2$s</string>
+    <string name="glance_events_all">Events today: %1$d</string>
+    <string name="glance_free">Your day is free</string>
+    <string name="glance_next_free">Next free hour: %1$s</string>
+    <string name="glance_overdue">Overdue tasks: %1$d</string>
+    <string name="glance_tasks">Tasks due today: %1$d</string>
+    <string name="kind_event">Event</string>
+    <string name="kind_task">Task</string>
+    <string name="more_details">More details</string>
+    <string name="no_free_time">No free time found in the next two weeks</string>
+    <string name="smart_add">Smart add</string>
+    <string name="smart_empty">Type what you want to schedule. Date, time, repeat, alert and place are picked out of the sentence.</string>
+    <string name="smart_features">Smart suggestions</string>
+    <string name="smart_hint">Lunch with Sara tomorrow at 1pm for 1 hour</string>
+    <string name="smart_local">Understood on your device. Nothing is sent anywhere.</string>
+    <string name="suggest_time">Suggest a free time</string>
+
+    <!-- Updates (calendar only) -->
+    <string name="upd_title">Updates</string>
+    <string name="upd_current">Current version: %1$s</string>
+    <string name="upd_check">Check for updates</string>
+    <string name="upd_checking">Checking…</string>
+    <string name="upd_latest">You have the latest version</string>
+    <string name="upd_available">New version available: %1$s</string>
+    <string name="upd_download">Download and install</string>
+    <string name="upd_downloading">Downloading…</string>
+    <string name="upd_progress">%1$d%%</string>
+    <string name="upd_size">Update size: %1$s</string>
+    <string name="upd_cancel">Cancel download</string>
+    <string name="upd_cancelled">Download cancelled</string>
+    <string name="upd_ready">Download complete and verified</string>
+    <string name="upd_ready_sub">The file was checked; Android also checks the signature when installing</string>
+    <string name="upd_install">Install now</string>
+    <string name="upd_err_net">Could not reach GitHub. Check your connection and try again</string>
+    <string name="upd_err_none">No release has been published yet</string>
+    <string name="upd_err_verify">The file could not be verified. Try again</string>
+    <string name="upd_err_install">Could not open the app installer</string>
+    <string name="upd_no_apk">This release has no APK file yet</string>
+    <string name="upd_perm_title">Allow installing</string>
+    <string name="upd_perm_msg">To install the update from inside the app, allow Semo Calendar to install apps on the next screen, then come back and tap Install.</string>
+    <string name="upd_perm_open">Open Settings</string>
+    <string name="upd_open_page">Releases page on GitHub</string>
+    <string name="upd_notes">What’s new</string>
+    <string name="upd_footnote">Updates are downloaded only from this project’s official releases page, and the SHA-256 fingerprint is checked before installing. Only the calendar is updated.</string>
+    <string name="upd_auto">Check automatically</string>
+    <string name="upd_now">Update</string>
+    <string name="upd_new_msg">Version %1$s is available. Update now?</string>
+
+    <!-- Privacy policy -->
+    <string name="privacy_title">Privacy Policy</string>
+    <string name="privacy_updated">Last updated: October 2026</string>
+    <string-array name="privacy_titles">
+        <item>Summary</item>
+        <item>What is stored on your device</item>
+        <item>Internet use</item>
+        <item>Permissions and why</item>
+        <item>Smart features</item>
+        <item>Link with other Semo apps</item>
+        <item>Security</item>
+        <item>Deleting your data</item>
+        <item>Changes to this policy</item>
+    </string-array>
+    <string-array name="privacy_bodies">
+        <item>Semo Calendar needs no account, shows no ads, uses no analytics or tracking, and never sells or shares your data. What you enter stays on your device.</item>
+        <item>Events, tasks, calendars and settings are saved only in the app’s private storage. Cloud backup and device-to-device transfer of app data are turned off. Files are created only when you choose to export (ICS).</item>
+        <item>The app goes online only for updates, over HTTPS, and only to api.github.com and github.com (release files are served by GitHub’s download servers). Nothing from your calendar is sent, and no personal data is included in these requests; GitHub sees your IP address like any website. You can turn the automatic check off in Updates.</item>
+        <item>• Notifications: for event and task reminders.\n• Run at start-up: to re-arm reminders after a restart or a time change.\n• Internet: for the update check and download only.\n• Install apps: to install an update when you choose to.</item>
+        <item>Smart add, automatic emoji, overlap warnings and free-time suggestions run entirely on your device. What you type is not sent anywhere.</item>
+        <item>If other Semo apps are installed, Semo Calendar can find them to open them, send an event to Notes, or show the Semo Clock’s next alarm and next prayer in “today at a glance”. The calendar gives the Clock only the time of your next event and the number of today’s events, never titles, places or notes. This exchange stays on the device.</item>
+        <item>The parts other apps can reach are: the main screen, the “Share to Calendar” doorway (it only opens a prefilled new event and saves nothing by itself) and a read-only summary of times and counts. Update files are accepted only from this project’s releases, checked with SHA-256, and Android refuses to install them unless they are signed with the same key as the installed app.</item>
+        <item>Your data is only on your device. Clear the app’s data in Android settings (Storage → Clear data) or uninstall the app to delete everything. There is no copy elsewhere to delete.</item>
+        <item>If data handling changes, this text and its “Last updated” line will change.</item>
+    </string-array>
+
+    <!-- Link with the Semo Clock -->
+    <string name="glance_alarm">Next alarm in Clock: %1$s</string>
+    <string name="glance_prayer">Next prayer: %1$s at %2$s</string>
+    <string name="alarm_in_clock">Set alarm in Clock</string>
+    <string name="mark_undone">Mark as not done</string>
+</resources>

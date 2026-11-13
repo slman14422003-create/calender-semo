@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- NIGHT palette: iOS dark system colours on true AMOLED black. -->
+    <color name="bg">#000000</color>
+    <color name="bg_group">#000000</color>
+    <color name="surface">#1C1C1E</color>
+    <color name="surface_high">#2C2C2E</color>
+    <color name="field">#1C1C1E</color>
+    <color name="stroke">#38383A</color>
+    <color name="stroke_soft">#2C2C2E</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#98989F</color>
+    <color name="text_hint">#636366</color>
+    <color name="accent">#FF453A</color>
+    <color name="accent_text">#FF453A</color>
+    <color name="accent_soft">#3A1512</color>
+    <color name="neutral_soft">#2C2C2E</color>
+    <color name="on_accent">#FFFFFF</color>
+    <color name="ripple">#22FFFFFF</color>
+    <color name="ripple_on_accent">#22000000</color>
+    <color name="brand_start">#FF453A</color>
+    <color name="brand_mid">#FF453A</color>
+    <color name="brand_end">#FF453A</color>
+    <color name="ok">#30D158</color>
+    <color name="bad">#FF453A</color>
+    <color name="warn">#FF9F0A</color>
+    <color name="info">#0A84FF</color>
+    <color name="violet">#BF5AF2</color>
+    <color name="lime">#A2E36B</color>
+    <color name="ic_launcher_bg">#1C1C1E</color>
+    <color name="ic_ink">#FFFFFF</color>
+    <color name="ic_red">#FF453A</color>
+    <color name="seg_track">#3D767680</color>
+    <color name="seg_thumb">#636366</color>
+    <color name="alert_bg">#2C2C2E</color>
+    <color name="cal_teal">#64D2FF</color>
+    <color name="cal_pink">#FF375F</color>
+    <color name="cal_indigo">#5E5CE6</color>
+    <color name="cal_yellow">#FFD60A</color>
+    <color name="sheet_bg">#1C1C1E</color>
+    <color name="sheet_cell">#2C2C2E</color>
+    <color name="cell_highlight">#3A3A3C</color>
+</resources>
