@@ -155,4 +155,9 @@
     <string name="smart_local">Cihazında anlaşılır. Hiçbir yere bir şey gönderilmez.</string>
     <string name="suggest_time">Boş zaman öner</string>
     <string name="mark_undone">Tamamlanmadı olarak işaretle</string>
+    <string name="glass">Liquid Glass</string>
+    <string name="glass_level">Bulanıklık gücü</string>
+    <string name="glass_soft">Hafif</string>
+    <string name="glass_normal">Orta</string>
+    <string name="glass_strong">Güçlü</string>
 </resources>

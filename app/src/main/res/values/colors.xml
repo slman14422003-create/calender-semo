@@ -42,4 +42,8 @@
     <color name="sheet_bg">#F2F2F7</color>
     <color name="sheet_cell">#FFFFFF</color>
     <color name="cell_highlight">#D1D1D6</color>
+    <!-- Liquid Glass (day), same values as Clock Studio -->
+    <color name="glass_surface">#B3FFFFFF</color>
+    <color name="glass_field">#99FFFFFF</color>
+    <color name="glass_neutral">#2E767680</color>
 </resources>

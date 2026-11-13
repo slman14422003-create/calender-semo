@@ -217,4 +217,9 @@
     <string name="glance_prayer">Next prayer: %1$s at %2$s</string>
     <string name="alarm_in_clock">Set alarm in Clock</string>
     <string name="mark_undone">Mark as not done</string>
+    <string name="glass">Liquid Glass</string>
+    <string name="glass_level">Blur strength</string>
+    <string name="glass_soft">Soft</string>
+    <string name="glass_normal">Medium</string>
+    <string name="glass_strong">Strong</string>
 </resources>

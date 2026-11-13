@@ -217,4 +217,9 @@
     <string name="glance_prayer">الصلاة القادمة: %1$s عند %2$s</string>
     <string name="alarm_in_clock">ضبط منبّه في الساعة</string>
     <string name="mark_undone">إلغاء الإنجاز</string>
+    <string name="glass">الزجاج السائل</string>
+    <string name="glass_level">شدة البلور</string>
+    <string name="glass_soft">خفيفة</string>
+    <string name="glass_normal">متوسطة</string>
+    <string name="glass_strong">قوية</string>
 </resources>

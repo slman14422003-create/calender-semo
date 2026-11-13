@@ -155,4 +155,9 @@
     <string name="smart_local">Wird auf deinem Gerät verstanden. Nichts wird irgendwohin gesendet.</string>
     <string name="suggest_time">Freie Zeit vorschlagen</string>
     <string name="mark_undone">Als offen markieren</string>
+    <string name="glass">Liquid Glass</string>
+    <string name="glass_level">Unschärfestärke</string>
+    <string name="glass_soft">Leicht</string>
+    <string name="glass_normal">Mittel</string>
+    <string name="glass_strong">Stark</string>
 </resources>

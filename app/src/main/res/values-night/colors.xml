@@ -40,4 +40,8 @@
     <color name="sheet_bg">#1C1C1E</color>
     <color name="sheet_cell">#2C2C2E</color>
     <color name="cell_highlight">#3A3A3C</color>
+    <!-- Liquid Glass (night), same values as Clock Studio -->
+    <color name="glass_surface">#8C2C2C2E</color>
+    <color name="glass_field">#7A2C2C2E</color>
+    <color name="glass_neutral">#4D767680</color>
 </resources>

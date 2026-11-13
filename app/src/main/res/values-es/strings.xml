@@ -155,4 +155,9 @@
     <string name="smart_local">Se entiende en tu dispositivo. No se envía nada a ningún sitio.</string>
     <string name="suggest_time">Sugerir un hueco libre</string>
     <string name="mark_undone">Marcar como pendiente</string>
+    <string name="glass">Liquid Glass</string>
+    <string name="glass_level">Intensidad del desenfoque</string>
+    <string name="glass_soft">Suave</string>
+    <string name="glass_normal">Media</string>
+    <string name="glass_strong">Fuerte</string>
 </resources>

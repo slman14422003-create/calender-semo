@@ -155,4 +155,9 @@
     <string name="smart_local">Compris sur votre appareil. Rien n’est envoyé nulle part.</string>
     <string name="suggest_time">Suggérer un créneau libre</string>
     <string name="mark_undone">Marquer comme non terminée</string>
+    <string name="glass">Liquid Glass</string>
+    <string name="glass_level">Intensité du flou</string>
+    <string name="glass_soft">Légère</string>
+    <string name="glass_normal">Moyenne</string>
+    <string name="glass_strong">Forte</string>
 </resources>
