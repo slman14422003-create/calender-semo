@@ -72,6 +72,16 @@ description: Progress log and architecture notes for the Semo Calendar Android a
 - CalendarTab: sliding segmented thumb, zoom crossfade between views. MonthView: spring selection circle. MonthScreen: slide on month change.
 - IosSwitch.java: track colour fades with the thumb glide.
 
+## Done (3.3, same design as Clock Studio)
+- Glass.java + GlassDrawable.java are ported from Clock Studio (same fills, same 0.5dp hairline, same blur levels 7 / 11 / 15). Prefs.glass() and Prefs.glassLevel() are the switch and the strength; Settings has both rows and recreates the activity when they change.
+- Glass.surface(c) is the card fill (glass_surface, or surface when Glass is off); Glass.card(c, radiusDp[, fill]) is the card background; Glass.circle(c) is the round header button; Glass.panelFill(c) is the floating bar fill; Glass.toast(c, text) is the capsule toast (falls back to the system toast outside BaseActivity).
+- Ui.group() uses Glass.card (corner 20); EventAdapter rows use Glass.surface with corner 20; Ui.glassButton() is used for the header buttons (plus, sparkle, calendars).
+- MainActivity tab bar: GlassDrawable capsule (panelFill), BlurView set up only when Glass is on, selection lens fill 0x33FFFFFF night / 0x1F000000 day, margins 18dp, NavShadow removed.
+- Sheets: alert card corner 28, action sheet cards 24, Glass.card over the alert_bg colour; bottom sheets corner 28. The window blur behind dialogs (SheetDialog) was already there.
+- Strings glass, glass_level, glass_soft, glass_normal, glass_strong exist in all 6 languages.
+- Accent stays red here (Clock is orange); the shared part is the material, the shapes and the motion.
+- Not built here (no Android SDK, no network): run build.yml and check the tab bar blur, the toast position and the Settings switch on Android 12+ and on an older device.
+
 ## Build fixes
 - Hijri.cal() uses Calendar.getInstance(new ULocale("en@calendar=islamic-umalqura")): IslamicCalendar.CalendarType is not in the SDK stubs (first CI build failed on it).
 
